@@ -217,44 +217,44 @@
         <div id="seccionInscripciones">
             <!-- Filtros Avanzados - Hito 5 UX Mejorada -->
             <div class="filter-section mt-4">
-                <div class="filter-group">
+                <div class="filter-group filter-col-search">
                     <label class="filter-label">Buscar</label>
                     <input type="text" id="filter-buscar" class="filter-input"
                         placeholder="Nombre, documento, capítulo...">
                     <div class="help-text">Búsqueda en tiempo real</div>
                 </div>
 
-                <div class="filter-group">
+                <div class="filter-group filter-col-estado">
                     <label class="filter-label">Estado</label>
                     <select id="filter-estado-validacion" class="filter-select">
                         <option value="">— Todos los estados —</option>
                         <option value="Pendiente">Pendiente</option>
-                        <option value="Aprobado">✓ Aprobado</option>
-                        <option value="Rechazado">✗ Rechazado</option>
+                        <option value="Aprobado">Aprobado</option>
+                        <option value="Rechazado">Rechazado</option>
                     </select>
                 </div>
 
-                <div class="filter-group">
+                <div class="filter-group filter-col-rango">
                     <label class="filter-label">Rango de Pago</label>
-                    <div style="display: flex; gap: 8px;">
+                    <div class="filter-range-row">
                         <input type="number" id="filter-rango-min" class="filter-input" placeholder="Mín" min="0">
-                        <span style="display: flex; align-items: center;">–</span>
+                        <span class="filter-range-sep">–</span>
                         <input type="number" id="filter-rango-max" class="filter-input" placeholder="Máx" min="0">
                     </div>
                     <div class="help-text">Rango en pesos (COP)</div>
                 </div>
 
-                <div class="filter-group">
+                <div class="filter-group filter-col-desde">
                     <label class="filter-label">Desde</label>
                     <input type="date" id="filter-fecha-inicio" class="filter-input">
                 </div>
 
-                <div class="filter-group">
+                <div class="filter-group filter-col-hasta">
                     <label class="filter-label">Hasta</label>
                     <input type="date" id="filter-fecha-fin" class="filter-input">
                 </div>
 
-                <div class="filter-group " style="display: flex; gap: 8px; margin-top: 20px;">
+                <div class="filter-group filter-actions-group filter-col-actions">
                     <button id="btn-aplicar-filtros" class="filter-button" onclick="adminUX.aplicarFiltros()">
                         Aplicar Filtros
                     </button>
