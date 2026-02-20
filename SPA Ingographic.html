@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infografía: Identidad Hardcore Tropical - L.A.M.A.</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@400;800&family=Rock+Salt&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        lamaBlack: '#0A0A0A',
+                        lamaDark: '#1A1A1A',
+                        lamaGold: '#D4AF37',
+                        lamaNeon: '#00F5FF',
+                        lamaBone: '#F5F5DC',
+                    },
+                    fontFamily: {
+                        headings: ['"Bebas Neue"', 'sans-serif'],
+                        body: ['"Montserrat"', 'sans-serif'],
+                        accent: ['"Rock Salt"', 'cursive'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        body {
+            background-color: #0A0A0A;
+            color: #F5F5DC;
+            font-family: 'Montserrat', sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1A1A1A;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #D4AF37;
+            border-radius: 5px;
+        }
+
+        /* Chart Container Standards */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 400px;
+        }
+        
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+
+        /* Neon Glow Effects */
+        .neon-text {
+            text-shadow: 0 0 10px rgba(0, 245, 255, 0.7);
+        }
+        .gold-text {
+            background: linear-gradient(to bottom, #FFD700, #D4AF37, #B8860B);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0px 2px 4px rgba(0,0,0,0.5);
+        }
+        
+        /* Timeline styling */
+        .timeline-line {
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: linear-gradient(to bottom, #D4AF37, #00F5FF);
+            transform: translateX(-50%);
+        }
+    </style>
+
+    <!-- 
+    NARRATIVE PLAN:
+    1. Hero: Title and concept intro ("Asphalt to Reef").
+    2. Visual Identity Analysis (Radar): Contrasting "Hardcore" vs "Tropical".
+    3. Chromatic DNA (Donut): Color distribution breakdown.
+    4. Event Intensity (Bar): Metrics for different event aspects.
+    5. Timeline: Schedule of the 2-day event.
+    -->
+
+    <!-- 
+    CHART SELECTION JUSTIFICATION (NO SVG):
+    1. Radar Chart: Goal -> Compare. Visualizes the multi-dimensional attributes of the brand fusion. Library: Chart.js.
+    2. Doughnut Chart: Goal -> Compare/Composition. Breaks down the color palette usage ratios. Library: Chart.js.
+    3. Horizontal Bar Chart: Goal -> Compare/Rank. Shows intensity levels of different event activities. Library: Chart.js.
+    4. HTML/CSS Timeline: Goal -> Change/Sequence. Displays the event schedule. Method: HTML/Tailwind.
+    -->
+</head>
+<body class="antialiased">
+
+    <!-- Navigation -->
+    <nav class="sticky top-0 z-50 bg-lamaDark/95 border-b border-lamaGold backdrop-blur-sm shadow-lg">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="text-2xl font-headings text-lamaGold tracking-widest">L.A.M.A. <span class="text-lamaBone">REGIÓN NORTE</span></div>
+            <div class="hidden md:flex space-x-8 font-bold text-sm text-lamaBone">
+                <a href="#concepto" class="hover:text-lamaNeon transition-colors">CONCEPTO</a>
+                <a href="#adn" class="hover:text-lamaNeon transition-colors">ADN VISUAL</a>
+                <a href="#cronograma" class="hover:text-lamaNeon transition-colors">AGENDA</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="relative min-h-[80vh] flex flex-col justify-center items-center text-center px-4 bg-[url('https://images.unsplash.com/photo-1544551763-46a8723ba3f9?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-center bg-no-repeat bg-blend-overlay bg-black/70">
+        <div class="absolute inset-0 bg-gradient-to-t from-lamaBlack via-transparent to-transparent"></div>
+        
+        <div class="relative z-10 max-w-4xl animate-fade-in-up">
+            <p class="text-lamaNeon font-bold tracking-[0.3em] mb-4">IDENTIDAD VISUAL 2026</p>
+            <h1 class="text-6xl md:text-8xl font-headings mb-2 text-white">HARDCORE <span class="font-accent text-lamaNeon neon-text text-5xl md:text-7xl block md:inline mt-4 md:mt-0">Tropical</span></h1>
+            <h2 class="text-3xl md:text-5xl font-headings text-lamaGold mt-4">DEL ASFALTO AL ARRECIFE</h2>
+            <p class="mt-8 text-lg md:text-xl max-w-2xl mx-auto text-lamaBone font-light">
+                Una fusión agresiva donde la rudeza del cuero se encuentra con el lujo del Caribe. 
+                El V Campeonato Región Norte no es solo un evento, es una declaración de poder.
+            </p>
+            <div class="mt-10 flex flex-col md:flex-row gap-4 justify-center">
+                <div class="bg-lamaGold text-lamaBlack font-bold py-3 px-8 rounded clip-path-polygon hover:bg-white transition-colors cursor-pointer">
+                    SEPT 12-13, 2026
+                </div>
+                <div class="border-2 border-lamaNeon text-lamaNeon font-bold py-3 px-8 rounded hover:bg-lamaNeon hover:text-lamaBlack transition-colors cursor-pointer">
+                    SAN ANDRÉS ISLAS
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Grid -->
+    <main class="container mx-auto px-4 py-16 space-y-24">
+
+        <!-- Section 1: Concept Duality (Radar Chart) -->
+        <section id="concepto" class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+            <div class="order-2 md:order-1">
+                <div class="bg-lamaDark p-6 rounded-lg border-l-4 border-lamaNeon shadow-xl">
+                    <h3 class="text-3xl font-headings text-lamaGold mb-2">FUSIÓN DE MUNDOS</h3>
+                    <p class="text-lamaBone mb-4">
+                        El concepto "Hardcore Tropical" no es una mezcla aleatoria. Es una ingeniería visual que equilibra la agresividad militar de L.A.M.A. con la vibrante energía de San Andrés.
+                    </p>
+                    <p class="text-gray-400 text-sm">
+                        La gráfica radial muestra cómo la nueva identidad expande los límites tradicionales del club (Asfalto) hacia nuevos territorios sensoriales (Arrecife), creando un perfil de evento único.
+                    </p>
+                </div>
+            </div>
+            <div class="order-1 md:order-2">
+                <div class="chart-container bg-lamaDark/50 rounded-xl p-4 border border-gray-800">
+                    <canvas id="radarConcept"></canvas>
+                </div>
+                <p class="text-center text-xs text-gray-500 mt-2 font-mono">COMPARATIVA DE ATRIBUTOS DE MARCA</p>
+            </div>
+        </section>
+
+        <!-- Section 2: Color Palette DNA (Donut Chart) -->
+        <section id="adn" class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+            <div>
+                <div class="chart-container">
+                    <canvas id="donutColors"></canvas>
+                </div>
+                <div class="flex justify-center gap-4 mt-6 flex-wrap">
+                    <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-lamaBlack border border-gray-600"></span><span class="text-xs">NEGRO (FONDO)</span></div>
+                    <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-lamaGold"></span><span class="text-xs">DORADO (LUJO)</span></div>
+                    <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-lamaNeon"></span><span class="text-xs">NEÓN (ACENTO)</span></div>
+                </div>
+            </div>
+            <div>
+                <h3 class="text-3xl font-headings text-white mb-6">ADN CROMÁTICO</h3>
+                <div class="space-y-6">
+                    <div class="flex items-start gap-4">
+                        <div class="w-12 h-12 bg-lamaBlack border-2 border-gray-700 flex items-center justify-center font-bold text-gray-500 text-xs rounded">60%</div>
+                        <div>
+                            <h4 class="font-bold text-lamaGold">DOMINANTE: NEGRO L.A.M.A.</h4>
+                            <p class="text-sm text-gray-300">Representa el asfalto, el cuero y la seriedad institucional. Es el lienzo sobre el que brilla la luz.</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-4">
+                        <div class="w-12 h-12 bg-lamaGold flex items-center justify-center font-bold text-black text-xs rounded">25%</div>
+                        <div>
+                            <h4 class="font-bold text-lamaGold">PRINCIPAL: DORADO VICTORIA</h4>
+                            <p class="text-sm text-gray-300">Tipografía principal y logos. Evoca triunfo, jerarquía y el sol del atardecer caribeño.</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-4">
+                        <div class="w-12 h-12 bg-lamaNeon flex items-center justify-center font-bold text-black text-xs rounded shadow-[0_0_10px_#00F5FF]">15%</div>
+                        <div>
+                            <h4 class="font-bold text-lamaNeon">EXPLOSIVO: TURQUESA NEÓN</h4>
+                            <p class="text-sm text-gray-300">El Mar de los 7 Colores electrificado. Se usa para cortes, luces y detalles modernos.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 3: Experience Metrics (Bar Chart) -->
+        <section class="bg-lamaDark rounded-2xl p-8 border border-gray-800">
+            <div class="mb-8 text-center">
+                <h3 class="text-3xl font-headings text-lamaBone">INTENSIDAD DE LA EXPERIENCIA</h3>
+                <p class="text-gray-400 max-w-2xl mx-auto mt-2">
+                    Proyección de la experiencia del asistente basada en la planificación "Del Asfalto al Arrecife". 
+                    Se espera un equilibrio alto entre la adrenalina de la competencia y el relax exclusivo.
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div class="lg:col-span-2">
+                    <div class="chart-container">
+                        <canvas id="barExperience"></canvas>
+                    </div>
+                </div>
+                <div class="flex flex-col justify-center space-y-4">
+                    <div class="bg-black p-4 rounded border-l-2 border-lamaGold">
+                        <span class="block text-lamaGold font-bold text-sm">ADRENALINA</span>
+                        <p class="text-xs text-gray-400">Competencia de Jet Skis y rutas en la isla.</p>
+                    </div>
+                    <div class="bg-black p-4 rounded border-l-2 border-lamaNeon">
+                        <span class="block text-lamaNeon font-bold text-sm">CONEXIÓN</span>
+                        <p class="text-xs text-gray-400">Hermandad biker en un entorno paradisíaco.</p>
+                    </div>
+                    <div class="bg-black p-4 rounded border-l-2 border-white">
+                        <span class="block text-white font-bold text-sm">LUJO</span>
+                        <p class="text-xs text-gray-400">Hotelería y experiencias VIP Clase 2.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 4: Timeline -->
+        <section id="cronograma" class="relative">
+            <h3 class="text-4xl font-headings text-center text-lamaGold mb-12">AGENDA OPERATIVA</h3>
+            
+            <div class="relative max-w-3xl mx-auto">
+                <!-- Vertical Line -->
+                <div class="timeline-line hidden md:block"></div>
+
+                <!-- Event 1 -->
+                <div class="flex flex-col md:flex-row items-center justify-between mb-12 relative z-10">
+                    <div class="w-full md:w-5/12 text-center md:text-right px-4">
+                        <h4 class="text-2xl font-bold text-white">RECEPCIÓN VIP</h4>
+                        <p class="text-lamaNeon font-headings text-xl">DÍA 1: SEPT 12</p>
+                        <p class="text-gray-400 text-sm mt-2">Llegada de delegaciones, registro oficial y cóctel de bienvenida frente al mar.</p>
+                    </div>
+                    <div class="w-8 h-8 rounded-full bg-lamaGold border-4 border-black hidden md:block"></div>
+                    <div class="w-full md:w-5/12 px-4 mt-4 md:mt-0">
+                        <div class="bg-lamaDark p-4 rounded border border-gray-700">
+                            <span class="text-xs font-bold text-lamaGold">UBICACIÓN: LOBBY CENTRAL</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Event 2 -->
+                <div class="flex flex-col md:flex-row items-center justify-between mb-12 relative z-10">
+                    <div class="w-full md:w-5/12 px-4 order-2 md:order-1 mt-4 md:mt-0">
+                        <div class="bg-lamaDark p-4 rounded border border-gray-700 text-right md:text-left">
+                            <span class="text-xs font-bold text-lamaNeon">UBICACIÓN: PLAYA PRINCIPAL</span>
+                        </div>
+                    </div>
+                    <div class="w-8 h-8 rounded-full bg-lamaNeon border-4 border-black hidden md:block order-1 md:order-2"></div>
+                    <div class="w-full md:w-5/12 text-center md:text-left px-4 order-1 md:order-3">
+                        <h4 class="text-2xl font-bold text-white">COMPETENCIA JET SKI</h4>
+                        <p class="text-lamaGold font-headings text-xl">DÍA 2: SEPT 13 - AM</p>
+                        <p class="text-gray-400 text-sm mt-2">El evento central. Exhibición de potencia en el agua. "El Héroe" en acción.</p>
+                    </div>
+                </div>
+
+                <!-- Event 3 -->
+                <div class="flex flex-col md:flex-row items-center justify-between mb-12 relative z-10">
+                    <div class="w-full md:w-5/12 text-center md:text-right px-4">
+                        <h4 class="text-2xl font-bold text-white">RODADA AL ATARDECER</h4>
+                        <p class="text-lamaGold font-headings text-xl">DÍA 2: SEPT 13 - PM</p>
+                        <p class="text-gray-400 text-sm mt-2">Vuelta a la isla. Caravana oficial con banderas y chalecos.</p>
+                    </div>
+                    <div class="w-8 h-8 rounded-full bg-lamaGold border-4 border-black hidden md:block"></div>
+                    <div class="w-full md:w-5/12 px-4 mt-4 md:mt-0">
+                         <div class="bg-lamaDark p-4 rounded border border-gray-700">
+                            <span class="text-xs font-bold text-lamaGold">UBICACIÓN: CIRCUNVALAR</span>
+                        </div>
+                    </div>
+                </div>
+
+                 <!-- Event 4 -->
+                 <div class="flex flex-col md:flex-row items-center justify-between relative z-10">
+                    <div class="w-full md:w-5/12 px-4 order-2 md:order-1 mt-4 md:mt-0">
+                         <div class="bg-lamaDark p-4 rounded border border-gray-700 text-right md:text-left">
+                            <span class="text-xs font-bold text-lamaNeon">UBICACIÓN: SALÓN DE GALA</span>
+                        </div>
+                    </div>
+                    <div class="w-8 h-8 rounded-full bg-lamaNeon border-4 border-black hidden md:block order-1 md:order-2"></div>
+                    <div class="w-full md:w-5/12 text-center md:text-left px-4 order-1 md:order-3">
+                        <h4 class="text-2xl font-bold text-white">CLAUSURA & PREMIACIÓN</h4>
+                        <p class="text-lamaBone font-headings text-xl">DÍA 2: SEPT 13 - NOCHE</p>
+                        <p class="text-gray-400 text-sm mt-2">Cena de gala, entrega de trofeos y fiesta de despedida.</p>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-lamaBlack border-t border-gray-800 py-12 mt-12">
+        <div class="container mx-auto px-4 text-center">
+            <div class="mb-8">
+                <span class="text-4xl font-headings text-lamaGold tracking-widest">L.A.M.A.</span>
+                <p class="text-xs text-gray-500 tracking-[0.5em] mt-2">LATIN AMERICAN MOTORCYCLE ASSOCIATION</p>
+            </div>
+            
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto mb-8 opacity-50 grayscale hover:grayscale-0 transition-all duration-500">
+                <!-- Placeholders using CSS for icons since SVG is prohibited -->
+                <div class="h-12 bg-gray-800 rounded flex items-center justify-center text-xs font-bold text-gray-400">SPONSOR 1</div>
+                <div class="h-12 bg-gray-800 rounded flex items-center justify-center text-xs font-bold text-gray-400">SPONSOR 2</div>
+                <div class="h-12 bg-gray-800 rounded flex items-center justify-center text-xs font-bold text-gray-400">SPONSOR 3</div>
+                <div class="h-12 bg-gray-800 rounded flex items-center justify-center text-xs font-bold text-gray-400">SPONSOR 4</div>
+            </div>
+
+            <p class="text-lamaNeon font-bold border border-lamaNeon inline-block px-4 py-2 rounded text-sm mb-4">EVENTO CLASE 2</p>
+            <p class="text-gray-600 text-xs">
+                © 2026 L.A.M.A. Región Norte Colombia. Todos los derechos reservados.<br>
+                Diseño de identidad visual por Canvas.
+            </p>
+        </div>
+    </footer>
+
+    <!-- Chart Scripts -->
+    <script>
+        // --- Helper Function for Label Wrapping (Mandatory) ---
+        function wrapLabel(str, maxChars) {
+            if (str.length <= maxChars) return str;
+            const words = str.split(' ');
+            const lines = [];
+            let currentLine = words[0];
+
+            for (let i = 1; i < words.length; i++) {
+                if (currentLine.length + 1 + words[i].length <= maxChars) {
+                    currentLine += ' ' + words[i];
+                } else {
+                    lines.push(currentLine);
+                    currentLine = words[i];
+                }
+            }
+            lines.push(currentLine);
+            return lines;
+        }
+
+        // --- Common Tooltip Config (Mandatory) ---
+        const commonTooltipConfig = {
+            callbacks: {
+                title: function(tooltipItems) {
+                    const item = tooltipItems[0];
+                    let label = item.chart.data.labels[item.dataIndex];
+                    if (Array.isArray(label)) {
+                        return label.join(' ');
+                    } else {
+                        return label;
+                    }
+                }
+            },
+            backgroundColor: '#0A0A0A',
+            titleColor: '#D4AF37',
+            bodyColor: '#F5F5DC',
+            borderColor: '#D4AF37',
+            borderWidth: 1,
+            padding: 10,
+        };
+
+        // --- Chart 1: Radar Chart (Concept Duality) ---
+        const ctxRadar = document.getElementById('radarConcept').getContext('2d');
+        new Chart(ctxRadar, {
+            type: 'radar',
+            data: {
+                labels: [
+                    wrapLabel('Agresividad Biker', 16),
+                    wrapLabel('Lujo Exclusivo', 16),
+                    wrapLabel('Naturaleza Caribe', 16),
+                    wrapLabel('Oscuridad Asfalto', 16),
+                    wrapLabel('Frescura Neón', 16)
+                ],
+                datasets: [
+                    {
+                        label: 'L.A.M.A. Clásico',
+                        data: [90, 40, 20, 95, 10],
+                        fill: true,
+                        backgroundColor: 'rgba(100, 100, 100, 0.2)',
+                        borderColor: '#666',
+                        pointBackgroundColor: '#666',
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'Fusión San Andrés',
+                        data: [85, 95, 90, 70, 100],
+                        fill: true,
+                        backgroundColor: 'rgba(0, 245, 255, 0.2)',
+                        borderColor: '#00F5FF',
+                        pointBackgroundColor: '#D4AF37',
+                        pointBorderColor: '#fff',
+                        borderWidth: 2
+                    }
+                ]
+            },
+            options: {
+                maintainAspectRatio: false,
+                scales: {
+                    r: {
+                        angleLines: { color: 'rgba(255, 255, 255, 0.1)' },
+                        grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                        pointLabels: {
+                            color: '#F5F5DC',
+                            font: { size: 12, family: 'Montserrat' }
+                        },
+                        ticks: { display: false, backdropColor: 'transparent' }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        labels: { color: '#F5F5DC', font: { family: 'Montserrat' } }
+                    },
+                    tooltip: {
+                        ...commonTooltipConfig, // Use mandatory config structure, overriding specific callback if needed, but structure is compatible
+                        callbacks: {
+                             title: function(tooltipItems) {
+                                const item = tooltipItems[0];
+                                // Use the axis label for radar charts
+                                let label = item.chart.scales.r.getLabelForValue(item.dataIndex); 
+                                if (Array.isArray(label)) {
+                                  return label.join(' ');
+                                }
+                                return label;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // --- Chart 2: Doughnut Chart (Color DNA) ---
+        const ctxDonut = document.getElementById('donutColors').getContext('2d');
+        new Chart(ctxDonut, {
+            type: 'doughnut',
+            data: {
+                labels: [
+                    wrapLabel('Negro Fondo (60%)', 16),
+                    wrapLabel('Dorado Victoria (25%)', 16),
+                    wrapLabel('Azul Neón (10%)', 16),
+                    wrapLabel('Blanco Hueso (5%)', 16)
+                ],
+                datasets: [{
+                    data: [60, 25, 10, 5],
+                    backgroundColor: [
+                        '#1A1A1A', // Using slightly lighter black for visibility
+                        '#D4AF37',
+                        '#00F5FF',
+                        '#F5F5DC'
+                    ],
+                    borderColor: '#000000',
+                    borderWidth: 2,
+                    hoverOffset: 10
+                }]
+            },
+            options: {
+                maintainAspectRatio: false,
+                cutout: '60%',
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: { color: '#F5F5DC', padding: 20, font: { family: 'Montserrat' } }
+                    },
+                    tooltip: commonTooltipConfig
+                }
+            }
+        });
+
+        // --- Chart 3: Horizontal Bar Chart (Experience) ---
+        const ctxBar = document.getElementById('barExperience').getContext('2d');
+        // Gradient for bars
+        const gradientGold = ctxBar.createLinearGradient(0, 0, 400, 0);
+        gradientGold.addColorStop(0, '#B8860B');
+        gradientGold.addColorStop(1, '#D4AF37');
+
+        const gradientNeon = ctxBar.createLinearGradient(0, 0, 400, 0);
+        gradientNeon.addColorStop(0, '#008B8B');
+        gradientNeon.addColorStop(1, '#00F5FF');
+
+        new Chart(ctxBar, {
+            type: 'bar',
+            data: {
+                labels: [
+                    wrapLabel('Adrenalina (Jet Ski/Ruta)', 20),
+                    wrapLabel('Confort & Lujo', 16),
+                    wrapLabel('Vida Nocturna', 16),
+                    wrapLabel('Naturaleza', 16),
+                    wrapLabel('Protocolo L.A.M.A.', 16)
+                ],
+                datasets: [{
+                    label: 'Nivel de Intensidad',
+                    data: [95, 80, 85, 75, 90],
+                    backgroundColor: [
+                        gradientGold,
+                        gradientNeon,
+                        gradientNeon,
+                        gradientNeon,
+                        gradientGold
+                    ],
+                    borderRadius: 4,
+                    barThickness: 25
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        grid: { color: 'rgba(255, 255, 255, 0.05)' },
+                        ticks: { color: '#F5F5DC' }
+                    },
+                    y: {
+                        grid: { display: false },
+                        ticks: { color: '#fff', font: { family: 'Montserrat', weight: 'bold' } }
+                    }
+                },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: commonTooltipConfig
+                }
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,2030 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        <%= title %>
+    </title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        lamaBlack: '#0A0A0A',
+                        lamaDark: '#1A1A1A',
+                        lamaGold: '#D4AF37',
+                        lamaNeon: '#00F5FF',
+                        lamaBone: '#F5F5DC'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@400;600;700&display=swap');
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: #0A0A0A;
+            color: #F5F5DC;
+        }
+
+        .font-headings {
+            font-family: 'Bebas Neue', cursive;
+            letter-spacing: 0.05em;
+        }
+
+        .badge-pendiente {
+            background: #FFA500;
+            color: #000;
+        }
+
+        .badge-aprobado {
+            background: #00FF00;
+            color: #000;
+        }
+
+        .badge-rechazado {
+            background: #FF0000;
+            color: #FFF;
+        }
+    </style>
+</head>
+
+<body class="bg-lamaBlack min-h-screen">
+
+    <!-- Header -->
+    <header class="bg-lamaDark border-b-2 border-lamaGold py-4 sticky top-0 z-50">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center space-x-3">
+                    <img src="/img/LAMARegionNorte.png" alt="L.A.M.A." class="h-10 w-auto">
+                    <h1 class="text-3xl font-headings text-lamaGold">PANEL DE ADMINISTRACIÓN</h1>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <span class="text-lamaBone">Usuario: <%= user.username %></span>
+                    <a href="/admin/logout" class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition">
+                        Cerrar Sesión
+                    </a>
+                    <a href="/" class="px-4 py-2 bg-lamaGold text-lamaBlack rounded hover:bg-lamaNeon transition">
+                        Inicio
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Dashboard Content -->
+    <main class="container mx-auto px-4 py-8">
+
+        <!-- Estadísticas -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div class="bg-lamaDark p-6 rounded-lg border-2 border-lamaGold">
+                <div class="flex items-center justify-between mb-2">
+                    <h3 class="text-lamaNeon text-sm uppercase">Total Inscripciones</h3>
+                    <svg class="w-8 h-8 text-lamaGold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                    </svg>
+                </div>
+                <p class="text-4xl font-bold text-lamaGold font-headings">
+                    <%= stats.total_inscripciones || 0 %>
+                </p>
+            </div>
+
+            <div class="bg-lamaDark p-6 rounded-lg border-2 border-lamaNeon">
+                <div class="flex items-center justify-between mb-2">
+                    <h3 class="text-lamaNeon text-sm uppercase">Pagos Confirmados</h3>
+                    <svg class="w-8 h-8 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                </div>
+                <p class="text-4xl font-bold text-green-400 font-headings">
+                    <%= stats.pagos_confirmados || 0 %>
+                </p>
+            </div>
+
+            <div class="bg-lamaDark p-6 rounded-lg border-2 border-orange-500">
+                <div class="flex items-center justify-between mb-2">
+                    <h3 class="text-lamaNeon text-sm uppercase">Pendientes / Rechazados</h3>
+                    <svg class="w-8 h-8 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                </div>
+                <p class="text-4xl font-bold text-orange-400 font-headings">
+                    <%= stats.pagos_pendientes || 0 %>
+                </p>
+                <p class="text-xs text-red-400 mt-1">Rechazados: <%= stats.pagos_rechazados || 0 %>
+                </p>
+            </div>
+
+            <div class="bg-lamaDark p-6 rounded-lg border-2 border-lamaGold">
+                <div class="flex items-center justify-between mb-2">
+                    <h3 class="text-lamaNeon text-sm uppercase">Total Recaudado (Aprobado)</h3>
+                    <svg class="w-8 h-8 text-lamaGold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                </div>
+                <p class="text-3xl font-bold text-lamaGold font-headings">$<%= (stats.total_recaudado ||
+                        0).toLocaleString('es-CO') %>
+                </p>
+                <p class="text-xs text-lamaBone/80 mt-1">Potencial total: $<%= (stats.total_potencial ||
+                        0).toLocaleString('es-CO') %>
+                </p>
+            </div>
+        </div>
+
+        <!-- Resumen de Servicios Premium -->
+        <div
+            class="mb-8 p-6 rounded-lg border-2 border-lamaNeon bg-gradient-to-r from-lamaDark via-lamaBlack to-lamaDark">
+            <h2 class="text-2xl font-headings text-lamaNeon mb-4 flex items-center gap-2">
+                <svg class="w-6 h-6 text-lamaGold" fill="currentColor" viewBox="0 0 24 24">
+                    <path
+                        d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                </svg>
+                RESUMEN DE SERVICIOS PREMIUM
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <% const servicios=[ { nombre: 'Jet Ski' , key: 'jet_ski' ,
+                    icon: '<svg class="w-8 h-8 text-lamaGold" fill="currentColor" viewBox="0 0 24 24"><path d="M22 17c-1.39 0-2.78-.47-4-1.32-2.44 1.71-5.56 1.71-8 0C8.78 16.53 7.39 17 6 17H4v-2h2c1.38 0 2.74-.35 4-.99 2.52 1.29 5.48 1.29 8 0 1.26.65 2.62.99 4 .99h2v2h-2zM5.95 15H6c1.6 0 3.02-.88 4-2 .98 1.12 2.4 2 4 2s3.02-.88 4-2c.98 1.12 2.4 2 4 2h.05l1.89-6.68c.08-.26.06-.54-.06-.78s-.32-.42-.56-.53L22 6.62V3c0-1.1-.9-2-2-2h-4V0H8v1H4c-1.1 0-2 .9-2 2v3.62l-1.29.59c-.18.08-.34.21-.43.37L5.95 15zM4 3h16v3.97L14 5 4 6.97V3zm8 2l6 2.81V9H6V7.81L14 5z"/></svg>'
+                    }, { nombre: 'Lancha de Lujo' , key: 'lancha_lujo' ,
+                    icon: '<svg class="w-8 h-8 text-lamaGold" fill="currentColor" viewBox="0 0 24 24"><path d="M20 21c-1.39 0-2.78-.47-4-1.32-2.44 1.71-5.56 1.71-8 0C6.78 20.53 5.39 21 4 21H2v-2h2c1.38 0 2.74-.35 4-.99 2.52 1.29 5.48 1.29 8 0 1.26.65 2.62.99 4 .99h2v2h-2zM3.95 19H4c1.6 0 3.02-.88 4-2 .98 1.12 2.4 2 4 2s3.02-.88 4-2c.98 1.12 2.4 2 4 2h.05l1.89-6.68c.08-.26.06-.54-.06-.78s-.32-.42-.56-.53L20 10.62V6c0-1.1-.9-2-2-2h-3V1H9v3H6c-1.1 0-2 .9-2 2v4.62l-1.29.59c-.18.08-.34.21-.43.37L3.95 19zM6 6h12v3.97L12 8 6 9.97V6z"/></svg>'
+                    }, { nombre: 'Regata Veleros' , key: 'regata_veleros' ,
+                    icon: '<svg class="w-8 h-8 text-lamaGold" fill="currentColor" viewBox="0 0 24 24"><path d="M20 21c-1.39 0-2.78-.47-4-1.32-2.44 1.71-5.56 1.71-8 0C6.78 20.53 5.39 21 4 21H2v-2h2c1.38 0 2.74-.35 4-.99 2.52 1.29 5.48 1.29 8 0 1.26.65 2.62.99 4 .99h2v2h-2zM3.95 19H4c1.6 0 3.02-.88 4-2 .98 1.12 2.4 2 4 2s3.02-.88 4-2c.98 1.12 2.4 2 4 2h.05l1.89-6.68c.08-.26.06-.54-.06-.78s-.32-.42-.56-.53L20 10.62V6c0-.55-.45-1-1-1h-1V2h-2v3H8V2H6v3H5c-.55 0-1 .45-1 1v4.62l-1.29.59c-.18.08-.34.21-.43.37L3.95 19zM6 6h12v3.97l-6-2.81L6 9.97V6zm5 5.47l1 .47 1-.47V3h-2v8.47z"/></svg>'
+                    }, { nombre: 'Mula (Golf Cart)' , key: 'mula_golfcart' ,
+                    icon: '<svg class="w-8 h-8 text-lamaGold" fill="currentColor" viewBox="0 0 24 24"><path d="M20 7h-2V5h-3V3H9v2H6c-1.1 0-2 .9-2 2v8h2a2 2 0 104 0h4a2 2 0 104 0h2v-6c0-1.1-.9-2-2-2zm-8 8a1 1 0 11-2 0 1 1 0 012 0zm6 0a1 1 0 11-2 0 1 1 0 012 0zM6 13V7h8v6H6zm10 0V7h2v6h-2z"/></svg>'
+                    } ]; const serviciosPremium=(stats && stats.servicios_premium) ? stats.servicios_premium : {}; %>
+
+                    <% servicios.forEach(srv=> {
+                        const stats_srv = serviciosPremium[srv.key] || { cantidad: 0, total: 0 };
+                        %>
+                        <div
+                            class="bg-lamaBlack/50 border-2 border-lamaGold/50 rounded p-4 hover:border-lamaNeon transition hover:shadow-lg hover:shadow-lamaNeon/30">
+                            <div class="text-4xl mb-2"><%- srv.icon %></div>
+                            <div class="text-lamaBone font-bold text-sm mb-1">
+                                <%= srv.nombre %>
+                            </div>
+                            <div class="text-2xl font-headings text-lamaNeon mb-1">
+                                <%= stats_srv.cantidad %>
+                            </div>
+                            <div class="text-xs text-lamaGold">Total: $<%= stats_srv.total.toLocaleString('es-CO') %>
+                            </div>
+                        </div>
+                        <% }); %>
+            </div>
+        </div>
+
+        <!-- Tabs Navigation -->
+        <div class="mb-6 border-b-2 border-lamaDark">
+            <div class="flex space-x-4">
+                <button onclick="cambiarTab('inscripciones')" id="tabInscripciones"
+                    class="px-6 py-3 font-bold text-lamaNeon border-b-4 border-lamaNeon">
+                    INSCRIPCIONES
+                </button>
+                <button onclick="cambiarTab('capitulos')" id="tabCapitulos"
+                    class="px-6 py-3 font-bold text-gray-400 hover:text-lamaNeon border-b-4 border-transparent">
+                    CAPÍTULOS
+                </button>
+                <button onclick="cambiarTab('eventos')" id="tabEventos"
+                    class="px-6 py-3 font-bold text-gray-400 hover:text-lamaNeon border-b-4 border-transparent">
+                    GESTIONAR EVENTOS
+                </button>
+                <button onclick="cambiarTab('ticker')" id="tabTicker"
+                    class="px-6 py-3 font-bold text-gray-400 hover:text-lamaNeon border-b-4 border-transparent">
+                    TICKER
+                </button>
+                <button onclick="cambiarTab('servicios')" id="tabServicios"
+                    class="px-6 py-3 font-bold text-gray-400 hover:text-lamaNeon border-b-4 border-transparent">
+                    SERVICIOS PREMIUM
+                </button>
+                <button onclick="cambiarTab('formulariosPdf')" id="tabFormulariosPdf"
+                    class="px-6 py-3 font-bold text-gray-400 hover:text-lamaNeon border-b-4 border-transparent">
+                    FORMULARIOS PDF
+                </button>
+            </div>
+        </div>
+
+        <!-- Sección: Inscripciones -->
+        <div id="seccionInscripciones">
+            <!-- Filtros -->
+            <div class="bg-lamaDark p-4 rounded-lg border border-lamaNeon mb-6">
+                <div class="flex flex-wrap gap-4 items-center">
+                    <div>
+                        <label class="text-lamaBone mr-2">Filtrar por estado:</label>
+                        <select id="filtroEstado"
+                            class="bg-lamaBlack text-lamaBone px-4 py-2 rounded border border-lamaGold">
+                            <option value="Todos">Todos</option>
+                            <option value="Pendiente">Pendiente</option>
+                            <option value="Aprobado">Aprobado</option>
+                            <option value="Rechazado">Rechazado</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <input type="text" id="buscarNombre" placeholder="Buscar por nombre..."
+                            class="bg-lamaBlack text-lamaBone px-4 py-2 rounded border border-lamaGold">
+                    </div>
+
+                    <button onclick="exportarCSV()"
+                        class="px-4 py-2 bg-lamaNeon text-lamaBlack rounded hover:bg-lamaGold transition flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                        <span>Exportar CSV</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Tabla de Inscripciones -->
+            <div class="bg-lamaDark rounded-lg border-2 border-lamaGold overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full" id="tablaInscripciones">
+                        <thead class="bg-lamaBlack">
+                            <tr>
+                                <th class="px-4 py-3 text-left text-lamaGold font-headings">ID</th>
+                                <th class="px-4 py-3 text-left text-lamaGold font-headings">Nombre</th>
+                                <th class="px-4 py-3 text-left text-lamaGold font-headings">Documento</th>
+                                <th class="px-4 py-3 text-left text-lamaGold font-headings">Tipo</th>
+                                <th class="px-4 py-3 text-left text-lamaGold font-headings">Capítulo</th>
+                                <th class="px-4 py-3 text-left text-lamaGold font-headings">Servicios</th>
+                                <th class="px-4 py-3 text-left text-lamaGold font-headings">Total</th>
+                                <th class="px-4 py-3 text-left text-lamaGold font-headings">Estado</th>
+                                <th class="px-4 py-3 text-left text-lamaGold font-headings">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbody" class="text-lamaBone">
+                            <% if (inscripciones && inscripciones.length> 0) { %>
+                                <% inscripciones.forEach(ins=> { %>
+                                    <tr class="border-t border-gray-700 hover:bg-lamaBlack transition"
+                                        data-estado="<%= ins.estado_validacion %>">
+                                        <td class="px-4 py-3 font-mono">#<%= ins.id_inscripcion %>
+                                        </td>
+                                        <td class="px-4 py-3">
+                                            <%= ins.nombre_completo %>
+                                        </td>
+                                        <td class="px-4 py-3 font-mono">
+                                            <%= ins.documento_numero %>
+                                        </td>
+                                        <td class="px-4 py-3 text-sm">
+                                            <%= ins.tipo_participante %>
+                                        </td>
+                                        <td class="px-4 py-3">
+                                            <%= ins.capitulo %>
+                                        </td>
+                                        <td class="px-4 py-3">
+                                            <% try { const servicios=JSON.parse(ins.servicios_adicionales || '[]' ); if
+                                                (servicios.length> 0) { %>
+                                                <span
+                                                    class="inline-block bg-lamaNeon text-lamaBlack px-2 py-1 rounded text-xs font-bold">
+                                                    <%= servicios.length %> servicio<%= servicios.length> 1 ? 's' : ''
+                                                            %>
+                                                </span>
+                                                <% } else { %>
+                                                    <span class="text-gray-500 text-xs">—</span>
+                                                    <% } %>
+                                                        <% } catch(e) { %>
+                                                            <span class="text-gray-500 text-xs">—</span>
+                                                            <% } %>
+                                        </td>
+                                        <td class="px-4 py-3 text-lamaGold font-bold">$<%= (ins.valor_total_pagar ||
+                                                0).toLocaleString('es-CO') %>
+                                        </td>
+                                        <td class="px-4 py-3">
+                                            <span class="px-3 py-1 rounded-full text-xs font-bold
+                                            <%= ins.estado_validacion === 'Pendiente' ? 'badge-pendiente' : '' %>
+                                            <%= ins.estado_validacion === 'Aprobado' ? 'badge-aprobado' : '' %>
+                                            <%= ins.estado_validacion === 'Rechazado' ? 'badge-rechazado' : '' %>">
+                                                <%= ins.estado_validacion %>
+                                            </span>
+                                        </td>
+                                        <td class="px-4 py-3">
+                                            <div class="flex space-x-2">
+                                                <% if (ins.estado_validacion==='Pendiente' ) { %>
+                                                    <button
+                                                        onclick="cambiarEstado(<%= ins.id_inscripcion %>, 'Aprobado')"
+                                                        class="px-3 py-1 bg-green-600 rounded text-white text-xs hover:bg-green-700">
+                                                        Aprobar
+                                                    </button>
+                                                    <button
+                                                        onclick="cambiarEstado(<%= ins.id_inscripcion %>, 'Rechazado')"
+                                                        class="px-3 py-1 bg-red-600 rounded text-white text-xs hover:bg-red-700">
+                                                        Rechazar
+                                                    </button>
+                                                    <% } else { %>
+                                                        <button
+                                                            onclick="cambiarEstado(<%= ins.id_inscripcion %>, 'Pendiente')"
+                                                            class="px-3 py-1 bg-orange-600 rounded text-white text-xs hover:bg-orange-700">
+                                                            ↺ Pendiente
+                                                        </button>
+                                                        <% } %>
+                                                            <button onclick="verDetalles(<%= ins.id_inscripcion %>)"
+                                                                class="px-3 py-1 bg-lamaNeon rounded text-lamaBlack text-xs hover:bg-lamaGold">
+                                                                Ver
+                                                            </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <% }) %>
+                                        <% } else { %>
+                                            <tr>
+                                                <td colspan="8" class="px-4 py-8 text-center text-gray-500">
+                                                    No hay inscripciones registradas aún
+                                                </td>
+                                            </tr>
+                                            <% } %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <!-- FIN Sección Inscripciones -->
+
+        <!-- Sección Gestionar Capítulos -->
+        <div id="seccionCapitulos" style="display:none;">
+            <div class="bg-lamaDark border border-lamaGold/20 rounded-lg p-6 mb-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-bold text-lamaNeon font-headings">GESTIÓN DE CAPÍTULOS</h2>
+                    <button onclick="mostrarModalCrearCapitulo()"
+                        class="bg-lamaNeon hover:bg-lamaGold text-lamaBlack px-6 py-2 rounded-lg font-bold transition-colors">
+                        + CREAR NUEVO CAPÍTULO
+                    </button>
+                </div>
+
+                <!-- Grid de Capítulos -->
+                <div id="gridCapitulos" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Los capítulos se cargarán dinámicamente aquí -->
+                </div>
+            </div>
+        </div>
+        <!-- FIN Sección Capítulos -->
+
+        <!-- Modal Crear/Editar Capítulo -->
+        <div id="modalCapitulo" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center"
+            style="display:none; z-index: 9999;">
+            <div
+                class="bg-lamaDark border border-lamaGold rounded-lg p-8 max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+                <h2 class="text-2xl font-bold text-lamaNeon mb-6" id="tituloModalCapitulo">Crear Nuevo Capítulo</h2>
+
+                <form id="formCapitulo" onsubmit="guardarCapitulo(event)">
+                    <input type="hidden" id="capituloId" name="id">
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <label class="block text-gray-300 mb-2">Nombre del Capítulo *</label>
+                            <input type="text" name="nombre" required
+                                class="w-full px-4 py-2 bg-lamaBlack border border-lamaGold/30 rounded text-white focus:border-lamaNeon focus:outline-none"
+                                placeholder="ej: Barranquilla">
+                        </div>
+
+                        <div>
+                            <label class="block text-gray-300 mb-2">Departamento *</label>
+                            <input type="text" name="departamento" required
+                                class="w-full px-4 py-2 bg-lamaBlack border border-lamaGold/30 rounded text-white focus:border-lamaNeon focus:outline-none"
+                                placeholder="ej: Atlántico">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <label class="block text-gray-300 mb-2">Número de Miembros *</label>
+                            <input type="number" name="miembros" required min="1"
+                                class="w-full px-4 py-2 bg-lamaBlack border border-lamaGold/30 rounded text-white focus:border-lamaNeon focus:outline-none">
+                        </div>
+
+                        <div>
+                            <label class="block text-gray-300 mb-2">Año de Fundación *</label>
+                            <input type="number" name="fundado" required min="2000"
+                                class="w-full px-4 py-2 bg-lamaBlack border border-lamaGold/30 rounded text-white focus:border-lamaNeon focus:outline-none">
+                        </div>
+                    </div>
+
+                    <div class="mb-6">
+                        <label class="block text-gray-300 mb-2">Descripción *</label>
+                        <textarea name="descripcion" rows="4" required
+                            class="w-full px-4 py-2 bg-lamaBlack border border-lamaGold/30 rounded text-white focus:border-lamaNeon focus:outline-none"
+                            placeholder="Descripción del capítulo y su historia"></textarea>
+                    </div>
+
+                    <div class="flex gap-4">
+                        <button type="submit"
+                            class="flex-1 bg-lamaNeon hover:bg-lamaNeon/80 text-lamaBlack px-6 py-3 rounded-lg font-bold transition-colors">
+                            GUARDAR CAPÍTULO
+                        </button>
+                        <button type="button" onclick="cerrarModalCapitulo()"
+                            class="flex-1 bg-gray-600 hover:bg-gray-700 text-white px-6 py-3 rounded-lg font-bold transition-colors">
+                            CANCELAR
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <!-- FIN Modal Capítulo -->
+
+        <!-- Sección Gestionar Eventos -->
+        <div id="seccionEventos" style="display:none;">
+            <div class="bg-lamaDark border border-lamaGold/20 rounded-lg p-6 mb-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-2xl font-bold text-lamaNeon">Gestión de Eventos</h2>
+                    <button onclick="mostrarModalCrearEvento()"
+                        class="bg-lamaNeon hover:bg-lamaNeon/80 text-lamaBlack px-6 py-2 rounded-lg font-bold transition-colors">
+                        + CREAR NUEVO EVENTO
+                    </button>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="min-w-full">
+                        <thead>
+                            <tr class="border-b border-lamaGold/20">
+                                <th class="text-left py-3 px-4 text-sm text-gray-400">ID</th>
+                                <th class="text-left py-3 px-4 text-sm text-gray-400">Nombre</th>
+                                <th class="text-left py-3 px-4 text-sm text-gray-400">Ubicación</th>
+                                <th class="text-left py-3 px-4 text-sm text-gray-400">Fecha</th>
+                                <th class="text-left py-3 px-4 text-sm text-gray-400">Precio</th>
+                                <th class="text-left py-3 px-4 text-sm text-gray-400">Capacidad</th>
+                                <th class="text-left py-3 px-4 text-sm text-gray-400">Estado</th>
+                                <th class="text-left py-3 px-4 text-sm text-gray-400">Orden</th>
+                                <th class="text-left py-3 px-4 text-sm text-gray-400">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tablaEventos">
+                            <!-- Eventos se cargan dinámicamente -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <!-- FIN Sección Eventos -->
+
+        <!-- Sección: Gestión del Ticker -->
+        <div id="seccionTicker" style="display:none;">
+            <div class="bg-lamaDark border border-lamaGold/20 rounded-lg p-6 mb-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-2xl font-bold text-lamaNeon">Gestión de Anuncios del Ticker</h2>
+                    <button onclick="mostrarModalCrearTicker()"
+                        class="bg-lamaNeon hover:bg-lamaNeon/80 text-lamaBlack px-6 py-2 rounded-lg font-bold transition-colors">
+                        + CREAR ANUNCIO
+                    </button>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="min-w-full">
+                        <thead>
+                            <tr class="border-b border-lamaGold/20">
+                                <th class="text-left py-3 px-4 text-sm text-gray-400">ID</th>
+                                <th class="text-left py-3 px-4 text-sm text-gray-400">Título</th>
+                                <th class="text-left py-3 px-4 text-sm text-gray-400">Mensaje</th>
+                                <th class="text-left py-3 px-4 text-sm text-gray-400">Tipo</th>
+                                <th class="text-left py-3 px-4 text-sm text-gray-400">Color</th>
+                                <th class="text-left py-3 px-4 text-sm text-gray-400">Orden</th>
+                                <th class="text-left py-3 px-4 text-sm text-gray-400">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tablaTicker">
+                            <!-- Anuncios se cargan dinámicamente -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <!-- FIN Sección Ticker -->
+
+        <!-- Sección: Servicios Premium -->
+        <div id="seccionServicios" style="display:none;">
+            <div class="bg-lamaDark border border-lamaGold/20 rounded-lg p-6 mb-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-2xl font-bold text-lamaNeon">Gestión de Servicios Premium</h2>
+                    <button onclick="mostrarModalCrearServicio()"
+                        class="bg-lamaNeon hover:bg-lamaNeon/80 text-lamaBlack px-6 py-2 rounded-lg font-bold transition-colors">
+                        + CREAR SERVICIO
+                    </button>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="min-w-full">
+                        <thead>
+                            <tr class="border-b border-lamaGold/20">
+                                <th class="text-left py-3 px-4 text-sm text-gray-400">ID</th>
+                                <th class="text-left py-3 px-4 text-sm text-gray-400">Nombre</th>
+                                <th class="text-left py-3 px-4 text-sm text-gray-400">Descripción</th>
+                                <th class="text-left py-3 px-4 text-sm text-gray-400">Precio</th>
+                                <th class="text-left py-3 px-4 text-sm text-gray-400">Estado</th>
+                                <th class="text-left py-3 px-4 text-sm text-gray-400">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tablaServicios">
+                            <!-- Servicios se cargan dinámicamente -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <!-- FIN Sección Servicios Premium -->
+
+        <!-- Sección: Formularios PDF -->
+        <div id="seccionFormulariosPdf" style="display:none;">
+            <div class="bg-lamaDark border border-lamaGold/20 rounded-lg p-6 mb-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-2xl font-bold text-lamaNeon">Formularios Nacionales PDF</h2>
+                    <button onclick="cargarFormulariosPdf()"
+                        class="bg-lamaNeon hover:bg-lamaNeon/80 text-lamaBlack px-6 py-2 rounded-lg font-bold transition-colors">
+                        Recargar
+                    </button>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="min-w-full">
+                        <thead>
+                            <tr class="border-b border-lamaGold/20">
+                                <th class="text-left py-3 px-4 text-sm text-gray-400">ID</th>
+                                <th class="text-left py-3 px-4 text-sm text-gray-400">Nombre Aspirante</th>
+                                <th class="text-left py-3 px-4 text-sm text-gray-400">Documento</th>
+                                <th class="text-left py-3 px-4 text-sm text-gray-400">Fecha</th>
+                                <th class="text-left py-3 px-4 text-sm text-gray-400">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tablaFormulariosPdf">
+                            <tr>
+                                <td colspan="5" class="px-4 py-6 text-center text-gray-500">
+                                    Cargando formularios...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <!-- FIN Sección Formularios PDF -->
+
+
+
+        <!-- Modal Crear/Editar Evento -->
+        <div id="modalEvento" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center"
+            style="display:none; z-index: 9999;">
+            <div
+                class="bg-lamaDark border border-lamaGold rounded-lg p-8 max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+                <h2 class="text-2xl font-bold text-lamaNeon mb-6" id="tituloModal">Crear Nuevo Evento</h2>
+
+                <form id="formEvento" onsubmit="guardarEvento(event)">
+                    <input type="hidden" id="eventoId" name="id">
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <label class="block text-gray-300 mb-2">Nombre del Evento *</label>
+                            <input type="text" name="nombre" required
+                                class="w-full px-4 py-2 bg-lamaBlack border border-lamaGold/30 rounded text-white focus:border-lamaNeon focus:outline-none">
+                        </div>
+
+                        <div>
+                            <label class="block text-gray-300 mb-2">Ubicación *</label>
+                            <input type="text" name="ubicacion" required
+                                class="w-full px-4 py-2 bg-lamaBlack border border-lamaGold/30 rounded text-white focus:border-lamaNeon focus:outline-none">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <label class="block text-gray-300 mb-2">Fecha Inicio *</label>
+                            <input type="date" name="fecha" required
+                                class="w-full px-4 py-2 bg-lamaBlack border border-lamaGold/30 rounded text-white focus:border-lamaNeon focus:outline-none">
+                        </div>
+
+                        <div>
+                            <label class="block text-gray-300 mb-2">Fecha Fin *</label>
+                            <input type="date" name="fechaFin" required
+                                class="w-full px-4 py-2 bg-lamaBlack border border-lamaGold/30 rounded text-white focus:border-lamaNeon focus:outline-none">
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="block text-gray-300 mb-2">Descripción *</label>
+                        <textarea name="descripcion" rows="4" required
+                            class="w-full px-4 py-2 bg-lamaBlack border border-lamaGold/30 rounded text-white focus:border-lamaNeon focus:outline-none"></textarea>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <label class="block text-gray-300 mb-2">Precio (COP) *</label>
+                            <input type="number" name="precio" required min="0"
+                                class="w-full px-4 py-2 bg-lamaBlack border border-lamaGold/30 rounded text-white focus:border-lamaNeon focus:outline-none">
+                        </div>
+
+                        <div>
+                            <label class="block text-gray-300 mb-2">Capacidad *</label>
+                            <input type="number" name="capacidad" required min="1"
+                                class="w-full px-4 py-2 bg-lamaBlack border border-lamaGold/30 rounded text-white focus:border-lamaNeon focus:outline-none">
+                        </div>
+                    </div>
+
+                    <div class="mb-6">
+                        <label class="flex items-center text-gray-300">
+                            <input type="checkbox" name="destacado" class="mr-2">
+                            <span>Evento destacado</span>
+                        </label>
+                    </div>
+
+                    <div class="flex gap-4">
+                        <button type="submit"
+                            class="flex-1 bg-lamaNeon hover:bg-lamaNeon/80 text-lamaBlack px-6 py-3 rounded-lg font-bold transition-colors">
+                            GUARDAR EVENTO
+                        </button>
+                        <button type="button" onclick="cerrarModalEvento()"
+                            class="flex-1 bg-gray-600 hover:bg-gray-700 text-white px-6 py-3 rounded-lg font-bold transition-colors">
+                            CANCELAR
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Modal de Detalles -->
+        <div id="modalDetalles"
+            class="hidden fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
+            <div
+                class="bg-lamaDark rounded-lg border-2 border-lamaGold max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+                <div class="p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-2xl font-headings text-lamaGold">DETALLES DE INSCRIPCIÓN</h2>
+                        <button onclick="cerrarModal()" class="text-lamaNeon hover:text-lamaGold text-2xl">X</button>
+                    </div>
+                    <div id="contenidoModal" class="text-lamaBone space-y-2">
+                        <!-- Se llena dinámicamente -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            const API_KEY = '<%= apiKey || "" %>';
+
+            // Cambiar estado de inscripción
+            async function cambiarEstado(id, nuevoEstado) {
+                if (!confirm(`¿Cambiar estado a "${nuevoEstado}"?`)) return;
+
+                try {
+                    const response = await fetch(`/admin/inscripciones/${id}/estado`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'x-api-key': API_KEY
+                        },
+                        body: JSON.stringify({ estado_validacion: nuevoEstado })
+                    });
+
+                    const result = await response.json();
+
+                    if (result.success) {
+                        alert('Estado actualizado exitosamente');
+                        location.reload();
+                    } else {
+                        alert('Error: ' + result.message);
+                    }
+                } catch (error) {
+                    alert('Error al conectar con el servidor');
+                    console.error(error);
+                }
+            }
+
+            // Ver detalles de inscripción
+            function verDetalles(id) {
+                const rows = document.querySelectorAll('tr[data-estado]');
+                let inscripcion = null;
+
+                rows.forEach(row => {
+                    const idCell = row.querySelector('td');
+                    if (idCell && idCell.textContent.includes(`#${id}`)) {
+                        const cells = row.querySelectorAll('td');
+                        inscripcion = {
+                            id: cells[0].textContent,
+                            nombre: cells[1].textContent,
+                            documento: cells[2].textContent,
+                            tipo: cells[3].textContent,
+                            capitulo: cells[4].textContent,
+                            total: cells[5].textContent,
+                            estado: cells[6].textContent.trim()
+                        };
+                    }
+                });
+
+                if (inscripcion) {
+                    document.getElementById('contenidoModal').innerHTML = `
+                    <p><strong class="text-lamaGold">ID:</strong> ${inscripcion.id}</p>
+                    <p><strong class="text-lamaGold">Nombre:</strong> ${inscripcion.nombre}</p>
+                    <p><strong class="text-lamaGold">Documento:</strong> ${inscripcion.documento}</p>
+                    <p><strong class="text-lamaGold">Tipo:</strong> ${inscripcion.tipo}</p>
+                    <p><strong class="text-lamaGold">Capítulo:</strong> ${inscripcion.capitulo}</p>
+                    <p><strong class="text-lamaGold">Total:</strong> ${inscripcion.total}</p>
+                    <p><strong class="text-lamaGold">Estado:</strong> ${inscripcion.estado}</p>
+                `;
+                    document.getElementById('modalDetalles').classList.remove('hidden');
+                }
+            }
+
+            function cerrarModal() {
+                document.getElementById('modalDetalles').classList.add('hidden');
+            }
+
+            // Filtrar por estado
+            document.getElementById('filtroEstado').addEventListener('change', function () {
+                const estado = this.value;
+                const rows = document.querySelectorAll('tr[data-estado]');
+
+                rows.forEach(row => {
+                    if (estado === 'Todos' || row.dataset.estado === estado) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+            });
+
+            // Buscar por nombre
+            document.getElementById('buscarNombre').addEventListener('input', function () {
+                const busqueda = this.value.toLowerCase();
+                const rows = document.querySelectorAll('tr[data-estado]');
+
+                rows.forEach(row => {
+                    const nombre = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
+                    if (nombre.includes(busqueda)) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+            });
+
+            // Exportar a CSV
+            function exportarCSV() {
+                const rows = Array.from(document.querySelectorAll('tr[data-estado]'));
+                const csv = ['ID,Nombre,Documento,Tipo,Capitulo,Total,Estado'];
+
+                rows.forEach(row => {
+                    if (row.style.display !== 'none') {
+                        const cells = row.querySelectorAll('td');
+                        const line = [
+                            cells[0].textContent,
+                            cells[1].textContent,
+                            cells[2].textContent,
+                            cells[3].textContent,
+                            cells[4].textContent,
+                            cells[5].textContent,
+                            cells[6].textContent.trim()
+                        ].join(',');
+                        csv.push(line);
+                    }
+                });
+
+                const blob = new Blob([csv.join('\n')], { type: 'text/csv' });
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `inscripciones_lama_${new Date().toISOString().split('T')[0]}.csv`;
+                a.click();
+            }
+
+            // Funciones para tabs
+            function cambiarTab(tab) {
+                // Ocultar todas las secciones
+                document.getElementById('seccionInscripciones').style.display = 'none';
+                document.getElementById('seccionCapitulos').style.display = 'none';
+                document.getElementById('seccionEventos').style.display = 'none';
+                document.getElementById('seccionTicker').style.display = 'none';
+                document.getElementById('seccionServicios').style.display = 'none';
+                document.getElementById('seccionFormulariosPdf').style.display = 'none';
+
+                // Resetear estilos de los tabs
+                document.getElementById('tabInscripciones').className = 'px-6 py-3 font-bold text-gray-400 hover:text-lamaNeon border-b-4 border-transparent';
+                document.getElementById('tabCapitulos').className = 'px-6 py-3 font-bold text-gray-400 hover:text-lamaNeon border-b-4 border-transparent';
+                document.getElementById('tabEventos').className = 'px-6 py-3 font-bold text-gray-400 hover:text-lamaNeon border-b-4 border-transparent';
+                document.getElementById('tabTicker').className = 'px-6 py-3 font-bold text-gray-400 hover:text-lamaNeon border-b-4 border-transparent';
+                document.getElementById('tabServicios').className = 'px-6 py-3 font-bold text-gray-400 hover:text-lamaNeon border-b-4 border-transparent';
+                document.getElementById('tabFormulariosPdf').className = 'px-6 py-3 font-bold text-gray-400 hover:text-lamaNeon border-b-4 border-transparent';
+
+                // Mostrar sección seleccionada
+                if (tab === 'inscripciones') {
+                    document.getElementById('seccionInscripciones').style.display = 'block';
+                    document.getElementById('tabInscripciones').className = 'px-6 py-3 font-bold text-lamaNeon border-b-4 border-lamaNeon';
+                } else if (tab === 'capitulos') {
+                    document.getElementById('seccionCapitulos').style.display = 'block';
+                    document.getElementById('tabCapitulos').className = 'px-6 py-3 font-bold text-lamaNeon border-b-4 border-lamaNeon';
+                    cargarCapitulos();
+                } else if (tab === 'eventos') {
+                    document.getElementById('seccionEventos').style.display = 'block';
+                    document.getElementById('tabEventos').className = 'px-6 py-3 font-bold text-lamaNeon border-b-4 border-lamaNeon';
+                    cargarEventos();
+                } else if (tab === 'ticker') {
+                    document.getElementById('seccionTicker').style.display = 'block';
+                    document.getElementById('tabTicker').className = 'px-6 py-3 font-bold text-lamaNeon border-b-4 border-lamaNeon';
+                    cargarTicker();
+                } else if (tab === 'servicios') {
+                    document.getElementById('seccionServicios').style.display = 'block';
+                    document.getElementById('tabServicios').className = 'px-6 py-3 font-bold text-lamaNeon border-b-4 border-lamaNeon';
+                    cargarServicios();
+                } else if (tab === 'formulariosPdf') {
+                    document.getElementById('seccionFormulariosPdf').style.display = 'block';
+                    document.getElementById('tabFormulariosPdf').className = 'px-6 py-3 font-bold text-lamaNeon border-b-4 border-lamaNeon';
+                    cargarFormulariosPdf();
+                }
+            }
+
+            // Gestión de Eventos
+            async function cargarEventos() {
+                try {
+                    const response = await fetch('/admin/api/eventos', {
+                        headers: {
+                            'x-api-key': API_KEY
+                        }
+                    });
+                    const data = await response.json();
+                    mostrarEventos(data.data);
+                } catch (error) {
+                    console.error('Error al cargar eventos:', error);
+                }
+            }
+
+            function mostrarEventos(eventos) {
+                const tbody = document.getElementById('tablaEventos');
+                tbody.innerHTML = eventos.map(evento => `
+                <tr class="border-t border-gray-700 hover:bg-lamaBlack transition">
+                    <td class="px-4 py-3">${evento.id}</td>
+                    <td class="px-4 py-3 font-semibold">${evento.nombre}</td>
+                    <td class="px-4 py-3">${evento.ubicacion}</td>
+                    <td class="px-4 py-3">${new Date(evento.fecha).toLocaleDateString('es-CO')}</td>
+                    <td class="px-4 py-3">$${(evento.precio || 0).toLocaleString('es-CO')}</td>
+                    <td class="px-4 py-3">${evento.capacidad}</td>
+                    <td class="px-4 py-3">
+                        ${evento.destacado ? '<span class="bg-lamaGold text-lamaBlack px-2 py-1 rounded text-xs">Destacado</span>' : ''}
+                    </td>
+                    <td class="px-4 py-3">
+                        <div class="flex items-center gap-2">
+                            <span class="text-lamaGold font-bold min-w-[24px]">${evento.ordenVisual || '-'}</span>
+                            <button onclick="moverEvento('${evento.id}', 'up')" class="bg-gray-700 hover:bg-gray-600 text-white px-2 py-1 rounded text-xs font-bold transition">↑</button>
+                            <button onclick="moverEvento('${evento.id}', 'down')" class="bg-gray-700 hover:bg-gray-600 text-white px-2 py-1 rounded text-xs font-bold transition">↓</button>
+                        </div>
+                    </td>
+                    <td class="px-4 py-3">
+                        <button onclick="editarEvento('${evento.id}')" class="text-lamaNeon hover:text-lamaGold mr-2">Editar</button>
+                        <button onclick="eliminarEvento('${evento.id}')" class="text-red-500 hover:text-red-400">Eliminar</button>
+                    </td>
+                </tr>
+            `).join('');
+            }
+
+            async function moverEvento(id, direction) {
+                try {
+                    const response = await fetch('/admin/api/eventos', {
+                        headers: {
+                            'x-api-key': API_KEY
+                        }
+                    });
+
+                    const data = await response.json();
+                    const eventos = (data.data || []).slice();
+                    const index = eventos.findIndex(evento => String(evento.id) === String(id));
+
+                    if (index === -1) {
+                        return;
+                    }
+
+                    const targetIndex = direction === 'up' ? index - 1 : index + 1;
+                    if (targetIndex < 0 || targetIndex >= eventos.length) {
+                        return;
+                    }
+
+                    const temporal = eventos[index];
+                    eventos[index] = eventos[targetIndex];
+                    eventos[targetIndex] = temporal;
+
+                    const orderedIds = eventos.map(evento => evento.id);
+                    const reorderResponse = await fetch('/admin/api/eventos/reordenar', {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'x-api-key': API_KEY
+                        },
+                        body: JSON.stringify({ ids: orderedIds })
+                    });
+
+                    const reorderResult = await reorderResponse.json();
+                    if (!reorderResult.success) {
+                        alert('No fue posible actualizar el orden de eventos');
+                        return;
+                    }
+
+                    cargarEventos();
+                } catch (error) {
+                    console.error('Error al mover evento:', error);
+                    alert('Error al actualizar orden de eventos');
+                }
+            }
+
+            function mostrarModalCrearEvento() {
+                document.getElementById('modalEvento').style.display = 'flex';
+            }
+
+            function cerrarModalEvento() {
+                document.getElementById('modalEvento').style.display = 'none';
+                const form = document.getElementById('formEvento');
+                form.reset();
+                delete form.dataset.editingId;
+                document.getElementById('tituloModal').textContent = 'Crear Nuevo Evento';
+            }
+
+            async function guardarEvento(event) {
+                event.preventDefault();
+                const formData = new FormData(event.target);
+                const editingId = event.target.dataset.editingId;
+
+                const eventoData = {
+                    nombre: formData.get('nombre'),
+                    fecha: formData.get('fecha'),
+                    fechaFin: formData.get('fechaFin'),
+                    ubicacion: formData.get('ubicacion'),
+                    descripcion: formData.get('descripcion'),
+                    capacidad: parseInt(formData.get('capacidad')),
+                    precio: parseInt(formData.get('precio')),
+                    destacado: formData.get('destacado') === 'on'
+                };
+
+                // Agregar ID si es creación
+                if (!editingId) {
+                    eventoData.id = `evento-${Date.now()}`;
+                    eventoData.imagen = '/images/events/default.jpg';
+                }
+
+                try {
+                    const url = editingId ? `/admin/api/eventos/${editingId}` : '/admin/api/eventos';
+                    const method = editingId ? 'PUT' : 'POST';
+
+                    const response = await fetch(url, {
+                        method: method,
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'x-api-key': API_KEY
+                        },
+                        body: JSON.stringify(eventoData)
+                    });
+
+                    if (response.ok) {
+                        alert(editingId ? 'Evento actualizado exitosamente' : 'Evento creado exitosamente');
+                        cerrarModalEvento();
+                        cargarEventos();
+                        delete event.target.dataset.editingId;
+                    } else {
+                        alert('Error al guardar el evento');
+                    }
+                } catch (error) {
+                    console.error('Error al guardar evento:', error);
+                    alert('Error al guardar el evento');
+                }
+            }
+
+            async function editarEvento(id) {
+                try {
+                    const response = await fetch('/admin/api/eventos', {
+                        headers: {
+                            'x-api-key': API_KEY
+                        }
+                    });
+                    const data = await response.json();
+                    const evento = (data.data || []).find(e => e.id === id);
+
+                    if (!evento) {
+                        alert('Evento no encontrado');
+                        return;
+                    }
+
+                    // Llenar el modal con los datos del evento
+                    document.getElementById('tituloModal').textContent = 'Editar Evento';
+                    document.getElementById('formEvento').reset();
+
+                    // Cargar los datos en el formulario
+                    document.querySelector('input[name="nombre"]').value = evento.nombre;
+                    document.querySelector('input[name="ubicacion"]').value = evento.ubicacion;
+                    document.querySelector('input[name="fecha"]').value = evento.fecha;
+                    document.querySelector('input[name="fechaFin"]').value = evento.fechaFin || evento.fecha;
+                    document.querySelector('input[name="precio"]').value = evento.precio || 0;
+                    document.querySelector('input[name="capacidad"]').value = evento.capacidad || 0;
+                    document.querySelector('textarea[name="descripcion"]').value = evento.descripcion || '';
+                    document.querySelector('input[name="destacado"]').checked = evento.destacado || false;
+
+                    // Guardar el ID para usar en el submit
+                    document.getElementById('formEvento').dataset.editingId = id;
+
+                    // Mostrar modal
+                    document.getElementById('modalEvento').style.display = 'flex';
+                } catch (error) {
+                    console.error('Error al editar evento:', error);
+                    alert('Error al editar el evento');
+                }
+            }
+
+            async function eliminarEvento(id) {
+                if (!confirm('¿Está seguro de eliminar este evento?')) return;
+
+                try {
+                    const response = await fetch(`/admin/api/eventos/${id}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'x-api-key': API_KEY
+                        }
+                    });
+                    if (response.ok) {
+                        alert('Evento eliminado');
+                        cargarEventos();
+                    }
+                } catch (error) {
+                    console.error('Error al eliminar evento:', error);
+                }
+            }
+
+            // ========================================
+            // GESTIÓN DE CAPÍTULOS
+            // ========================================
+
+            async function cargarCapitulos() {
+                try {
+                    const response = await fetch('/admin/capitulos', {
+                        headers: {
+                            'x-api-key': API_KEY
+                        }
+                    });
+                    const data = await response.json();
+                    if (data.success) {
+                        mostrarCapitulos(data.data);
+                    }
+                } catch (error) {
+                    console.error('Error al cargar capítulos:', error);
+                }
+            }
+
+            function mostrarCapitulos(capitulos) {
+                const grid = document.getElementById('gridCapitulos');
+                grid.innerHTML = capitulos.map(cap => `
+                <div class="bg-lamaBlack/80 border-2 border-lamaGold/30 rounded-lg overflow-hidden hover:border-lamaNeon transition">
+                    <div class="h-48 bg-gray-800 overflow-hidden">
+                        <img src="${cap.imagen}" alt="${cap.nombre}" class="w-full h-full object-cover" onerror="this.src='/img/capitulos/default.jpg'">
+                    </div>
+                    <div class="p-4">
+                        <h3 class="text-xl font-headings text-lamaGold mb-2">${cap.nombre}</h3>
+                        <p class="text-sm text-lamaNeon mb-3">
+                            <svg class="w-4 h-4 inline mr-1" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                            </svg>
+                            ${cap.departamento}
+                        </p>
+                        <div class="grid grid-cols-2 gap-3 mb-3 text-center">
+                            <div class="bg-lamaDark/50 rounded p-2">
+                                <div class="text-lg font-headings text-lamaNeon">${cap.miembros}</div>
+                                <div class="text-xs text-gray-400">Miembros</div>
+                            </div>
+                            <div class="bg-lamaDark/50 rounded p-2">
+                                <div class="text-lg font-headings text-lamaGold">${cap.fundado}</div>
+                                <div class="text-xs text-gray-400">Fundado</div>
+                            </div>
+                        </div>
+                        <p class="text-xs text-gray-300 mb-3 leading-relaxed">${cap.descripcion}</p>
+                        <div class="flex gap-2 mb-2">
+                            <button onclick="editarCapitulo(${cap.id})" class="flex-1 bg-lamaNeon hover:bg-lamaNeon/80 text-lamaBlack px-3 py-2 rounded text-sm font-bold transition">
+                                Editar
+                            </button>
+                            <button onclick="eliminarCapitulo(${cap.id})" class="flex-1 bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded text-sm font-bold transition">
+                                Eliminar
+                            </button>
+                        </div>
+                        <div class="mt-2">
+                            <label class="block text-xs text-gray-400 mb-2">Foto del capítulo</label>
+                            <input type="file" accept="image/*" class="block w-full text-xs text-lamaBone file:mr-2 file:py-1 file:px-3 file:rounded file:border-0 file:bg-lamaGold file:text-lamaBlack hover:file:bg-lamaNeon" onchange="subirImagenCapitulo(${cap.id}, this.files[0])" />
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+            }
+
+            function mostrarModalCrearCapitulo() {
+                document.getElementById('modalCapitulo').style.display = 'flex';
+                document.getElementById('formCapitulo').reset();
+                document.getElementById('tituloModalCapitulo').textContent = 'Crear Nuevo Capítulo';
+                delete document.getElementById('formCapitulo').dataset.editingId;
+            }
+
+            function cerrarModalCapitulo() {
+                document.getElementById('modalCapitulo').style.display = 'none';
+                const form = document.getElementById('formCapitulo');
+                form.reset();
+                delete form.dataset.editingId;
+                document.getElementById('tituloModalCapitulo').textContent = 'Crear Nuevo Capítulo';
+            }
+
+            async function guardarCapitulo(event) {
+                event.preventDefault();
+                const formData = new FormData(event.target);
+                const editingId = event.target.dataset.editingId;
+
+                const capituloData = {
+                    nombre: formData.get('nombre'),
+                    departamento: formData.get('departamento'),
+                    miembros: parseInt(formData.get('miembros')),
+                    fundado: parseInt(formData.get('fundado')),
+                    descripcion: formData.get('descripcion')
+                };
+
+                try {
+                    const url = editingId ? `/admin/capitulos/${editingId}` : '/admin/capitulos';
+                    const method = editingId ? 'PUT' : 'POST';
+
+                    const response = await fetch(url, {
+                        method: method,
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'x-api-key': API_KEY
+                        },
+                        body: JSON.stringify(capituloData)
+                    });
+
+                    const result = await response.json();
+
+                    if (result.success) {
+                        alert(editingId ? 'Capítulo actualizado exitosamente' : 'Capítulo creado exitosamente');
+                        cerrarModalCapitulo();
+                        cargarCapitulos();
+                        delete event.target.dataset.editingId;
+                    } else {
+                        alert('Error: ' + result.message);
+                    }
+                } catch (error) {
+                    console.error('Error al guardar capítulo:', error);
+                    alert('Error al guardar el capítulo');
+                }
+            }
+
+            async function editarCapitulo(id) {
+                try {
+                    // Obtener datos actuales
+                    const response = await fetch(`/admin/capitulos/${id}`, {
+                        headers: {
+                            'x-api-key': API_KEY
+                        }
+                    });
+                    const result = await response.json();
+
+                    if (!result.success) {
+                        alert('Error al cargar capítulo');
+                        return;
+                    }
+
+                    const cap = result.data;
+
+                    // Llenar el modal con los datos del capítulo
+                    document.getElementById('tituloModalCapitulo').textContent = 'Editar Capítulo';
+                    document.getElementById('formCapitulo').reset();
+
+                    // Cargar los datos en el formulario
+                    document.querySelector('input[name="nombre"]').value = cap.nombre;
+                    document.querySelector('input[name="departamento"]').value = cap.departamento;
+                    document.querySelector('input[name="miembros"]').value = cap.miembros;
+                    document.querySelector('input[name="fundado"]').value = cap.fundado;
+                    document.querySelector('textarea[name="descripcion"]').value = cap.descripcion;
+
+                    // Guardar el ID para usar en el submit
+                    document.getElementById('formCapitulo').dataset.editingId = id;
+
+                    // Mostrar modal
+                    document.getElementById('modalCapitulo').style.display = 'flex';
+                } catch (error) {
+                    console.error('Error al editar capítulo:', error);
+                    alert('Error al editar el capítulo');
+                }
+            }
+
+            async function eliminarCapitulo(id) {
+                if (!confirm('¿Está seguro de eliminar este capítulo?')) return;
+
+                try {
+                    const response = await fetch(`/admin/capitulos/${id}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'x-api-key': API_KEY
+                        }
+                    });
+
+                    const result = await response.json();
+
+                    if (result.success) {
+                        alert('Capítulo eliminado exitosamente');
+                        cargarCapitulos();
+                    } else {
+                        alert('Error al eliminar capítulo: ' + result.message);
+                    }
+                } catch (error) {
+                    console.error('Error al eliminar capítulo:', error);
+                    alert('Error al eliminar capítulo');
+                }
+            }
+
+            async function subirImagenCapitulo(id, file) {
+                try {
+                    const formData = new FormData();
+                    formData.append('imagen', file);
+
+                    const response = await fetch(`/admin/capitulos/${id}/imagen`, {
+                        method: 'POST',
+                        headers: {
+                            'x-api-key': API_KEY
+                        },
+                        body: formData
+                    });
+
+                    const result = await response.json();
+
+                    if (result.success) {
+                        alert('Imagen cargada exitosamente');
+                        cargarCapitulos();
+                    } else {
+                        alert('Error al cargar imagen: ' + result.message);
+                    }
+                } catch (error) {
+                    console.error('Error al subir imagen:', error);
+                    alert('Error al subir imagen');
+                }
+            }
+
+            /**
+             * GESTIÓN DEL TICKER
+             * Funciones para crear, editar y eliminar anuncios dinámicos
+             */
+            async function cargarTicker() {
+                try {
+                    const response = await fetch('/admin/ticker', {
+                        headers: {
+                            'x-api-key': API_KEY
+                        }
+                    });
+                    const data = await response.json();
+                    mostrarTicker(data.data);
+                } catch (error) {
+                    console.error('Error al cargar ticker:', error);
+                    alert('Error al cargar anuncios del ticker');
+                }
+            }
+
+            function mostrarTicker(announcements) {
+                const tbody = document.getElementById('tablaTicker');
+                tbody.innerHTML = announcements.map(ann => `
+                <tr class="border-t border-gray-700 hover:bg-lamaBlack transition">
+                    <td class="px-4 py-3">${ann.id}</td>
+                    <td class="px-4 py-3 font-bold text-lamaNeon">${ann.title}</td>
+                    <td class="px-4 py-3">${ann.message}</td>
+                    <td class="px-4 py-3">
+                        <span class="px-3 py-1 rounded-full text-sm font-bold ${ann.type === 'critical' ? 'bg-red-600 text-white' :
+                        ann.type === 'warning' ? 'bg-orange-600 text-white' :
+                            ann.type === 'success' ? 'bg-green-600 text-white' :
+                                'bg-blue-600 text-white'
+                    }">
+                            ${ann.type.toUpperCase()}
+                        </span>
+                    </td>
+                    <td class="px-4 py-3">
+                        <div class="flex items-center gap-2">
+                            <div class="w-6 h-6 rounded border-2" style="background: ${ann.color}; border-color: ${ann.color};"></div>
+                            <span>${ann.color}</span>
+                        </div>
+                    </td>
+                    <td class="px-4 py-3">
+                        <div class="flex items-center gap-2">
+                            <span class="text-lamaGold font-bold min-w-[24px]">${ann.ordenVisual || '-'}</span>
+                            <button onclick="moverTicker(${ann.id}, 'up')" class="bg-gray-700 hover:bg-gray-600 text-white px-2 py-1 rounded text-xs font-bold transition">↑</button>
+                            <button onclick="moverTicker(${ann.id}, 'down')" class="bg-gray-700 hover:bg-gray-600 text-white px-2 py-1 rounded text-xs font-bold transition">↓</button>
+                        </div>
+                    </td>
+                    <td class="px-4 py-3 flex gap-2">
+                        <button onclick="editarTicker(${ann.id})" class="bg-lamaNeon hover:bg-lamaNeon/80 text-lamaBlack px-4 py-2 rounded text-sm font-bold transition">
+                            Editar
+                        </button>
+                        <button onclick="eliminarTicker(${ann.id})" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded text-sm font-bold transition">
+                            Eliminar
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+            }
+
+            async function moverTicker(id, direction) {
+                try {
+                    const response = await fetch('/admin/ticker', {
+                        headers: {
+                            'x-api-key': API_KEY
+                        }
+                    });
+                    const data = await response.json();
+                    const anuncios = (data.data || []).slice();
+
+                    const index = anuncios.findIndex(a => a.id === id);
+                    if (index === -1) {
+                        return;
+                    }
+
+                    const targetIndex = direction === 'up' ? index - 1 : index + 1;
+                    if (targetIndex < 0 || targetIndex >= anuncios.length) {
+                        return;
+                    }
+
+                    const temporal = anuncios[index];
+                    anuncios[index] = anuncios[targetIndex];
+                    anuncios[targetIndex] = temporal;
+
+                    const orderedIds = anuncios.map(a => a.id);
+                    const reorderResponse = await fetch('/admin/ticker/reordenar', {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'x-api-key': API_KEY
+                        },
+                        body: JSON.stringify({ ids: orderedIds })
+                    });
+
+                    const reorderResult = await reorderResponse.json();
+                    if (!reorderResult.success) {
+                        alert('No fue posible actualizar el orden de anuncios');
+                        return;
+                    }
+
+                    cargarTicker();
+                } catch (error) {
+                    console.error('Error al mover anuncio del ticker:', error);
+                    alert('Error al actualizar orden del ticker');
+                }
+            }
+
+            function mostrarModalCrearTicker() {
+                document.getElementById('modalTicker').style.display = 'flex';
+                document.getElementById('formTicker').reset();
+                document.getElementById('tituloModalTicker').textContent = 'Crear Nuevo Anuncio';
+            }
+
+            function cerrarModalTicker() {
+                document.getElementById('modalTicker').style.display = 'none';
+                const form = document.getElementById('formTicker');
+                form.reset();
+                delete form.dataset.editingId;
+                document.getElementById('tituloModalTicker').textContent = 'Crear Nuevo Anuncio';
+            }
+
+            async function guardarTicker(event) {
+                event.preventDefault();
+                const formData = new FormData(event.target);
+                const editingId = event.target.dataset.editingId;
+
+                const nuevoAnuncio = {
+                    title: formData.get('title'),
+                    message: formData.get('message'),
+                    type: formData.get('type'),
+                    icon: formData.get('icon'),
+                    color: formData.get('color')
+                };
+
+                try {
+                    const url = editingId ? `/admin/ticker/${editingId}` : '/admin/ticker';
+                    const method = editingId ? 'PUT' : 'POST';
+
+                    const response = await fetch(url, {
+                        method: method,
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'x-api-key': API_KEY
+                        },
+                        body: JSON.stringify(nuevoAnuncio)
+                    });
+                    const result = await response.json();
+
+                    if (result.success) {
+                        alert(editingId ? 'Anuncio actualizado exitosamente' : 'Anuncio creado exitosamente');
+                        cerrarModalTicker();
+                        cargarTicker();
+                        // Limpiar el ID de edición
+                        delete event.target.dataset.editingId;
+                    } else {
+                        alert('Error: ' + result.message);
+                    }
+                } catch (error) {
+                    console.error('Error al guardar anuncio:', error);
+                    alert('Error al guardar el anuncio');
+                }
+            }
+
+            async function editarTicker(id) {
+                try {
+                    const response = await fetch('/admin/ticker', {
+                        headers: {
+                            'x-api-key': API_KEY
+                        }
+                    });
+                    const data = await response.json();
+                    const ann = (data.data || []).find(a => a.id === id);
+
+                    if (!ann) {
+                        alert('Anuncio no encontrado');
+                        return;
+                    }
+
+                    // Llenar el modal con los datos del anuncio
+                    document.getElementById('tituloModalTicker').textContent = 'Editar Anuncio';
+                    document.getElementById('formTicker').reset();
+
+                    // Cargar los datos en el formulario
+                    document.querySelector('input[name="title"]').value = ann.title;
+                    document.querySelector('textarea[name="message"]').value = ann.message;
+                    document.querySelector('select[name="type"]').value = ann.type;
+                    document.querySelector('select[name="icon"]').value = ann.icon;
+                    document.querySelector('input[name="color"]').value = ann.color;
+                    document.querySelector('input[name="colorHex"]').value = ann.color;
+
+                    // Guardar el ID para usar en el submit
+                    document.getElementById('formTicker').dataset.editingId = id;
+
+                    // Mostrar modal
+                    document.getElementById('modalTicker').style.display = 'flex';
+                } catch (error) {
+                    console.error('Error al editar anuncio:', error);
+                    alert('Error al editar el anuncio');
+                }
+            }
+
+            async function eliminarTicker(id) {
+                if (!confirm('¿Estás seguro de que deseas eliminar este anuncio?')) {
+                    return;
+                }
+
+                try {
+                    const response = await fetch(`/admin/ticker/${id}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'x-api-key': API_KEY
+                        }
+                    });
+
+                    const result = await response.json();
+                    if (result.success) {
+                        alert('Anuncio eliminado exitosamente');
+                        cargarTicker();
+                    } else {
+                        alert('Error: ' + result.message);
+                    }
+                } catch (error) {
+                    console.error('Error al eliminar anuncio:', error);
+                    alert('Error al eliminar el anuncio');
+                }
+            }
+
+            // ===== FUNCIONES PARA SERVICIOS PREMIUM =====
+
+            async function cargarServicios() {
+                try {
+                    const response = await fetch('/admin/api/servicios', {
+                        headers: {
+                            'x-api-key': API_KEY
+                        }
+                    });
+                    const data = await response.json();
+                    mostrarServicios(data.data || []);
+                } catch (error) {
+                    console.error('Error al cargar servicios:', error);
+                    alert('Error al cargar servicios premium');
+                }
+            }
+
+            function mostrarServicios(servicios) {
+                const tbody = document.getElementById('tablaServicios');
+                tbody.innerHTML = servicios.map(srv => `
+                <tr class="border-t border-gray-700 hover:bg-lamaBlack transition">
+                    <td class="px-4 py-3">${srv.id || 'N/A'}</td>
+                    <td class="px-4 py-3 font-bold text-lamaNeon">${srv.nombre}</td>
+                    <td class="px-4 py-3">${srv.descripcion || 'Sin descripción'}</td>
+                    <td class="px-4 py-3 text-lamaGold font-bold">$${(srv.precio || 0).toLocaleString('es-CO')}</td>
+                    <td class="px-4 py-3">
+                        <span class="px-3 py-1 rounded-full text-sm font-bold ${srv.disponible === 1 || srv.disponible === true ? 'bg-green-600 text-white' : 'bg-red-600 text-white'
+                    }">
+                            ${srv.disponible === 1 || srv.disponible === true ? 'DISPONIBLE' : 'NO DISPONIBLE'}
+                        </span>
+                    </td>
+                    <td class="px-4 py-3 flex gap-2">
+                        <button onclick="editarServicio(${srv.id})" class="bg-lamaNeon hover:bg-lamaNeon/80 text-lamaBlack px-4 py-2 rounded text-sm font-bold transition">
+                            Editar
+                        </button>
+                        <button onclick="eliminarServicio(${srv.id})" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded text-sm font-bold transition">
+                            Eliminar
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+            }
+
+            function mostrarModalCrearServicio() {
+                document.getElementById('modalServicio').style.display = 'flex';
+                document.getElementById('formServicio').reset();
+                document.getElementById('tituloModalServicio').textContent = 'CREAR NUEVO SERVICIO';
+            }
+
+            function cerrarModalServicio() {
+                document.getElementById('modalServicio').style.display = 'none';
+                const form = document.getElementById('formServicio');
+                form.reset();
+                delete form.dataset.editingId;
+                document.getElementById('tituloModalServicio').textContent = 'CREAR NUEVO SERVICIO';
+            }
+
+            async function guardarServicio(event) {
+                event.preventDefault();
+                const formData = new FormData(event.target);
+                const editingId = event.target.dataset.editingId;
+
+                const nuevoServicio = {
+                    nombre: formData.get('nombre'),
+                    descripcion: formData.get('descripcion'),
+                    precio: parseInt(formData.get('precio')),
+                    disponible: parseInt(formData.get('disponible')),
+                    categoria: formData.get('categoria'),
+                    limite_reservas: formData.get('limite_reservas') ? parseInt(formData.get('limite_reservas')) : null
+                };
+
+                try {
+                    const url = editingId ? `/admin/api/servicios/${editingId}` : '/admin/api/servicios';
+                    const method = editingId ? 'PUT' : 'POST';
+
+                    const response = await fetch(url, {
+                        method: method,
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'x-api-key': API_KEY
+                        },
+                        body: JSON.stringify(nuevoServicio)
+                    });
+                    const result = await response.json();
+
+                    if (result.success) {
+                        alert(editingId ? 'Servicio actualizado exitosamente' : 'Servicio creado exitosamente');
+                        cerrarModalServicio();
+                        cargarServicios();
+                        delete event.target.dataset.editingId;
+                    } else {
+                        alert('Error: ' + result.message);
+                    }
+                } catch (error) {
+                    console.error('Error al guardar servicio:', error);
+                    alert('Error al guardar el servicio');
+                }
+            }
+
+            async function editarServicio(id) {
+                try {
+                    const response = await fetch('/admin/api/servicios', {
+                        headers: {
+                            'x-api-key': API_KEY
+                        }
+                    });
+                    const data = await response.json();
+                    const srv = (data.data || []).find(s => s.id === id);
+
+                    if (!srv) {
+                        alert('Servicio no encontrado');
+                        return;
+                    }
+
+                    // Llenar el modal con los datos del servicio
+                    document.getElementById('tituloModalServicio').textContent = 'EDITAR SERVICIO';
+                    document.getElementById('formServicio').reset();
+
+                    // Cargar los datos en el formulario
+                    document.querySelector('#formServicio input[name="nombre"]').value = srv.nombre;
+                    document.querySelector('#formServicio textarea[name="descripcion"]').value = srv.descripcion;
+                    document.querySelector('#formServicio input[name="precio"]').value = srv.precio;
+                    document.querySelector('#formServicio select[name="disponible"]').value = srv.disponible;
+                    document.querySelector('#formServicio select[name="categoria"]').value = srv.categoria;
+                    if (srv.limite_reservas) {
+                        document.querySelector('#formServicio input[name="limite_reservas"]').value = srv.limite_reservas;
+                    }
+
+                    // Guardar el ID para usar en el submit
+                    document.getElementById('formServicio').dataset.editingId = id;
+
+                    // Mostrar modal
+                    document.getElementById('modalServicio').style.display = 'flex';
+                } catch (error) {
+                    console.error('Error al editar servicio:', error);
+                    alert('Error al editar el servicio');
+                }
+            }
+
+            async function eliminarServicio(id) {
+                if (!confirm('¿Estás seguro de que deseas eliminar este servicio?')) {
+                    return;
+                }
+
+                try {
+                    const response = await fetch(`/admin/api/servicios/${id}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'x-api-key': API_KEY
+                        }
+                    });
+
+                    const result = await response.json();
+                    if (result.success) {
+                        alert('Servicio eliminado exitosamente');
+                        cargarServicios();
+                    } else {
+                        alert('Error: ' + result.message);
+                    }
+                } catch (error) {
+                    console.error('Error al eliminar servicio:', error);
+                    alert('Error al eliminar el servicio');
+                }
+            }
+
+            async function cargarFormulariosPdf() {
+                const tbody = document.getElementById('tablaFormulariosPdf');
+                if (!tbody) return;
+
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="5" class="px-4 py-6 text-center text-gray-500">Cargando formularios...</td>
+                    </tr>
+                `;
+
+                try {
+                    const response = await fetch('/admin/pdf-formularios?limite=100', {
+                        headers: {
+                            'x-api-key': API_KEY
+                        }
+                    });
+
+                    const data = await response.json();
+                    const formularios = Array.isArray(data?.data) ? data.data : [];
+
+                    if (!formularios.length) {
+                        tbody.innerHTML = `
+                            <tr>
+                                <td colspan="5" class="px-4 py-6 text-center text-gray-500">No hay formularios registrados.</td>
+                            </tr>
+                        `;
+                        return;
+                    }
+
+                    tbody.innerHTML = formularios.map(formulario => {
+                        const enlacePdf = formulario.urlDescargaPdf || `/admin/pdf-formularios/${formulario.id}`;
+                        const enlaceMatricula = formulario.urlDescargaMatricula || `/admin/pdf-formularios/${formulario.id}/matricula`;
+                        const enlaceLicencia = formulario.urlDescargaLicencia || `/admin/pdf-formularios/${formulario.id}/licencia`;
+                        const tieneMatricula = formulario.tieneMatriculaMoto === true || formulario.tieneMatriculaMoto === 1;
+                        const tieneLicencia = formulario.tieneLicenciaConduccion === true || formulario.tieneLicenciaConduccion === 1;
+                        const fechaRegistro = formulario.fecha_registro ? new Date(formulario.fecha_registro).toLocaleString('es-CO') : 'N/A';
+                        const nombrePdf = `formulario_${formulario.id}.pdf`;
+                        const nombreMatricula = `matricula_${formulario.id}`;
+                        const nombreLicencia = `licencia_${formulario.id}`;
+
+                        return `
+                            <tr class="border-t border-gray-700 hover:bg-lamaBlack transition">
+                                <td class="px-4 py-3">${formulario.id}</td>
+                                <td class="px-4 py-3">${formulario.nombre_aspirante || 'N/A'}</td>
+                                <td class="px-4 py-3">${formulario.numero_documento || 'N/A'}</td>
+                                <td class="px-4 py-3">${fechaRegistro}</td>
+                                <td class="px-4 py-3">
+                                    <div class="flex flex-wrap gap-2">
+                                        <button type="button" onclick="descargarArchivoProtegido('${enlacePdf}', '${nombrePdf}')"
+                                            class="bg-lamaNeon hover:bg-lamaGold text-lamaBlack px-3 py-1 rounded text-xs font-bold transition">
+                                            PDF
+                                        </button>
+                                        <button type="button" onclick="descargarArchivoProtegido('${enlaceMatricula}', '${nombreMatricula}')"
+                                            class="${tieneMatricula ? 'bg-lamaGold hover:bg-lamaNeon text-lamaBlack' : 'bg-gray-600 text-gray-300 cursor-not-allowed pointer-events-none'} px-3 py-1 rounded text-xs font-bold transition">
+                                            Matrícula
+                                        </button>
+                                        <button type="button" onclick="descargarArchivoProtegido('${enlaceLicencia}', '${nombreLicencia}')"
+                                            class="${tieneLicencia ? 'bg-lamaGold hover:bg-lamaNeon text-lamaBlack' : 'bg-gray-600 text-gray-300 cursor-not-allowed pointer-events-none'} px-3 py-1 rounded text-xs font-bold transition">
+                                            Licencia
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        `;
+                    }).join('');
+                } catch (error) {
+                    console.error('Error al cargar formularios PDF:', error);
+                    tbody.innerHTML = `
+                        <tr>
+                            <td colspan="5" class="px-4 py-6 text-center text-red-400">Error al cargar formularios PDF.</td>
+                        </tr>
+                    `;
+                }
+            }
+
+            async function descargarArchivoProtegido(url, nombreArchivoSugerido) {
+                try {
+                    const response = await fetch(url, {
+                        headers: {
+                            'x-api-key': API_KEY
+                        }
+                    });
+
+                    if (!response.ok) {
+                        let mensaje = `Error al descargar archivo (HTTP ${response.status})`;
+                        try {
+                            const dataError = await response.json();
+                            if (dataError && dataError.message) {
+                                mensaje = dataError.message;
+                            }
+                        } catch (e) {
+                        }
+                        alert(mensaje);
+                        return;
+                    }
+
+                    const blob = await response.blob();
+                    const disposition = response.headers.get('content-disposition') || '';
+                    const match = disposition.match(/filename\*?=(?:UTF-8''|\")?([^\";]+)/i);
+                    const nombreFinal = match ? decodeURIComponent(match[1].replace(/\"/g, '').trim()) : nombreArchivoSugerido;
+
+                    const blobUrl = window.URL.createObjectURL(blob);
+                    const enlace = document.createElement('a');
+                    enlace.href = blobUrl;
+                    enlace.download = nombreFinal;
+                    document.body.appendChild(enlace);
+                    enlace.click();
+                    enlace.remove();
+                    window.URL.revokeObjectURL(blobUrl);
+                } catch (error) {
+                    console.error('Error en descarga protegida:', error);
+                    alert('No fue posible descargar el archivo. Intenta nuevamente.');
+                }
+            }
+        </script>
+
+    </main>
+
+    <!-- Sección: Gestión de Eventos -->
+    <div id="seccionEventos" style="display: none;">
+        <div class="bg-lamaDark p-4 rounded-lg border border-lamaNeon mb-6 flex justify-between items-center">
+            <h2 class="text-2xl font-headings text-lamaGold">GESTIÓN DE EVENTOS</h2>
+            <button onclick="mostrarModalCrearEvento()"
+                class="px-6 py-3 bg-lamaNeon text-lamaBlack rounded hover:bg-lamaGold transition font-bold">
+                + CREAR NUEVO EVENTO
+            </button>
+        </div>
+
+        <div class="bg-lamaDark rounded-lg border-2 border-lamaGold overflow-hidden">
+            <table class="w-full">
+                <thead class="bg-lamaBlack">
+                    <tr>
+                        <th class="px-4 py-3 text-left text-lamaNeon">ID</th>
+                        <th class="px-4 py-3 text-left text-lamaNeon">Nombre</th>
+                        <th class="px-4 py-3 text-left text-lamaNeon">Ubicación</th>
+                        <th class="px-4 py-3 text-left text-lamaNeon">Fecha</th>
+                        <th class="px-4 py-3 text-left text-lamaNeon">Precio</th>
+                        <th class="px-4 py-3 text-left text-lamaNeon">Capacidad</th>
+                        <th class="px-4 py-3 text-left text-lamaNeon">Estado</th>
+                        <th class="px-4 py-3 text-left text-lamaNeon">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="tablaEventos" class="text-lamaBone">
+                    <!-- Se llena dinámicamente -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Modal Crear/Editar Evento -->
+    <div id="modalEvento" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center"
+        style="display: none; z-index: 1000;">
+        <div class="bg-lamaDark rounded-lg border-2 border-lamaGold p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <h2 class="text-3xl font-headings text-lamaGold mb-6">CREAR NUEVO EVENTO</h2>
+
+            <form id="formEvento" onsubmit="guardarEvento(event)" class="space-y-4">
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-lamaNeon mb-2">Nombre del Evento</label>
+                        <input type="text" name="nombre" required
+                            class="w-full px-4 py-2 bg-lamaBlack border border-lamaGold rounded text-lamaBone">
+                    </div>
+                    <div>
+                        <label class="block text-lamaNeon mb-2">Ubicación</label>
+                        <input type="text" name="ubicacion" required
+                            class="w-full px-4 py-2 bg-lamaBlack border border-lamaGold rounded text-lamaBone">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-lamaNeon mb-2">Fecha Inicio</label>
+                        <input type="date" name="fecha" required
+                            class="w-full px-4 py-2 bg-lamaBlack border border-lamaGold rounded text-lamaBone">
+                    </div>
+                    <div>
+                        <label class="block text-lamaNeon mb-2">Fecha Fin</label>
+                        <input type="date" name="fechaFin" required
+                            class="w-full px-4 py-2 bg-lamaBlack border border-lamaGold rounded text-lamaBone">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-lamaNeon mb-2">Descripción</label>
+                    <textarea name="descripcion" rows="3" required
+                        class="w-full px-4 py-2 bg-lamaBlack border border-lamaGold rounded text-lamaBone"></textarea>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-lamaNeon mb-2">Precio (COP)</label>
+                        <input type="number" name="precio" required
+                            class="w-full px-4 py-2 bg-lamaBlack border border-lamaGold rounded text-lamaBone">
+                    </div>
+                    <div>
+                        <label class="block text-lamaNeon mb-2">Capacidad</label>
+                        <input type="number" name="capacidad" required
+                            class="w-full px-4 py-2 bg-lamaBlack border border-lamaGold rounded text-lamaBone">
+                    </div>
+                </div>
+
+                <div class="flex items-center">
+                    <input type="checkbox" name="destacado" id="destacado" class="mr-2">
+                    <label for="destacado" class="text-lamaNeon">Marcar como destacado</label>
+                </div>
+
+                <div class="flex gap-4 mt-6">
+                    <button type="submit"
+                        class="flex-1 px-6 py-3 bg-lamaNeon text-lamaBlack rounded hover:bg-lamaGold transition font-bold">
+                        GUARDAR EVENTO
+                    </button>
+                    <button type="button" onclick="cerrarModalEvento()"
+                        class="flex-1 px-6 py-3 bg-gray-600 text-white rounded hover:bg-gray-700 transition font-bold">
+                        CANCELAR
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Crear/Editar Anuncio del Ticker -->
+    <div id="modalTicker" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center"
+        style="display: none; z-index: 1000;">
+        <div class="bg-lamaDark rounded-lg border-2 border-lamaGold p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <h2 class="text-3xl font-headings text-lamaGold mb-6" id="tituloModalTicker">CREAR NUEVO ANUNCIO</h2>
+
+            <form id="formTicker" onsubmit="guardarTicker(event)" class="space-y-4">
+                <div>
+                    <label class="block text-lamaNeon mb-2">Título del Anuncio</label>
+                    <input type="text" name="title" required
+                        class="w-full px-4 py-2 bg-lamaBlack border border-lamaGold rounded text-lamaBone"
+                        placeholder="ej: CUPOS LIMITADOS">
+                </div>
+
+                <div>
+                    <label class="block text-lamaNeon mb-2">Mensaje</label>
+                    <textarea name="message" rows="3" required
+                        class="w-full px-4 py-2 bg-lamaBlack border border-lamaGold rounded text-lamaBone"
+                        placeholder="Mensaje detallado del anuncio"></textarea>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-lamaNeon mb-2">Tipo de Anuncio</label>
+                        <select name="type" required
+                            class="w-full px-4 py-2 bg-lamaBlack border border-lamaGold rounded text-lamaBone">
+                            <option value="critical">Crítico (Rojo)</option>
+                            <option value="warning">Advertencia (Naranja)</option>
+                            <option value="success">Éxito (Verde)</option>
+                            <option value="info">Información (Azul)</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-lamaNeon mb-2">Icono</label>
+                        <select name="icon" required
+                            class="w-full px-4 py-2 bg-lamaBlack border border-lamaGold rounded text-lamaBone">
+                            <option value="ticket">Ticket</option>
+                            <option value="calendar">Calendario</option>
+                            <option value="warning">Advertencia</option>
+                            <option value="info">Info</option>
+                            <option value="success">Éxito</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-lamaNeon mb-2">Color Hexadecimal</label>
+                    <div class="flex gap-2">
+                        <input type="color" name="color" value="#00F5FF" required
+                            class="w-20 h-10 rounded border border-lamaGold cursor-pointer">
+                        <input type="text" name="colorHex" value="#00F5FF"
+                            class="flex-1 px-4 py-2 bg-lamaBlack border border-lamaGold rounded text-lamaBone" readonly>
+                    </div>
+                </div>
+
+                <div class="flex gap-4 mt-6">
+                    <button type="submit"
+                        class="flex-1 px-6 py-3 bg-lamaNeon text-lamaBlack rounded hover:bg-lamaGold transition font-bold">
+                        GUARDAR ANUNCIO
+                    </button>
+                    <button type="button" onclick="cerrarModalTicker()"
+                        class="flex-1 px-6 py-3 bg-gray-600 text-white rounded hover:bg-gray-700 transition font-bold">
+                        CANCELAR
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Crear/Editar Servicio Premium -->
+    <div id="modalServicio" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center"
+        style="display: none; z-index: 1000;">
+        <div class="bg-lamaDark rounded-lg border-2 border-lamaGold p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <h2 class="text-3xl font-headings text-lamaGold mb-6" id="tituloModalServicio">CREAR NUEVO SERVICIO</h2>
+
+            <form id="formServicio" onsubmit="guardarServicio(event)" class="space-y-4">
+                <div>
+                    <label class="block text-lamaNeon mb-2">Nombre del Servicio</label>
+                    <input type="text" name="nombre" required
+                        class="w-full px-4 py-2 bg-lamaBlack border border-lamaGold rounded text-lamaBone"
+                        placeholder="ej: Jet Ski">
+                </div>
+
+                <div>
+                    <label class="block text-lamaNeon mb-2">Descripción</label>
+                    <textarea name="descripcion" rows="3" required
+                        class="w-full px-4 py-2 bg-lamaBlack border border-lamaGold rounded text-lamaBone"
+                        placeholder="Descripción detallada del servicio"></textarea>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-lamaNeon mb-2">Precio (COP)</label>
+                        <input type="number" name="precio" required
+                            class="w-full px-4 py-2 bg-lamaBlack border border-lamaGold rounded text-lamaBone"
+                            placeholder="150000">
+                    </div>
+
+                    <div>
+                        <label class="block text-lamaNeon mb-2">Disponibilidad</label>
+                        <select name="disponible" required
+                            class="w-full px-4 py-2 bg-lamaBlack border border-lamaGold rounded text-lamaBone">
+                            <option value="1">Disponible</option>
+                            <option value="0">No Disponible</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-lamaNeon mb-2">Categoría</label>
+                    <select name="categoria" required
+                        class="w-full px-4 py-2 bg-lamaBlack border border-lamaGold rounded text-lamaBone">
+                        <option value="transporte">Transporte</option>
+                        <option value="hospedaje">Hospedaje</option>
+                        <option value="alimentacion">Alimentación</option>
+                        <option value="actividades">Actividades</option>
+                        <option value="otros">Otros</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-lamaNeon mb-2">Límite de Reservas</label>
+                    <input type="number" name="limite_reservas"
+                        class="w-full px-4 py-2 bg-lamaBlack border border-lamaGold rounded text-lamaBone"
+                        placeholder="Dejar vacío para ilimitado">
+                </div>
+
+                <div class="flex gap-4 mt-6">
+                    <button type="submit"
+                        class="flex-1 px-6 py-3 bg-lamaNeon text-lamaBlack rounded hover:bg-lamaGold transition font-bold">
+                        GUARDAR SERVICIO
+                    </button>
+                    <button type="button" onclick="cerrarModalServicio()"
+                        class="flex-1 px-6 py-3 bg-gray-600 text-white rounded hover:bg-gray-700 transition font-bold">
+                        CANCELAR
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Sincronizar color picker con texto
+        document.addEventListener('DOMContentLoaded', function () {
+            const colorPicker = document.querySelector('input[name="color"]');
+            const colorHex = document.querySelector('input[name="colorHex"]');
+
+            if (colorPicker && colorHex) {
+                colorPicker.addEventListener('input', function () {
+                    colorHex.value = this.value.toUpperCase();
+                    // Actualizar el input hidden también
+                    const form = document.getElementById('formTicker');
+                    if (form) {
+                        const hiddenColor = form.querySelector('input[name="color"]');
+                        if (hiddenColor) hiddenColor.value = this.value;
+                    }
+                });
+            }
+        });
+    </script>

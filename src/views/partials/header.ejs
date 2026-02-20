@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <% const SITE_URL='https://lamaregionnorte.azurewebsites.net' ; const tituloMeta=(typeof metaTitle !=='undefined' &&
+        metaTitle) ? metaTitle : ((typeof title !=='undefined' && title) ? title : 'L.A.M.A. Región Norte' ); const
+        descripcionMeta=(typeof metaDescription !=='undefined' && metaDescription) ? metaDescription
+        : 'Portal oficial L.A.M.A. Región Norte: eventos, capítulos, itinerario e inscripción.' ; const tipoMeta=(typeof
+        metaType !=='undefined' && metaType) ? metaType : 'website' ; const urlCanonica=(typeof canonicalUrl
+        !=='undefined' && canonicalUrl) ? canonicalUrl : SITE_URL; const imagenMeta=(typeof metaImageUrl !=='undefined'
+        && metaImageUrl) ? metaImageUrl : `${SITE_URL}/img/LAMARegionNorte.png`; %>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>
+            <%= title %> | L.A.M.A.
+        </title>
+        <meta name="description" content="<%= descripcionMeta %>">
+        <link rel="canonical" href="<%= urlCanonica %>">
+
+        <meta property="og:locale" content="es_CO">
+        <meta property="og:type" content="<%= tipoMeta %>">
+        <meta property="og:site_name" content="L.A.M.A. Región Norte">
+        <meta property="og:title" content="<%= tituloMeta %>">
+        <meta property="og:description" content="<%= descripcionMeta %>">
+        <meta property="og:url" content="<%= urlCanonica %>">
+        <meta property="og:image" content="<%= imagenMeta %>">
+        <meta property="og:image:secure_url" content="<%= imagenMeta %>">
+        <meta property="og:image:type" content="image/png">
+        <meta property="og:image:alt" content="Logo oficial L.A.M.A. Región Norte">
+
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:title" content="<%= tituloMeta %>">
+        <meta name="twitter:description" content="<%= descripcionMeta %>">
+        <meta name="twitter:image" content="<%= imagenMeta %>">
+        <meta name="twitter:image:alt" content="Logo oficial L.A.M.A. Región Norte">
+
+        <!-- Fonts -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link
+            href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@400;800&family=Rock+Salt&display=swap"
+            rel="stylesheet">
+
+        <!-- Tailwind CSS -->
+        <script src="https://cdn.tailwindcss.com"></script>
+        <script>
+            tailwind.config = {
+                theme: {
+                    extend: {
+                        colors: {
+                            lamaBlack: '#0A0A0A',
+                            lamaDark: '#1A1A1A',
+                            lamaGold: '#D4AF37',
+                            lamaNeon: '#00F5FF',
+                            lamaBone: '#F5F5DC',
+                        },
+                        fontFamily: {
+                            headings: ['"Bebas Neue"', 'sans-serif'],
+                            body: ['"Montserrat"', 'sans-serif'],
+                            accent: ['"Rock Salt"', 'cursive'],
+                        }
+                    }
+                }
+            }
+        </script>
+
+        <style>
+            body {
+                background-color: #0A0A0A;
+                color: #F5F5DC;
+                font-family: 'Montserrat', sans-serif;
+                overflow-x: hidden;
+            }
+
+            ::-webkit-scrollbar {
+                width: 10px;
+            }
+
+            ::-webkit-scrollbar-track {
+                background: #1A1A1A;
+            }
+
+            ::-webkit-scrollbar-thumb {
+                background: #D4AF37;
+                border-radius: 5px;
+            }
+
+            .neon-text {
+                text-shadow: 0 0 10px rgba(0, 245, 255, 0.7), 0 0 20px rgba(0, 245, 255, 0.5), 0 0 30px rgba(0, 245, 255, 0.3);
+            }
+
+            .gold-text {
+                background: linear-gradient(to bottom, #FFD700, #D4AF37, #B8860B);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.5);
+            }
+
+            @keyframes fadeInUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(30px);
+                }
+
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            .animate-fade-in-up {
+                animation: fadeInUp 0.8s ease-out;
+            }
+        </style>
+</head>
+
+<body class="antialiased">
+
+    <!-- Navigation -->
+    <nav class="sticky top-0 z-50 bg-lamaDark/95 border-b border-lamaGold backdrop-blur-sm shadow-lg">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="/" class="flex items-center space-x-3 hover:opacity-80 transition-opacity">
+                <img src="/img/LAMARegionNorte.png" alt="L.A.M.A. Región Norte" class="h-12 w-auto">
+                <span class="text-2xl font-headings text-lamaGold tracking-widest">
+                    L.A.M.A. <span class="text-lamaBone">REGIÓN NORTE</span>
+                </span>
+            </a>
+            <div class="hidden md:flex space-x-8 font-bold text-sm text-lamaBone">
+                <a href="/" class="hover:text-lamaNeon transition-colors">INICIO</a>
+                <a href="/registro" class="hover:text-lamaGold transition-colors">HAZTE LAMA</a>
+                <a href="/eventos" class="hover:text-lamaNeon transition-colors">EVENTOS</a>
+                <a href="/capitulos" class="hover:text-lamaNeon transition-colors">CAPÍTULOS</a>
+                <a href="/itinerario" class="hover:text-lamaNeon transition-colors">ITINERARIO</a>
+                <a href="/club" class="hover:text-lamaNeon transition-colors">CLUB</a>
+                <a href="/contacto" class="hover:text-lamaNeon transition-colors">CONTACTO</a>
+            </div>
+            <button id="mobile-menu-btn" class="md:hidden text-lamaGold text-sm">Menu</button>
+        </div>
+        <div id="mobile-menu" class="hidden md:hidden bg-lamaDark border-t border-gray-800">
+            <div class="flex flex-col space-y-2 p-4 font-bold text-lamaBone">
+                <a href="/" class="hover:text-lamaNeon transition-colors py-2">INICIO</a>
+                <a href="/registro" class="hover:text-lamaGold transition-colors py-2">HAZTE LAMA</a>
+                <a href="/eventos" class="hover:text-lamaNeon transition-colors py-2">EVENTOS</a>
+                <a href="/capitulos" class="hover:text-lamaNeon transition-colors py-2">CAPÍTULOS</a>
+                <a href="/itinerario" class="hover:text-lamaNeon transition-colors py-2">ITINERARIO</a>
+                <a href="/club" class="hover:text-lamaNeon transition-colors py-2">CLUB</a>
+                <a href="/contacto" class="hover:text-lamaNeon transition-colors py-2">CONTACTO</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Ticker de Urgencia -->
+    <div class="bg-lamaBlack border-b border-lamaGold/50 px-6 py-3 container mx-auto">
+        <div id="ticker-container"></div>
+    </div>
+
+    <!-- Inicio del contenido principal -->
+    <!-- Scripts -->
+    <script src="/js/ticker.js"></script>
+    <script src="/js/servicios-premium.js"></script>
+    </head>
+
+    <body>

@@ -1,0 +1,90 @@
+<%- include('partials/header') %>
+
+    <div class="container mx-auto px-4 py-16">
+        <div class="max-w-5xl mx-auto">
+
+            <!-- Header -->
+            <div class="text-center mb-16 animate-fade-in-up">
+                <h1 class="text-6xl md:text-8xl font-headings text-lamaGold tracking-widest mb-4">
+                    <%= nombre %>
+                </h1>
+                <p class="text-xl text-lamaNeon tracking-[0.3em]">
+                    <%= nombreCompleto %>
+                </p>
+                <p class="text-sm text-gray-400 mt-2">Fundado en <%= fundacion %>
+                </p>
+            </div>
+
+            <!-- Misión y Visión -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
+                <div class="bg-lamaDark p-8 rounded-lg border-l-4 border-lamaGold shadow-xl">
+                    <h2 class="text-3xl font-headings text-lamaGold mb-4 tracking-wider">MISIÓN</h2>
+                    <p class="text-lamaBone leading-relaxed">
+                        <%= mision %>
+                    </p>
+                </div>
+                <div class="bg-lamaDark p-8 rounded-lg border-l-4 border-lamaNeon shadow-xl">
+                    <h2 class="text-3xl font-headings text-lamaNeon mb-4 tracking-wider">VISIÓN</h2>
+                    <p class="text-lamaBone leading-relaxed">
+                        <%= vision %>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Valores -->
+            <div class="bg-lamaDark rounded-lg p-8 border border-gray-800 shadow-xl mb-16">
+                <h2 class="text-3xl font-headings text-lamaGold text-center mb-8 tracking-wider">VALORES</h2>
+                <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+                    <% valores.forEach(function(valor) { %>
+                        <div
+                            class="bg-lamaBlack p-6 rounded text-center border border-gray-700 hover:border-lamaNeon transition-all">
+                            <p class="text-lamaBone font-bold">
+                                <%= valor %>
+                            </p>
+                        </div>
+                        <% }); %>
+                </div>
+            </div>
+
+            <!-- Regiones -->
+            <div class="bg-gradient-to-br from-lamaDark to-lamaBlack rounded-lg p-8 border border-lamaGold shadow-xl">
+                <h2 class="text-3xl font-headings text-lamaGold text-center mb-8 tracking-wider">NUESTRAS REGIONES</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <% regiones.forEach(function(region, index) { %>
+                        <div
+                            class="bg-lamaBlack/50 p-6 rounded-lg border-l-4 <%= index === 0 ? 'border-lamaGold' : 'border-gray-700' %> hover:border-lamaNeon transition-all">
+                            <div class="flex items-center gap-4 mb-2">
+                                <svg class="w-8 h-8 text-lamaNeon" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                </svg>
+                                <h3 class="text-lamaBone font-bold text-lg">
+                                    <%= typeof region==='string' ? region : region.nombre %>
+                                </h3>
+                            </div>
+                            <p class="text-gray-400 text-sm ml-12">
+                                <%= typeof region==='string' ? 'Capítulo oficial de L.A.M.A.' : region.descripcion %>
+                            </p>
+                        </div>
+                        <% }); %>
+                </div>
+            </div>
+
+            <!-- CTA -->
+            <div class="text-center mt-16">
+                <h3 class="text-4xl font-headings text-white mb-6">
+                    ¿QUIERES SER PARTE DE <span class="text-lamaNeon neon-text">LA HERMANDAD?</span>
+                </h3>
+                <a href="/contacto"
+                    class="inline-block bg-lamaGold text-lamaBlack font-bold py-4 px-12 rounded-lg hover:bg-lamaNeon hover:scale-105 transition-all text-lg">
+                    CONTÁCTANOS
+                </a>
+            </div>
+
+        </div>
+    </div>
+
+    <%- include('partials/footer') %>

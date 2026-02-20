@@ -1,0 +1,780 @@
+<%- include('partials/header') %>
+
+    <style>
+        /* Estilos adicionales para el formulario */
+        .form-input {
+            background-color: #1A1A1A;
+            border: 2px solid #4A4A4A;
+            color: #F5F5DC;
+            transition: all 0.3s ease;
+            min-height: 48px;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #00F5FF;
+            box-shadow: 0 0 10px rgba(0, 245, 255, 0.3);
+        }
+
+        .form-input:hover {
+            border-color: #D4AF37;
+        }
+
+        .form-label {
+            color: #F5F5DC;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .form-section {
+            background: linear-gradient(135deg, #1A1A1A 0%, #0A0A0A 100%);
+            border: 1px solid #D4AF37;
+            border-radius: 8px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 20px rgba(212, 175, 55, 0.1);
+        }
+
+        .form-section-title {
+            color: #D4AF37;
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid #D4AF37;
+            padding-bottom: 0.5rem;
+        }
+
+        .btn-submit {
+            background: linear-gradient(135deg, #D4AF37 0%, #FFD700 100%);
+            color: #0A0A0A;
+            font-weight: bold;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .btn-submit:hover {
+            background: linear-gradient(135deg, #00F5FF 0%, #00CED1 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 245, 255, 0.4);
+        }
+
+        #aspiranteForm,
+        .form-section {
+            overflow-x: hidden;
+        }
+
+        @media (max-width: 640px) {
+            .form-section {
+                padding: 1rem;
+            }
+
+            .form-section-title {
+                font-size: 1.2rem;
+                margin-bottom: 1rem;
+            }
+
+            .btn-outline {
+                min-height: 44px;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .btn-submit {
+                min-height: 48px;
+                font-size: 1rem;
+                letter-spacing: 1px;
+            }
+        }
+
+        .btn-outline {
+            border: 1px solid #00F5FF;
+            color: #00F5FF;
+            padding: 0.6rem 1rem;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-outline:hover {
+            background: #00F5FF;
+            color: #0A0A0A;
+        }
+    </style>
+
+    <div class="container mx-auto px-4 py-16">
+        <div class="max-w-6xl mx-auto">
+
+            <!-- Encabezado -->
+            <div class="bg-lamaDark border border-gray-800 rounded-lg p-6 md:p-10 mb-10">
+                <div class="flex flex-col md:flex-row items-center gap-6">
+                    <div class="flex-shrink-0">
+                        <img src="/img/LAMARegionNorte.png" alt="Logo Región Norte" class="w-28 h-28 object-contain">
+                    </div>
+                    <div class="text-center md:text-left flex-1">
+                        <p class="text-lamaNeon font-bold tracking-[0.3em] text-sm mb-2">LATIN AMERICAN MOTORCYCLES
+                            ASSOC.</p>
+                        <h1 class="text-4xl md:text-6xl font-headings text-lamaGold tracking-widest">
+                            L.A.M.A.
+                        </h1>
+                        <p class="text-lamaBone text-lg mt-2">Formulario de Aspirantes — Región Norte</p>
+                    </div>
+                </div>
+            </div>
+
+            <form id="aspiranteForm" class="space-y-0" enctype="multipart/form-data">
+                <!-- Capítulo Región Norte -->
+                <div class="form-section">
+                    <h2 class="form-section-title font-headings">CAPÍTULO REGIÓN NORTE</h2>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="form-label">Capítulo *</label>
+                            <select name="capitulo" id="capitulo" class="form-input w-full px-4 py-3 rounded" required>
+                                <option value="">Seleccione...</option>
+                                <option value="Barranquilla (Atlántico)">Barranquilla (Atlántico)</option>
+                                <option value="Bucaramanga (Santander)">Bucaramanga (Santander)</option>
+                                <option value="Cartagena (Bolívar)">Cartagena (Bolívar)</option>
+                                <option value="Cúcuta (Norte de Santander)">Cúcuta (Norte de Santander)</option>
+                                <option value="Floridablanca (Santander)">Floridablanca (Santander)</option>
+                                <option value="Medellín (Antioquia)">Medellín (Antioquia)</option>
+                                <option value="Puerto Colombia (Atlántico)">Puerto Colombia (Atlántico)</option>
+                                <option value="Valle de Aburrá (Antioquia)">Valle de Aburrá (Antioquia)</option>
+                                <option value="Zenú (Sucre - Córdoba)">Zenú (Sucre - Córdoba)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Datos Personales -->
+                <div class="form-section">
+                    <h2 class="form-section-title font-headings">DATOS PERSONALES</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="md:col-span-2">
+                            <label class="form-label">Fotografía *</label>
+                            <input type="file" name="fotografia" accept="image/*"
+                                class="form-input w-full px-4 py-3 rounded" required>
+                        </div>
+                        <div>
+                            <label class="form-label">Nombres *</label>
+                            <input type="text" name="nombres" id="nombres" class="form-input w-full px-4 py-3 rounded"
+                                required>
+                        </div>
+                        <div>
+                            <label class="form-label">Apellidos *</label>
+                            <input type="text" name="apellidos" id="apellidos"
+                                class="form-input w-full px-4 py-3 rounded" required>
+                        </div>
+                        <div>
+                            <label class="form-label">Identificación (NUIP) *</label>
+                            <input type="text" name="identificacion" class="form-input w-full px-4 py-3 rounded"
+                                required>
+                        </div>
+                        <div>
+                            <label class="form-label">Expedida en *</label>
+                            <input type="text" name="expedida_en" list="listaCiudadesDepto"
+                                class="form-input w-full px-4 py-3 rounded"
+                                placeholder="Ej: Pamplona, Norte de Santander" required>
+                        </div>
+                        <div>
+                            <label class="form-label">Tipo de Documento *</label>
+                            <select name="tipo_documento" class="form-input w-full px-4 py-3 rounded" required>
+                                <option value="">Seleccione...</option>
+                                <option value="Cédula">Cédula</option>
+                                <option value="Pasaporte">Pasaporte</option>
+                                <option value="Cédula de Extranjería">Cédula de Extranjería</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="form-label">Tipo de Sangre *</label>
+                            <select name="tipo_sangre" class="form-input w-full px-4 py-3 rounded" required>
+                                <option value="">Seleccione...</option>
+                                <option value="A+">A+</option>
+                                <option value="A-">A-</option>
+                                <option value="B+">B+</option>
+                                <option value="B-">B-</option>
+                                <option value="AB+">AB+</option>
+                                <option value="AB-">AB-</option>
+                                <option value="O+">O+</option>
+                                <option value="O-">O-</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="form-label">Fecha de Nacimiento *</label>
+                            <input type="date" name="fecha_nacimiento" class="form-input w-full px-4 py-3 rounded"
+                                required>
+                        </div>
+                        <div>
+                            <label class="form-label">Lugar de Nacimiento *</label>
+                            <input type="text" name="lugar_nacimiento" list="listaCiudadesDepto"
+                                class="form-input w-full px-4 py-3 rounded"
+                                placeholder="Ej: Pamplona, Norte de Santander" required>
+                        </div>
+                        <div>
+                            <label class="form-label">Dirección de Residencia *</label>
+                            <input type="text" name="direccion_residencia" class="form-input w-full px-4 py-3 rounded"
+                                required>
+                        </div>
+                        <div>
+                            <label class="form-label">Dirección Laboral</label>
+                            <input type="text" name="direccion_laboral" class="form-input w-full px-4 py-3 rounded">
+                        </div>
+                        <div>
+                            <label class="form-label">Teléfono Residencia</label>
+                            <input type="tel" name="telefono_residencia" class="form-input w-full px-4 py-3 rounded">
+                        </div>
+                        <div>
+                            <label class="form-label">Teléfono Laboral</label>
+                            <input type="tel" name="telefono_laboral" class="form-input w-full px-4 py-3 rounded">
+                        </div>
+                        <div>
+                            <label class="form-label">Celular *</label>
+                            <input type="tel" name="celular" class="form-input w-full px-4 py-3 rounded" required>
+                        </div>
+                        <div>
+                            <label class="form-label">Actividad Laboral Principal *</label>
+                            <input type="text" name="actividad_laboral" class="form-input w-full px-4 py-3 rounded"
+                                required>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Datos Familiares -->
+                <div class="form-section">
+                    <h2 class="form-section-title font-headings">DATOS FAMILIARES</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="form-label">Nombre de la Pareja</label>
+                            <input type="text" name="pareja_nombre" class="form-input w-full px-4 py-3 rounded">
+                        </div>
+                        <div>
+                            <label class="form-label">Identificación</label>
+                            <input type="text" name="pareja_identificacion" class="form-input w-full px-4 py-3 rounded">
+                        </div>
+                        <div>
+                            <label class="form-label">Expedida en</label>
+                            <input type="text" name="pareja_expedida_en" list="listaCiudadesDepto"
+                                class="form-input w-full px-4 py-3 rounded"
+                                placeholder="Ej: Cúcuta, Norte de Santander">
+                        </div>
+                        <div>
+                            <label class="form-label">Tipo de Documento</label>
+                            <select name="pareja_tipo_documento" class="form-input w-full px-4 py-3 rounded">
+                                <option value="">Seleccione...</option>
+                                <option value="Cédula">Cédula</option>
+                                <option value="Pasaporte">Pasaporte</option>
+                                <option value="Cédula de Extranjería">Cédula de Extranjería</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="form-label">Tipo de Sangre</label>
+                            <select name="pareja_tipo_sangre" class="form-input w-full px-4 py-3 rounded">
+                                <option value="">Seleccione...</option>
+                                <option value="A+">A+</option>
+                                <option value="A-">A-</option>
+                                <option value="B+">B+</option>
+                                <option value="B-">B-</option>
+                                <option value="AB+">AB+</option>
+                                <option value="AB-">AB-</option>
+                                <option value="O+">O+</option>
+                                <option value="O-">O-</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="form-label">Fecha de Nacimiento</label>
+                            <input type="date" name="pareja_fecha_nacimiento"
+                                class="form-input w-full px-4 py-3 rounded">
+                        </div>
+                        <div>
+                            <label class="form-label">Lugar de Nacimiento</label>
+                            <input type="text" name="pareja_lugar" list="listaCiudadesDepto"
+                                class="form-input w-full px-4 py-3 rounded"
+                                placeholder="Ej: Pamplona, Norte de Santander">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Hijos -->
+                <div class="form-section">
+                    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
+                        <h2 class="form-section-title font-headings mb-0">HIJOS</h2>
+                        <button type="button" id="addChildBtn" class="btn-outline">Agregar Hijo</button>
+                    </div>
+                    <div id="childrenContainer" class="space-y-4">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 child-row">
+                            <div class="md:col-span-2">
+                                <label class="form-label">Nombre</label>
+                                <input type="text" name="hijos[0][nombre]" class="form-input w-full px-4 py-3 rounded">
+                            </div>
+                            <div>
+                                <label class="form-label">Fecha Nacimiento</label>
+                                <input type="date" name="hijos[0][fecha_nacimiento]"
+                                    class="form-input w-full px-4 py-3 rounded">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Datos de Vehículo Actual -->
+                <div class="form-section">
+                    <h2 class="form-section-title font-headings">DATOS DE VEHÍCULO ACTUAL</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="form-label">Marca de Moto *</label>
+                            <input type="text" name="moto_marca" id="motoMarca" list="listaMarcasMoto"
+                                class="form-input w-full px-4 py-3 rounded"
+                                placeholder="Seleccione o escriba manualmente" required>
+                        </div>
+                        <div>
+                            <label class="form-label">Modelo *</label>
+                            <input type="text" name="moto_modelo" id="motoModelo" list="listaModelosMoto"
+                                class="form-input w-full px-4 py-3 rounded"
+                                placeholder="Seleccione o escriba manualmente" required>
+                        </div>
+                        <div>
+                            <label class="form-label">Año *</label>
+                            <select name="moto_anio" id="motoAnio" class="form-input w-full px-4 py-3 rounded" required>
+                                <option value="">Seleccione año...</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="form-label">Cilindraje *</label>
+                            <input type="text" name="moto_cilindraje" id="motoCilindraje" list="listaCilindrajeMoto"
+                                class="form-input w-full px-4 py-3 rounded"
+                                placeholder="Seleccione o escriba manualmente" required>
+                        </div>
+                        <div>
+                            <label class="form-label">Color *</label>
+                            <input type="text" name="moto_color" class="form-input w-full px-4 py-3 rounded" required>
+                        </div>
+                        <div>
+                            <label class="form-label">Placa *</label>
+                            <input type="text" name="moto_placa" class="form-input w-full px-4 py-3 rounded" required>
+                        </div>
+                        <div>
+                            <label class="form-label">Años de Experiencia *</label>
+                            <input type="number" name="moto_experiencia" class="form-input w-full px-4 py-3 rounded"
+                                min="0" max="80" required>
+                        </div>
+                        <div>
+                            <label class="form-label">Matrícula de Moto (archivo) *</label>
+                            <input type="file" name="matricula_moto" accept=".pdf,.jpg,.jpeg,.png,.webp"
+                                class="form-input w-full px-4 py-3 rounded" required>
+                        </div>
+                        <div>
+                            <label class="form-label">Licencia de Conducción (archivo) *</label>
+                            <input type="file" name="licencia_conduccion" accept=".pdf,.jpg,.jpeg,.png,.webp"
+                                class="form-input w-full px-4 py-3 rounded" required>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Certifico -->
+                <div class="form-section">
+                    <h2 class="form-section-title font-headings">CERTIFICACIÓN Y AUTORIZACIONES</h2>
+
+                    <div
+                        class="bg-lamaBlack/60 border border-lamaNeon/50 rounded p-4 mb-6 max-h-72 overflow-y-auto pr-2">
+                        <p class="text-lamaGold font-bold mb-3">1. AUTORIZACIÓN PARA EL TRATAMIENTO DE DATOS PERSONALES
+                        </p>
+                        <p class="text-lamaBone leading-relaxed text-sm md:text-base mb-4">(En cumplimiento de la Ley
+                            1581 de 2012 y sus decretos reglamentarios)</p>
+                        <p class="text-lamaBone leading-relaxed text-sm md:text-base mb-4">
+                            Autorizo de manera libre, previa, expresa e informada a L.A.M.A. Colombia y al Capítulo
+                            <span data-capitulo-certifico class="text-lamaNeon font-bold">____________________</span>
+                            para el tratamiento de mis datos personales, incluidos datos sensibles tales como tipo de
+                            sangre (RH),
+                            fotografía y documentos de tránsito (licencia de conducción y tarjeta de propiedad del
+                            vehículo).
+                        </p>
+                        <p class="text-lamaGold font-bold mb-2">Finalidad del tratamiento:</p>
+                        <ul class="text-lamaBone leading-relaxed text-sm md:text-base list-disc pl-5 space-y-1 mb-4">
+                            <li>Gestión administrativa de membresía.</li>
+                            <li>Verificación de requisitos legales para participar en rodadas y eventos.</li>
+                            <li>Coordinación logística y seguridad vial.</li>
+                            <li>Atención en caso de emergencias médicas.</li>
+                            <li>Cumplimiento de obligaciones legales y estatutarias.</li>
+                        </ul>
+                        <p class="text-lamaBone leading-relaxed text-sm md:text-base">
+                            Declaro que la información suministrada es veraz y conozco mis derechos como titular de los
+                            datos,
+                            especialmente los de acceso, actualización, rectificación y supresión, conforme a la ley.
+                        </p>
+                    </div>
+
+                    <div class="space-y-5 mb-6">
+                        <div>
+                            <p class="text-lamaGold font-bold mb-2">2. DECLARACIÓN DE CONOCIMIENTO Y ACEPTACIÓN DE
+                                NORMAS</p>
+                            <p class="text-lamaBone leading-relaxed text-sm md:text-base">
+                                Certifico que conozco, entiendo y acepto en su totalidad los Estatutos, Reglamentos y
+                                Normas Generales
+                                que rigen a L.A.M.A. Colombia y al Capítulo al cual me afilio libre y voluntariamente,
+                                comprometiéndome a cumplirlos integralmente.
+                            </p>
+                            <div class="mt-3 flex flex-wrap gap-3">
+                                <a href="/img/logotipos/ESTATUTOS%20-%20LAMA.pdf" target="_blank"
+                                    rel="noopener noreferrer" class="btn-outline text-sm">
+                                    Ver Estatutos
+                                </a>
+                                <a href="/img/logotipos/ESTATUTOS%20-%20LAMA.pdf" download="ESTATUTOS - LAMA.pdf"
+                                    class="btn-outline text-sm">
+                                    Descargar Estatutos
+                                </a>
+                            </div>
+                        </div>
+
+                        <div>
+                            <p class="text-lamaGold font-bold mb-2">3. DECLARACIÓN DE RESPONSABILIDAD PERSONAL</p>
+                            <p class="text-lamaBone leading-relaxed text-sm md:text-base mb-3">
+                                Declaro que asumo de manera exclusiva la responsabilidad por la conducción del vehículo
+                                bajo mi control,
+                                así como por los riesgos inherentes a la actividad de mototurismo.
+                            </p>
+                            <p class="text-lamaGold font-bold mb-2">En consecuencia:</p>
+                            <ul
+                                class="text-lamaBone leading-relaxed text-sm md:text-base list-disc pl-5 space-y-1 mb-3">
+                                <li>Soy responsable por los daños materiales, lesiones personales o perjuicios que pueda
+                                    ocasionar a terceros o bienes ajenos.</li>
+                                <li>Soy responsable por el cumplimiento de las normas de tránsito vigentes.</li>
+                                <li>Soy responsable por comparendos, sanciones o infracciones en que pueda incurrir.
+                                </li>
+                            </ul>
+                            <p class="text-lamaBone leading-relaxed text-sm md:text-base mb-3">
+                                L.A.M.A. Colombia y el Capítulo
+                                <span data-capitulo-certifico
+                                    class="text-lamaNeon font-bold">____________________</span>,
+                                sus directivos y organizadores, no serán responsables por hechos atribuibles a mi
+                                conducta,
+                                imprudencia, negligencia o incumplimiento de normas legales durante el desarrollo de
+                                actividades
+                                programadas o no por la asociación.
+                            </p>
+                            <p class="text-lamaBone leading-relaxed text-sm md:text-base">
+                                La presente declaración no limita ni excluye responsabilidades que legalmente no puedan
+                                ser objeto
+                                de exoneración conforme al ordenamiento jurídico colombiano.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start gap-3">
+                        <input type="checkbox" name="certifico" id="certifico" class="mt-1" required>
+                        <label for="certifico" class="text-lamaBone">Acepto y certifico lo anterior *</label>
+                    </div>
+                </div>
+
+                <!-- Firma -->
+                <div class="form-section">
+                    <h2 class="form-section-title font-headings">FIRMA</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                        <div>
+                            <label class="form-label">Día *</label>
+                            <input type="number" name="firma_dia" id="firmaDia"
+                                class="form-input w-full px-4 py-3 rounded" min="1" max="31" required readonly>
+                        </div>
+                        <div>
+                            <label class="form-label">Mes *</label>
+                            <input type="text" name="firma_mes" id="firmaMes"
+                                class="form-input w-full px-4 py-3 rounded" required readonly>
+                        </div>
+                        <div>
+                            <label class="form-label">Año *</label>
+                            <input type="number" name="firma_anio" id="firmaAnio"
+                                class="form-input w-full px-4 py-3 rounded" min="1900" max="2100" required readonly>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="form-label">Firma *</label>
+                        <input type="text" name="firma_nombre" id="firmaNombre"
+                            class="form-input w-full px-4 py-3 rounded" required readonly>
+                    </div>
+                </div>
+
+                <div class="mt-8">
+                    <button type="submit" class="btn-submit">ENVIAR SOLICITUD</button>
+                </div>
+            </form>
+
+            <datalist id="listaCiudadesDepto"></datalist>
+            <datalist id="listaMarcasMoto"></datalist>
+            <datalist id="listaModelosMoto"></datalist>
+            <datalist id="listaCilindrajeMoto"></datalist>
+        </div>
+    </div>
+
+    <script>
+        const childrenContainer = document.getElementById('childrenContainer');
+        const addChildBtn = document.getElementById('addChildBtn');
+        const capituloSelect = document.getElementById('capitulo');
+        const capitulosCertifico = Array.from(document.querySelectorAll('[data-capitulo-certifico]'));
+        const nombresInput = document.getElementById('nombres');
+        const apellidosInput = document.getElementById('apellidos');
+        const firmaNombreInput = document.getElementById('firmaNombre');
+        const firmaDiaInput = document.getElementById('firmaDia');
+        const firmaMesInput = document.getElementById('firmaMes');
+        const firmaAnioInput = document.getElementById('firmaAnio');
+        const motoMarcaInput = document.getElementById('motoMarca');
+        const motoModeloInput = document.getElementById('motoModelo');
+        const listaMarcasMoto = document.getElementById('listaMarcasMoto');
+        const listaModelosMoto = document.getElementById('listaModelosMoto');
+        const listaCilindrajeMoto = document.getElementById('listaCilindrajeMoto');
+        const listaCiudadesDepto = document.getElementById('listaCiudadesDepto');
+        const motoAnioInput = document.getElementById('motoAnio');
+
+        const CAMPOS_AUTOCOMPLETE_UBICACION = [
+            document.querySelector('input[name="expedida_en"]'),
+            document.querySelector('input[name="lugar_nacimiento"]'),
+            document.querySelector('input[name="pareja_expedida_en"]'),
+            document.querySelector('input[name="pareja_lugar"]')
+        ].filter(Boolean);
+
+        const cacheMunicipios = new Map();
+        let temporizadorBusquedaMunicipios = null;
+        let consecutivoBusquedaMunicipios = 0;
+
+        const CATALOGO_MOTOS = {
+            'BMW': ['G 310 GS', 'F 750 GS', 'F 850 GS', 'R 1250 GS', 'S 1000 XR'],
+            'Ducati': ['Scrambler Icon', 'Monster', 'Multistrada V2', 'Multistrada V4', 'Panigale V2'],
+            'Harley-Davidson': ['Sportster S', 'Nightster', 'Street Bob', 'Fat Boy', 'Road Glide'],
+            'Honda': ['CB 190R', 'CB 300F', 'CB 500X', 'NC 750X', 'Africa Twin'],
+            'Kawasaki': ['Z400', 'Ninja 400', 'Versys 650', 'Z900', 'Versys 1000'],
+            'KTM': ['Duke 200', 'Duke 390', 'Adventure 390', '790 Adventure', '1290 Super Adventure'],
+            'Royal Enfield': ['Classic 350', 'Meteor 350', 'Himalayan', 'Interceptor 650'],
+            'Suzuki': ['Gixxer 250', 'V-Strom 250', 'V-Strom 650', 'GSX-S750', 'Hayabusa'],
+            'Triumph': ['Speed 400', 'Scrambler 400 X', 'Tiger 900', 'Tiger 1200', 'Street Triple'],
+            'Yamaha': ['FZ 2.0', 'R3', 'MT-07', 'Tracer 9', 'Tenere 700']
+        };
+
+        const CILINDRAJES_SUGERIDOS = ['110 cc', '125 cc', '150 cc', '160 cc', '200 cc', '250 cc', '300 cc', '390 cc', '500 cc', '650 cc', '700 cc', '750 cc', '900 cc', '1000 cc', '1200 cc', '1250 cc'];
+
+        /**
+         * Reemplaza las opciones de un datalist.
+         */
+        function actualizarDatalist(datalist, opciones) {
+            datalist.innerHTML = (opciones || []).map(opcion => `<option value="${opcion}"></option>`).join('');
+        }
+
+        /**
+         * Consulta municipios/departamentos al backend y actualiza sugerencias del datalist.
+         */
+        async function consultarMunicipios(textoBusqueda) {
+            const termino = (textoBusqueda || '').trim();
+            if (termino.length < 2) {
+                actualizarDatalist(listaCiudadesDepto, []);
+                return;
+            }
+
+            const terminoNormalizado = termino.toLowerCase();
+            if (cacheMunicipios.has(terminoNormalizado)) {
+                actualizarDatalist(listaCiudadesDepto, cacheMunicipios.get(terminoNormalizado));
+                return;
+            }
+
+            const turnoBusqueda = ++consecutivoBusquedaMunicipios;
+
+            try {
+                const response = await fetch(`/api/ubicaciones/municipios?q=${encodeURIComponent(termino)}&limit=12`);
+                if (!response.ok) {
+                    throw new Error(`Error HTTP ${response.status}`);
+                }
+
+                const payload = await response.json();
+                const sugerencias = (payload?.data || [])
+                    .map((registro) => (registro && registro.valor ? String(registro.valor).trim() : ''))
+                    .filter(Boolean);
+
+                const sugerenciasUnicas = Array.from(new Set(sugerencias));
+                cacheMunicipios.set(terminoNormalizado, sugerenciasUnicas);
+
+                if (turnoBusqueda === consecutivoBusquedaMunicipios) {
+                    actualizarDatalist(listaCiudadesDepto, sugerenciasUnicas);
+                }
+            } catch (error) {
+                console.error('Error al consultar municipios:', error);
+            }
+        }
+
+        /**
+         * Activa el autocompletado remoto para campos de ubicación personal y familiar.
+         */
+        function inicializarAutocompleteUbicaciones() {
+            for (const campo of CAMPOS_AUTOCOMPLETE_UBICACION) {
+                campo.setAttribute('list', 'listaCiudadesDepto');
+                campo.addEventListener('input', (event) => {
+                    clearTimeout(temporizadorBusquedaMunicipios);
+                    temporizadorBusquedaMunicipios = setTimeout(() => {
+                        consultarMunicipios(event.target.value);
+                    }, 220);
+                });
+
+                campo.addEventListener('focus', () => {
+                    const valorActual = (campo.value || '').trim();
+                    if (valorActual.length >= 2) {
+                        consultarMunicipios(valorActual);
+                    }
+                });
+            }
+        }
+
+        /**
+         * Inicializa listas sugeridas de marca, año y cilindraje.
+         */
+        function inicializarCatalogosMoto() {
+            const marcas = Object.keys(CATALOGO_MOTOS).sort((a, b) => a.localeCompare(b, 'es'));
+            actualizarDatalist(listaMarcasMoto, marcas);
+            actualizarDatalist(listaCilindrajeMoto, CILINDRAJES_SUGERIDOS);
+            actualizarModelosPorMarca();
+
+            const anioActual = new Date().getFullYear();
+            const anioMinimo = 1900;
+            const opcionesAnios = ['<option value="">Seleccione año...</option>'];
+            for (let anio = anioActual + 1; anio >= anioMinimo; anio -= 1) {
+                opcionesAnios.push(`<option value="${anio}">${anio}</option>`);
+            }
+            motoAnioInput.innerHTML = opcionesAnios.join('');
+        }
+
+        /**
+         * Carga modelos sugeridos según la marca seleccionada, permitiendo entrada manual.
+         */
+        function actualizarModelosPorMarca() {
+            const marcaActual = (motoMarcaInput.value || '').trim();
+            const marcaCatalogo = Object.keys(CATALOGO_MOTOS).find((marca) => marca.toLowerCase() === marcaActual.toLowerCase());
+            const modelos = marcaCatalogo ? CATALOGO_MOTOS[marcaCatalogo] : [];
+            actualizarDatalist(listaModelosMoto, modelos);
+        }
+
+        /**
+         * Agrega un nuevo bloque de datos de hijo al formulario de aspirantes.
+         * Mantiene el índice secuencial para el envío estructurado.
+         */
+        function agregarHijo() {
+            const currentIndex = childrenContainer.querySelectorAll('.child-row').length;
+            const row = document.createElement('div');
+            row.className = 'grid grid-cols-1 md:grid-cols-3 gap-4 child-row';
+            row.innerHTML = `
+                    <div class="md:col-span-2">
+                        <label class="form-label">Nombre</label>
+                        <input type="text" name="hijos[${currentIndex}][nombre]" class="form-input w-full px-4 py-3 rounded">
+                    </div>
+                    <div>
+                        <label class="form-label">Fecha Nacimiento</label>
+                        <input type="date" name="hijos[${currentIndex}][fecha_nacimiento]" class="form-input w-full px-4 py-3 rounded">
+                    </div>
+                    <div class="md:col-span-3">
+                        <button type="button" class="btn-outline" onclick="eliminarHijo(this)">Eliminar</button>
+                    </div>
+                `;
+            childrenContainer.appendChild(row);
+        }
+
+        /**
+         * Elimina el bloque de hijo asociado al botón de acción.
+         * @param {HTMLButtonElement} boton El botón que invoca la eliminación.
+         */
+        function eliminarHijo(boton) {
+            const row = boton.closest('.child-row');
+            if (row) {
+                row.remove();
+            }
+        }
+
+        /**
+         * Sincroniza el capítulo seleccionado en la cláusula de certificación.
+         */
+        function actualizarCapituloCertifico() {
+            const valorCapitulo = capituloSelect.value || '____________________';
+            capitulosCertifico.forEach((elemento) => {
+                elemento.textContent = valorCapitulo;
+            });
+        }
+
+        /**
+         * Autocompleta la firma con Nombres y Apellidos.
+         */
+        function actualizarFirma() {
+            const nombres = (nombresInput.value || '').trim();
+            const apellidos = (apellidosInput.value || '').trim();
+            const firma = [nombres, apellidos].filter(Boolean).join(' ');
+            firmaNombreInput.value = firma;
+        }
+
+        /**
+         * Autocompleta fecha de diligenciamiento en la sección de firma.
+         */
+        function actualizarFechaFirma() {
+            const hoy = new Date();
+            const dia = hoy.getDate();
+            const mes = hoy.toLocaleDateString('es-CO', { month: 'long' });
+            const anio = hoy.getFullYear();
+            firmaDiaInput.value = dia;
+            firmaMesInput.value = mes.charAt(0).toUpperCase() + mes.slice(1);
+            firmaAnioInput.value = anio;
+        }
+
+        addChildBtn.addEventListener('click', agregarHijo);
+        capituloSelect.addEventListener('change', actualizarCapituloCertifico);
+        nombresInput.addEventListener('input', actualizarFirma);
+        apellidosInput.addEventListener('input', actualizarFirma);
+        motoMarcaInput.addEventListener('input', actualizarModelosPorMarca);
+        motoMarcaInput.addEventListener('change', actualizarModelosPorMarca);
+
+        document.getElementById('aspiranteForm').addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const boton = event.target.querySelector('button[type="submit"]');
+            const textoOriginal = boton.textContent;
+
+            try {
+                boton.disabled = true;
+                boton.textContent = 'GENERANDO PDF...';
+
+                const formData = new FormData(event.target);
+
+                const response = await fetch('/api/registro/pdf', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    const errorPayload = await response.json().catch(() => ({}));
+                    throw new Error(errorPayload.message || 'Error al generar PDF');
+                }
+
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const enlace = document.createElement('a');
+                const cd = response.headers.get('Content-Disposition') || '';
+                const nombreArchivo = (cd.match(/filename="([^"]+)"/) || [])[1] || 'Formulario-Nacional.pdf';
+
+                enlace.href = url;
+                enlace.download = nombreArchivo;
+                document.body.appendChild(enlace);
+                enlace.click();
+                enlace.remove();
+                window.URL.revokeObjectURL(url);
+
+                alert('Solicitud enviada y PDF generado exitosamente');
+            } catch (error) {
+                console.error('Error al enviar formulario de registro:', error);
+                alert(error.message || 'No fue posible generar el PDF del formulario');
+            } finally {
+                boton.disabled = false;
+                boton.textContent = textoOriginal;
+            }
+        });
+
+        actualizarCapituloCertifico();
+        actualizarFirma();
+        actualizarFechaFirma();
+        inicializarCatalogosMoto();
+        inicializarAutocompleteUbicaciones();
+    </script>
+
+    <%- include('partials/footer') %>

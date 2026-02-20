@@ -1,0 +1,460 @@
+<%- include('../partials/header') %>
+
+    <style>
+        .epic-carousel {
+            overflow: hidden;
+            position: relative;
+        }
+
+        .epic-track {
+            display: flex;
+            gap: 1rem;
+            width: max-content;
+            animation: epicScroll 28s linear infinite;
+        }
+
+        .epic-carousel:hover .epic-track {
+            animation-play-state: paused;
+        }
+
+        @keyframes epicScroll {
+            from {
+                transform: translateX(0);
+            }
+
+            to {
+                transform: translateX(-50%);
+            }
+        }
+    </style>
+
+    <div class="container mx-auto px-4 py-16">
+        <div class="max-w-4xl mx-auto">
+            <a href="/eventos"
+                class="inline-flex items-center text-lamaNeon hover:text-lamaGold transition-colors mb-8">
+                ← Volver a eventos
+            </a>
+
+            <div class="bg-lamaDark rounded-lg p-4 md:p-8 border border-gray-800 shadow-xl mb-8">
+                <div class="flex flex-col md:flex-row md:justify-between md:items-start gap-4 mb-6">
+                    <div>
+                        <h1 class="text-3xl md:text-6xl font-headings text-lamaGold tracking-wider mb-2 break-words">
+                            <%= event.nombre %>
+                        </h1>
+                        <p class="text-lamaNeon text-lg">Lugar: <%= event.ubicacion %>
+                        </p>
+                    </div>
+                    <% if (event.destacado) { %>
+                        <div class="bg-lamaGold text-lamaBlack px-4 py-2 rounded font-bold text-sm">DESTACADO</div>
+                        <% } %>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
+                    <div class="bg-lamaBlack p-4 rounded border border-gray-800">
+                        <div class="text-3xl font-headings text-lamaNeon neon-text mb-2">
+                            <%= event.fecha.split('-')[2] %>-<%= event.fechaFin.split('-')[2] %>
+                        </div>
+                        <p class="text-xs text-gray-400">
+                            <%= new Date(event.fecha + 'T12:00:00' ).toLocaleDateString('es-CO', { month: 'long' ,
+                                year: 'numeric' }) %>
+                        </p>
+                    </div>
+                    <div class="bg-lamaBlack p-4 rounded border border-gray-800">
+                        <div class="text-3xl font-headings text-lamaGold mb-2">
+                            <% if (event.paqueteOficial) { %>
+                                $<%= event.paqueteOficial.valor.toLocaleString('es-CO') %>
+                                    <% } else { %>
+                                        <%= event.precio==null ? 'POR DEFINIR' : (event.moneda==='USD' ?
+                                            ('USD ' + event.precio) : (' $' + event.precio.toLocaleString('es-CO'))) %>
+                                            <% } %>
+                        </div>
+                        <p class="text-xs text-gray-400">INVERSIÓN <%= event.moneda || 'COP' %>
+                        </p>
+                    </div>
+                    <div class="bg-lamaBlack p-4 rounded border border-gray-800">
+                        <div
+                            class="text-3xl font-headings <%= event.disponibilidad < 20 ? 'text-red-500' : 'text-lamaNeon' %> mb-2">
+                            <%= event.disponibilidad %>
+                        </div>
+                        <p class="text-xs text-gray-400">CUPOS DISPONIBLES</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-lamaDark rounded-lg p-8 border-l-4 border-lamaNeon shadow-xl mb-8">
+                <h2 class="text-2xl font-headings text-lamaGold mb-4">DESCRIPCIÓN</h2>
+                <p class="text-lamaBone leading-relaxed">
+                    <%= event.descripcion %>
+                </p>
+            </div>
+
+            <% if (event.id==='vnorte-2026' ) { %>
+                <div class="bg-lamaDark rounded-lg p-4 md:p-8 border border-gray-800 shadow-xl mb-8">
+                    <h2 class="text-2xl font-headings text-lamaGold mb-4">INSCRIPCIÓN V CAMPEONATO REGIONAL</h2>
+                    <p class="text-lamaBone mb-6">Formulario oficial para inscribirse al V Campeonato Regional.</p>
+                    <a href="/registro-campeonato"
+                        class="inline-flex items-center bg-lamaGold text-lamaBlack font-bold py-3 px-8 rounded-lg hover:bg-lamaNeon hover:scale-105 transition-all">IR
+                        AL FORMULARIO</a>
+                </div>
+                <% } %>
+
+                    <% if (event.hotel) { %>
+                        <div class="bg-lamaDark rounded-lg p-4 md:p-8 border border-gray-800 shadow-xl mb-8">
+                            <h2 class="text-2xl font-headings text-lamaGold mb-4">HOTEL SEDE</h2>
+                            <p class="text-lamaBone text-lg font-bold">
+                                <%= event.hotel %>
+                            </p>
+                        </div>
+                        <% } %>
+
+                            <% if (event.paqueteOficial) { %>
+                                <div
+                                    class="bg-lamaDark rounded-lg p-4 md:p-8 border-l-4 border-lamaGold shadow-xl mb-8">
+                                    <h2 class="text-2xl font-headings text-lamaGold mb-4">
+                                        <%= event.paqueteOficial.titulo %>
+                                    </h2>
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                                        <div class="bg-lamaBlack p-6 rounded border border-gray-700">
+                                            <p class="text-gray-400 text-sm mb-2">VALOR INSCRIPCIÓN</p>
+                                            <p class="text-3xl font-bold text-lamaGold">$<%=
+                                                    event.paqueteOficial.valor.toLocaleString('es-CO') %>
+                                            </p>
+                                            <p class="text-xs text-gray-500">(<%= event.paqueteOficial.moneda %>)</p>
+                                        </div>
+                                        <div class="bg-lamaBlack p-6 rounded border border-gray-700">
+                                            <p class="text-gray-400 text-sm mb-3">INCLUYE:</p>
+                                            <ul class="space-y-2">
+                                                <% event.paqueteOficial.incluye.forEach(function(item) { %>
+                                                    <li class="text-lamaBone text-sm">• <%= item %>
+                                                    </li>
+                                                    <% }); %>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                <% } %>
+
+                                    <% if (event.agenda && event.agenda.length> 0) { %>
+                                        <div
+                                            class="bg-lamaDark rounded-lg p-4 md:p-8 border border-gray-800 shadow-xl mb-8">
+                                            <h2 class="text-2xl font-headings text-lamaGold mb-6">AGENDA DETALLADA</h2>
+                                            <% event.agenda.forEach(function(dia) { %>
+                                                <div class="mb-8 last:mb-0">
+                                                    <div
+                                                        class="bg-gradient-to-r from-lamaGold/20 to-transparent p-4 rounded mb-4 border-l-4 border-lamaGold">
+                                                        <h3 class="text-2xl font-bold text-lamaGold">
+                                                            <% if (dia.titulo) { %>
+                                                                <%= dia.titulo %>
+                                                                    <% } else { %>DÍA <%= dia.dia %>
+                                                                            <% } %>
+                                                        </h3>
+                                                        <p class="text-lamaNeon text-sm">
+                                                            <%= new Date(dia.fecha).toLocaleDateString('es-CO', {
+                                                                weekday: 'long' , day: 'numeric' , month: 'long' }) %>
+                                                        </p>
+                                                    </div>
+                                                    <div class="space-y-3">
+                                                        <% dia.actividades.forEach(function(act) { %>
+                                                            <div
+                                                                class="bg-lamaBlack p-4 rounded border-l-2 border-lamaGold">
+                                                                <div class="flex justify-between items-start mb-2">
+                                                                    <span class="text-lamaGold font-bold text-lg">
+                                                                        <%= act.hora %>
+                                                                    </span>
+                                                                    <% if (act.obligatorio) { %><span
+                                                                            class="bg-red-900 text-red-200 text-xs px-2 py-1 rounded">OBLIGATORIO</span>
+                                                                        <% } %>
+                                                                </div>
+                                                                <h4 class="text-lamaNeon font-bold mb-2">
+                                                                    <%= act.titulo %>
+                                                                </h4>
+                                                                <% if (act.lugar) { %>
+                                                                    <p class="text-gray-400 text-sm mb-2">
+                                                                        <strong>Lugar:</strong>
+                                                                        <%= act.lugar %>
+                                                                    </p>
+                                                                    <% } %>
+                                                                        <% if (act.detalles) { %>
+                                                                            <p class="text-lamaBone text-sm mb-2">
+                                                                                <%= act.detalles %>
+                                                                            </p>
+                                                                            <% } %>
+                                                            </div>
+                                                            <% }); %>
+                                                    </div>
+                                                </div>
+                                                <% }); %>
+                                        </div>
+                                        <% } %>
+
+                                            <% if (event.id==='vnorte-2026' ) { %>
+                                                <div
+                                                    class="bg-lamaDark rounded-lg p-4 md:p-8 border border-gray-800 shadow-xl mb-8">
+                                                    <h2 class="text-2xl font-headings text-lamaGold mb-2">EXPLORA EL
+                                                        PARAÍSO</h2>
+                                                    <p class="text-lamaBone mb-6">Destinos imperdibles para vivir San
+                                                        Andrés al máximo durante el campeonato.</p>
+
+                                                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                                                        <article
+                                                            class="group relative rounded-[12px] overflow-hidden shadow-lg border border-lamaGold/30">
+                                                            <img src="/img/san-andres/Fotos/Parque_West_View.jpg"
+                                                                alt="West View" loading="lazy"
+                                                                class="w-full h-56 object-cover transition-transform duration-300 group-hover:scale-110">
+                                                            <div
+                                                                class="absolute inset-x-0 bottom-0 p-4 bg-black/45 backdrop-blur-md">
+                                                                <h3
+                                                                    class="text-lamaGold font-headings text-xl tracking-wide">
+                                                                    West View</h3>
+                                                                <a href="/itinerario"
+                                                                    class="inline-flex mt-2 px-3 py-1 border border-lamaNeon text-lamaNeon rounded hover:bg-lamaNeon hover:text-lamaBlack transition-colors text-sm font-bold">Ver
+                                                                    más</a>
+                                                            </div>
+                                                        </article>
+                                                        <article
+                                                            class="group relative rounded-[12px] overflow-hidden shadow-lg border border-lamaGold/30">
+                                                            <img src="/img/san-andres/Fotos/Acuario.jpg" alt="Acuario"
+                                                                loading="lazy"
+                                                                class="w-full h-56 object-cover transition-transform duration-300 group-hover:scale-110">
+                                                            <div
+                                                                class="absolute inset-x-0 bottom-0 p-4 bg-black/45 backdrop-blur-md">
+                                                                <h3
+                                                                    class="text-lamaGold font-headings text-xl tracking-wide">
+                                                                    Acuario</h3>
+                                                                <a href="/itinerario"
+                                                                    class="inline-flex mt-2 px-3 py-1 border border-lamaNeon text-lamaNeon rounded hover:bg-lamaNeon hover:text-lamaBlack transition-colors text-sm font-bold">Ver
+                                                                    más</a>
+                                                            </div>
+                                                        </article>
+                                                        <article
+                                                            class="group relative rounded-[12px] overflow-hidden shadow-lg border border-lamaGold/30">
+                                                            <img src="/img/san-andres/Fotos/Hoyo_Soplador.jpg"
+                                                                alt="Hoyo Soplador" loading="lazy"
+                                                                class="w-full h-56 object-cover transition-transform duration-300 group-hover:scale-110">
+                                                            <div
+                                                                class="absolute inset-x-0 bottom-0 p-4 bg-black/45 backdrop-blur-md">
+                                                                <h3
+                                                                    class="text-lamaGold font-headings text-xl tracking-wide">
+                                                                    Hoyo Soplador</h3>
+                                                                <a href="/itinerario"
+                                                                    class="inline-flex mt-2 px-3 py-1 border border-lamaNeon text-lamaNeon rounded hover:bg-lamaNeon hover:text-lamaBlack transition-colors text-sm font-bold">Ver
+                                                                    más</a>
+                                                            </div>
+                                                        </article>
+                                                        <article
+                                                            class="group relative rounded-[12px] overflow-hidden shadow-lg border border-lamaGold/30">
+                                                            <img src="/img/san-andres/Fotos/Estatua_de_Poseidon.jpg"
+                                                                alt="Estatua de Poseidón" loading="lazy"
+                                                                class="w-full h-56 object-cover transition-transform duration-300 group-hover:scale-110">
+                                                            <div
+                                                                class="absolute inset-x-0 bottom-0 p-4 bg-black/45 backdrop-blur-md">
+                                                                <h3
+                                                                    class="text-lamaGold font-headings text-xl tracking-wide">
+                                                                    Poseidón</h3>
+                                                                <a href="/itinerario"
+                                                                    class="inline-flex mt-2 px-3 py-1 border border-lamaNeon text-lamaNeon rounded hover:bg-lamaNeon hover:text-lamaBlack transition-colors text-sm font-bold">Ver
+                                                                    más</a>
+                                                            </div>
+                                                        </article>
+                                                        <article
+                                                            class="group relative rounded-[12px] overflow-hidden shadow-lg border border-lamaGold/30">
+                                                            <img src="/img/san-andres/Fotos/Johnny_Cay.jpg"
+                                                                alt="Johnny Cay" loading="lazy"
+                                                                class="w-full h-56 object-cover transition-transform duration-300 group-hover:scale-110">
+                                                            <div
+                                                                class="absolute inset-x-0 bottom-0 p-4 bg-black/45 backdrop-blur-md">
+                                                                <h3
+                                                                    class="text-lamaGold font-headings text-xl tracking-wide">
+                                                                    Johnny Cay</h3>
+                                                                <a href="/itinerario"
+                                                                    class="inline-flex mt-2 px-3 py-1 border border-lamaNeon text-lamaNeon rounded hover:bg-lamaNeon hover:text-lamaBlack transition-colors text-sm font-bold">Ver
+                                                                    más</a>
+                                                            </div>
+                                                        </article>
+                                                        <article
+                                                            class="group relative rounded-[12px] overflow-hidden shadow-lg border border-lamaGold/30">
+                                                            <img src="/img/san-andres/Fotos/Cueva_de_Morgan.jpg"
+                                                                alt="Cueva de Morgan" loading="lazy"
+                                                                class="w-full h-56 object-cover transition-transform duration-300 group-hover:scale-110">
+                                                            <div
+                                                                class="absolute inset-x-0 bottom-0 p-4 bg-black/45 backdrop-blur-md">
+                                                                <h3
+                                                                    class="text-lamaGold font-headings text-xl tracking-wide">
+                                                                    Cueva de Morgan</h3>
+                                                                <a href="/itinerario"
+                                                                    class="inline-flex mt-2 px-3 py-1 border border-lamaNeon text-lamaNeon rounded hover:bg-lamaNeon hover:text-lamaBlack transition-colors text-sm font-bold">Ver
+                                                                    más</a>
+                                                            </div>
+                                                        </article>
+                                                    </div>
+                                                </div>
+
+                                                <div
+                                                    class="bg-lamaDark rounded-lg p-4 md:p-8 border border-gray-800 shadow-xl mb-8">
+                                                    <h2 class="text-2xl font-headings text-lamaGold mb-2">EPIC MOMENTS
+                                                    </h2>
+                                                    <p class="text-lamaBone mb-6">Snorkel, mundo submarino y Hoyo
+                                                        Soplador en movimiento continuo.</p>
+                                                    <div class="epic-carousel">
+                                                        <div class="epic-track">
+                                                            <article
+                                                                class="min-w-[280px] md:min-w-[320px] rounded-[12px] overflow-hidden bg-lamaBlack border border-gray-700 shadow-lg">
+                                                                <video class="w-full h-44 object-cover" autoplay muted
+                                                                    loop playsinline preload="metadata"
+                                                                    poster="/img/san-andres/Fotos/Snorkel.jpeg">
+                                                                    <source
+                                                                        src="/img/san-andres/Videos/san_andres_drone_snorkel.mp4"
+                                                                        type="video/mp4">
+                                                                </video>
+                                                                <div class="p-3 text-lamaBone text-sm">Snorkel</div>
+                                                            </article>
+                                                            <article
+                                                                class="min-w-[280px] md:min-w-[320px] rounded-[12px] overflow-hidden bg-lamaBlack border border-gray-700 shadow-lg">
+                                                                <video class="w-full h-44 object-cover" autoplay muted
+                                                                    loop playsinline preload="metadata"
+                                                                    poster="/img/san-andres/Fotos/FaunaMarina1.jpeg">
+                                                                    <source src="/img/san-andres/Videos/Atracciones.mp4"
+                                                                        type="video/mp4">
+                                                                </video>
+                                                                <div class="p-3 text-lamaBone text-sm">Mundo Submarino
+                                                                </div>
+                                                            </article>
+                                                            <article
+                                                                class="min-w-[280px] md:min-w-[320px] rounded-[12px] overflow-hidden bg-lamaBlack border border-gray-700 shadow-lg">
+                                                                <video class="w-full h-44 object-cover" autoplay muted
+                                                                    loop playsinline preload="metadata"
+                                                                    poster="/img/san-andres/Fotos/Hoyo_Soplador1.jpg">
+                                                                    <source
+                                                                        src="/img/san-andres/Videos/san_andres_drone_hoyo_soplador.mp4"
+                                                                        type="video/mp4">
+                                                                </video>
+                                                                <div class="p-3 text-lamaBone text-sm">Hoyo Soplador
+                                                                </div>
+                                                            </article>
+                                                            <article
+                                                                class="min-w-[280px] md:min-w-[320px] rounded-[12px] overflow-hidden bg-lamaBlack border border-gray-700 shadow-lg">
+                                                                <video class="w-full h-44 object-cover" autoplay muted
+                                                                    loop playsinline preload="metadata"
+                                                                    poster="/img/san-andres/Fotos/Snorkel.jpeg">
+                                                                    <source
+                                                                        src="/img/san-andres/Videos/san_andres_drone_snorkel.mp4"
+                                                                        type="video/mp4">
+                                                                </video>
+                                                                <div class="p-3 text-lamaBone text-sm">Snorkel</div>
+                                                            </article>
+                                                            <article
+                                                                class="min-w-[280px] md:min-w-[320px] rounded-[12px] overflow-hidden bg-lamaBlack border border-gray-700 shadow-lg">
+                                                                <video class="w-full h-44 object-cover" autoplay muted
+                                                                    loop playsinline preload="metadata"
+                                                                    poster="/img/san-andres/Fotos/FaunaMarina1.jpeg">
+                                                                    <source src="/img/san-andres/Videos/Atracciones.mp4"
+                                                                        type="video/mp4">
+                                                                </video>
+                                                                <div class="p-3 text-lamaBone text-sm">Mundo Submarino
+                                                                </div>
+                                                            </article>
+                                                            <article
+                                                                class="min-w-[280px] md:min-w-[320px] rounded-[12px] overflow-hidden bg-lamaBlack border border-gray-700 shadow-lg">
+                                                                <video class="w-full h-44 object-cover" autoplay muted
+                                                                    loop playsinline preload="metadata"
+                                                                    poster="/img/san-andres/Fotos/Hoyo_Soplador1.jpg">
+                                                                    <source
+                                                                        src="/img/san-andres/Videos/san_andres_drone_hoyo_soplador.mp4"
+                                                                        type="video/mp4">
+                                                                </video>
+                                                                <div class="p-3 text-lamaBone text-sm">Hoyo Soplador
+                                                                </div>
+                                                            </article>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <% } %>
+
+                                                    <% if (event.costos_adicionales) { %>
+                                                        <div
+                                                            class="bg-lamaDark rounded-lg p-8 border border-gray-800 shadow-xl mb-8">
+                                                            <h2 class="text-2xl font-headings text-lamaGold mb-6">
+                                                                VALORES OPCIONALES Y ADICIONALES</h2>
+                                                            <div class="space-y-6">
+                                                                <% event.costos_adicionales.forEach(function(categoria)
+                                                                    { %>
+                                                                    <div
+                                                                        class="bg-lamaBlack p-6 rounded border-l-4 border-lamaNeon">
+                                                                        <h3 class="text-lamaNeon font-bold mb-4">
+                                                                            <%= categoria.categoria %>
+                                                                        </h3>
+                                                                        <ul class="space-y-3">
+                                                                            <% categoria.items.forEach(function(item) {
+                                                                                %>
+                                                                                <li
+                                                                                    class="flex justify-between items-start gap-4 pb-3 border-b border-gray-700 last:border-b-0 last:pb-0">
+                                                                                    <div>
+                                                                                        <p class="text-lamaBone">
+                                                                                            <%= item.descripcion %>
+                                                                                        </p>
+                                                                                        <% if (item.unidad) { %>
+                                                                                            <p
+                                                                                                class="text-gray-400 text-xs">
+                                                                                                (<%= item.unidad %>)</p>
+                                                                                            <% } %>
+                                                                                    </div>
+                                                                                    <p
+                                                                                        class="text-lamaGold font-bold whitespace-nowrap">
+                                                                                        $<%= item.valor.toLocaleString('es-CO')
+                                                                                            %>
+                                                                                    </p>
+                                                                                </li>
+                                                                                <% }); %>
+                                                                        </ul>
+                                                                    </div>
+                                                                    <% }); %>
+                                                            </div>
+                                                        </div>
+                                                        <% } %>
+
+                                                            <% if (event.recomendaciones &&
+                                                                event.recomendaciones.length> 0) { %>
+                                                                <div
+                                                                    class="bg-lamaDark rounded-lg p-8 border-l-4 border-lamaNeon shadow-xl mb-8">
+                                                                    <h2
+                                                                        class="text-2xl font-headings text-lamaGold mb-4">
+                                                                        RECOMENDACIONES</h2>
+                                                                    <ul class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                                                        <% event.recomendaciones.forEach(function(item)
+                                                                            { %>
+                                                                            <li class="text-lamaBone">• <%= item %>
+                                                                            </li>
+                                                                            <% }); %>
+                                                                    </ul>
+                                                                </div>
+                                                                <% } %>
+
+                                                                    <% if (event.contactos) { %>
+                                                                        <div
+                                                                            class="bg-lamaDark rounded-lg p-8 border border-gray-800 shadow-xl mb-8">
+                                                                            <h2
+                                                                                class="text-2xl font-headings text-lamaGold mb-6">
+                                                                                RESERVAS Y CONTACTO</h2>
+                                                                            <div
+                                                                                class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                                                <% event.contactos.forEach(function(contacto)
+                                                                                    { %>
+                                                                                    <div
+                                                                                        class="bg-lamaBlack p-4 rounded border border-gray-700">
+                                                                                        <p
+                                                                                            class="text-gray-400 text-sm mb-1">
+                                                                                            <%= contacto.tipo %>
+                                                                                        </p>
+                                                                                        <p
+                                                                                            class="text-lamaGold font-bold">
+                                                                                            <%= contacto.valor %>
+                                                                                        </p>
+                                                                                    </div>
+                                                                                    <% }); %>
+                                                                            </div>
+                                                                        </div>
+                                                                        <% } %>
+        </div>
+    </div>
+
+    <%- include('../partials/footer') %>

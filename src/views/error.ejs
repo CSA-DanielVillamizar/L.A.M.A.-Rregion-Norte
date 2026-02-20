@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title || 'Error' %></title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        lamaBlack: '#1a1919',
+                        lamaDark: '#2a2829',
+                        lamaGold: '#f2d00d',
+                        lamaNeon: '#00f5d4',
+                        lamaBone: '#e1e4dc'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@300;400;600;700&display=swap');
+        body { font-family: 'Montserrat', sans-serif; }
+        .font-headings { font-family: 'Bebas Neue', cursive; letter-spacing: 0.08em; }
+    </style>
+</head>
+<body class="bg-lamaBlack text-lamaBone min-h-screen flex items-center justify-center">
+    <div class="max-w-xl w-full bg-lamaDark/80 border-2 border-lamaGold/40 rounded-lg p-8 text-center">
+        <div class="text-6xl font-headings text-lamaGold mb-4">UPS</div>
+        <h1 class="text-3xl font-headings text-lamaNeon mb-4">OCURRIÓ UN ERROR</h1>
+        <p class="text-lamaBone mb-6">
+            <%= message || 'No se pudo cargar la página solicitada.' %>
+        </p>
+        <% if (typeof error !== 'undefined' && error) { %>
+            <details class="text-left bg-lamaBlack/60 border border-lamaGold/20 rounded p-4 mb-6">
+                <summary class="cursor-pointer text-lamaGold font-bold">Detalle técnico</summary>
+                <pre class="text-xs text-gray-300 mt-2 whitespace-pre-wrap"><%= error %></pre>
+            </details>
+        <% } %>
+        <a href="/" class="inline-block px-6 py-3 bg-lamaGold text-lamaBlack font-bold rounded hover:bg-lamaNeon transition">
+            Volver al inicio
+        </a>
+    </div>
+</body>
+</html>
