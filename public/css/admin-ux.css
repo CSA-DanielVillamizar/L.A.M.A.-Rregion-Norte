@@ -207,7 +207,7 @@
 }
 
 .help-text::before {
-    content: '💡';
+    content: 'i';
     font-size: 10px;
 }
 

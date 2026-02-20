@@ -81,7 +81,8 @@ class AdminDashboardUX {
         const fecha_fin = document.getElementById('filter-fecha-fin')?.value || '';
         const busqueda = document.getElementById('filter-buscar')?.value.toLowerCase() || '';
 
-        let filtrados = this.originalData || this.obtenerDatosTabla();
+        const datosBase = this.originalData.length ? this.originalData : this.obtenerDatosTabla();
+        let filtrados = [...datosBase];
         let aplicados = 0;
 
         // Filtrar por estado
@@ -138,7 +139,7 @@ class AdminDashboardUX {
         }
 
         // Actualizar tabla
-        this.mostrarDatosFiltrpelos(filtrados);
+        this.aplicarVisibilidadFilas(filtrados);
 
         // Notificar
         if (filtrados.length === 0) {
@@ -205,7 +206,7 @@ class AdminDashboardUX {
                 emptyRow.innerHTML = `
                     <td colspan="9" class="px-4 py-8 text-center">
                         <div class="empty-state">
-                            <div class="empty-state-icon">🔍</div>
+                            <div class="empty-state-icon">0</div>
                             <div class="empty-state-title">Sin resultados</div>
                             <div class="empty-state-text">No se encontraron inscripciones que coincidan con los filtros aplicados</div>
                         </div>
@@ -289,42 +290,39 @@ class AdminDashboardUX {
     /**
      * Mostrar datos filtrados en la tabla
      */
-    mostrarDatosFiltraciones(datos) {
+    aplicarVisibilidadFilas(datos) {
         const tbody = document.getElementById('tbody');
         if (!tbody) return;
 
-        // Limpiar filas existentes
+        const permitidos = new Set(datos.map(item => String(item.id_inscripcion)));
         const rows = tbody.querySelectorAll('tr[data-estado]');
-        rows.forEach(row => row.remove());
+        let visibles = 0;
 
-        // Agregar filas filtradas
-        datos.forEach(item => {
-            const row = document.createElement('tr');
-            row.className = 'border-t border-gray-700 hover:bg-lamaBlack transition';
-            row.dataset.estado = item.estado_validacion;
-            row.innerHTML = `
-                <td class="px-4 py-3 font-mono">#${item.id_inscripcion}</td>
-                <td class="px-4 py-3">${item.nombre_completo}</td>
-                <td class="px-4 py-3 font-mono">${item.documento_numero}</td>
-                <td class="px-4 py-3 text-sm">${item.tipo_participante}</td>
-                <td class="px-4 py-3">${item.capitulo}</td>
-                <td class="px-4 py-3">—</td>
-                <td class="px-4 py-3 text-lamaGold font-bold">$${parseInt(item.valor_total_pagar).toLocaleString('es-CO')}</td>
-                <td class="px-4 py-3">
-                    <span class="px-3 py-1 rounded-full text-xs font-bold ${item.estado_validacion === 'Pendiente' ? 'badge-pendiente' : item.estado_validacion === 'Aprobado' ? 'badge-aprobado' : 'badge-rechazado'}">
-                        ${item.estado_validacion}
-                    </span>
-                </td>
-                <td class="px-4 py-3">
-                    <div class="flex space-x-2">
-                        <button onclick="verDetalles(${item.id_inscripcion})" class="px-3 py-1 bg-lamaNeon rounded text-lamaBlack text-xs hover:bg-lamaGold">
-                            Ver
-                        </button>
-                    </div>
-                </td>
-            `;
-            tbody.appendChild(row);
+        rows.forEach(row => {
+            const idTexto = (row.querySelector('td')?.textContent || '').replace('#', '').trim();
+            const mostrar = permitidos.has(idTexto);
+            row.style.display = mostrar ? '' : 'none';
+            if (mostrar) visibles++;
         });
+
+        let emptyRow = tbody.querySelector('.empty-row');
+        if (visibles === 0) {
+            if (!emptyRow) {
+                emptyRow = document.createElement('tr');
+                emptyRow.className = 'empty-row';
+                emptyRow.innerHTML = `
+                    <td colspan="9" class="px-4 py-8 text-center">
+                        <div class="empty-state">
+                            <div class="empty-state-title">Sin resultados</div>
+                            <div class="empty-state-text">No se encontraron inscripciones que coincidan con los filtros aplicados</div>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(emptyRow);
+            }
+        } else if (emptyRow) {
+            emptyRow.remove();
+        }
     }
 
     /**
