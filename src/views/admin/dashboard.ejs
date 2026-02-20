@@ -218,23 +218,24 @@
             <!-- Filtros Avanzados - Hito 5 UX Mejorada -->
             <div class="filter-section mt-4">
                 <div class="filter-group">
-                    <label class="filter-label">🔍 Buscar</label>
-                    <input type="text" id="filter-buscar" class="filter-input" placeholder="Nombre, documento, capítulo...">
+                    <label class="filter-label">Buscar</label>
+                    <input type="text" id="filter-buscar" class="filter-input"
+                        placeholder="Nombre, documento, capítulo...">
                     <div class="help-text">Búsqueda en tiempo real</div>
                 </div>
 
                 <div class="filter-group">
-                    <label class="filter-label">📊 Estado</label>
+                    <label class="filter-label">Estado</label>
                     <select id="filter-estado-validacion" class="filter-select">
                         <option value="">— Todos los estados —</option>
-                        <option value="Pendiente">⏳ Pendiente</option>
+                        <option value="Pendiente">Pendiente</option>
                         <option value="Aprobado">✓ Aprobado</option>
                         <option value="Rechazado">✗ Rechazado</option>
                     </select>
                 </div>
 
                 <div class="filter-group">
-                    <label class="filter-label">💰 Rango de Pago</label>
+                    <label class="filter-label">Rango de Pago</label>
                     <div style="display: flex; gap: 8px;">
                         <input type="number" id="filter-rango-min" class="filter-input" placeholder="Mín" min="0">
                         <span style="display: flex; align-items: center;">–</span>
@@ -244,28 +245,30 @@
                 </div>
 
                 <div class="filter-group">
-                    <label class="filter-label">📅 Desde</label>
+                    <label class="filter-label">Desde</label>
                     <input type="date" id="filter-fecha-inicio" class="filter-input">
                 </div>
 
                 <div class="filter-group">
-                    <label class="filter-label">📅 Hasta</label>
+                    <label class="filter-label">Hasta</label>
                     <input type="date" id="filter-fecha-fin" class="filter-input">
                 </div>
 
                 <div class="filter-group " style="display: flex; gap: 8px; margin-top: 20px;">
                     <button id="btn-aplicar-filtros" class="filter-button" onclick="adminUX.aplicarFiltros()">
-                        🔎 Aplicar Filtros
+                        Aplicar Filtros
                     </button>
-                    <button id="btn-resetear-filtros" class="filter-button filter-reset" onclick="adminUX.resetearFiltros()">
-                        ↺ Limpiar
+                    <button id="btn-resetear-filtros" class="filter-button filter-reset"
+                        onclick="adminUX.resetearFiltros()">
+                        Limpiar
                     </button>
                 </div>
             </div>
 
             <!-- Filtros Rápidos - Hito 5 UX Mejorada -->
             <div class="bg-lamaDark/50 p-4 rounded-lg border border-lamaGold/30 mb-6 text-sm text-gray-400">
-                💡 <strong>Tip:</strong> Los filtros de "Estado" y "Buscar" se aplican en tiempo real. Usa "Aplicar Filtros" para búsquedas avanzadas por rango o fecha.
+                <strong>Tip:</strong> Los filtros de "Estado" y "Buscar" se aplican en tiempo real. Usa "Aplicar
+                Filtros" para búsquedas avanzadas por rango o fecha.
             </div>
 
             <!-- Tabla de Inscripciones -->
