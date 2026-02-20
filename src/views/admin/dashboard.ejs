@@ -52,6 +52,9 @@
             color: #FFF;
         }
     </style>
+
+    <!-- Estilos UX Mejorada - Hito 5 -->
+    <link rel="stylesheet" href="/css/admin-ux.css">
 </head>
 
 <body class="bg-lamaBlack min-h-screen">
@@ -212,34 +215,57 @@
 
         <!-- Sección: Inscripciones -->
         <div id="seccionInscripciones">
-            <!-- Filtros -->
-            <div class="bg-lamaDark p-4 rounded-lg border border-lamaNeon mb-6">
-                <div class="flex flex-wrap gap-4 items-center">
-                    <div>
-                        <label class="text-lamaBone mr-2">Filtrar por estado:</label>
-                        <select id="filtroEstado"
-                            class="bg-lamaBlack text-lamaBone px-4 py-2 rounded border border-lamaGold">
-                            <option value="Todos">Todos</option>
-                            <option value="Pendiente">Pendiente</option>
-                            <option value="Aprobado">Aprobado</option>
-                            <option value="Rechazado">Rechazado</option>
-                        </select>
-                    </div>
+            <!-- Filtros Avanzados - Hito 5 UX Mejorada -->
+            <div class="filter-section mt-4">
+                <div class="filter-group">
+                    <label class="filter-label">🔍 Buscar</label>
+                    <input type="text" id="filter-buscar" class="filter-input" placeholder="Nombre, documento, capítulo...">
+                    <div class="help-text">Búsqueda en tiempo real</div>
+                </div>
 
-                    <div>
-                        <input type="text" id="buscarNombre" placeholder="Buscar por nombre..."
-                            class="bg-lamaBlack text-lamaBone px-4 py-2 rounded border border-lamaGold">
-                    </div>
+                <div class="filter-group">
+                    <label class="filter-label">📊 Estado</label>
+                    <select id="filter-estado-validacion" class="filter-select">
+                        <option value="">— Todos los estados —</option>
+                        <option value="Pendiente">⏳ Pendiente</option>
+                        <option value="Aprobado">✓ Aprobado</option>
+                        <option value="Rechazado">✗ Rechazado</option>
+                    </select>
+                </div>
 
-                    <button onclick="exportarCSV()"
-                        class="px-4 py-2 bg-lamaNeon text-lamaBlack rounded hover:bg-lamaGold transition flex items-center gap-2">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                        </svg>
-                        <span>Exportar CSV</span>
+                <div class="filter-group">
+                    <label class="filter-label">💰 Rango de Pago</label>
+                    <div style="display: flex; gap: 8px;">
+                        <input type="number" id="filter-rango-min" class="filter-input" placeholder="Mín" min="0">
+                        <span style="display: flex; align-items: center;">–</span>
+                        <input type="number" id="filter-rango-max" class="filter-input" placeholder="Máx" min="0">
+                    </div>
+                    <div class="help-text">Rango en pesos (COP)</div>
+                </div>
+
+                <div class="filter-group">
+                    <label class="filter-label">📅 Desde</label>
+                    <input type="date" id="filter-fecha-inicio" class="filter-input">
+                </div>
+
+                <div class="filter-group">
+                    <label class="filter-label">📅 Hasta</label>
+                    <input type="date" id="filter-fecha-fin" class="filter-input">
+                </div>
+
+                <div class="filter-group " style="display: flex; gap: 8px; margin-top: 20px;">
+                    <button id="btn-aplicar-filtros" class="filter-button" onclick="adminUX.aplicarFiltros()">
+                        🔎 Aplicar Filtros
+                    </button>
+                    <button id="btn-resetear-filtros" class="filter-button filter-reset" onclick="adminUX.resetearFiltros()">
+                        ↺ Limpiar
                     </button>
                 </div>
+            </div>
+
+            <!-- Filtros Rápidos - Hito 5 UX Mejorada -->
+            <div class="bg-lamaDark/50 p-4 rounded-lg border border-lamaGold/30 mb-6 text-sm text-gray-400">
+                💡 <strong>Tip:</strong> Los filtros de "Estado" y "Buscar" se aplican en tiempo real. Usa "Aplicar Filtros" para búsquedas avanzadas por rango o fecha.
             </div>
 
             <!-- Tabla de Inscripciones -->
@@ -680,13 +706,13 @@
                     const result = await response.json();
 
                     if (result.success) {
-                        alert('Estado actualizado exitosamente');
-                        location.reload();
+                        toast.success('Estado actualizado correctamente', 'Inscripción Actualizada', 2000);
+                        setTimeout(() => location.reload(), 2000);
                     } else {
-                        alert('Error: ' + result.message);
+                        toast.error(result.message || 'No se pudo actualizar el estado', 'Error');
                     }
                 } catch (error) {
-                    alert('Error al conectar con el servidor');
+                    toast.error('No se pudo conectar con el servidor', 'Error de Conexión');
                     console.error(error);
                 }
             }
@@ -913,14 +939,15 @@
 
                     const reorderResult = await reorderResponse.json();
                     if (!reorderResult.success) {
-                        alert('No fue posible actualizar el orden de eventos');
+                        toast.warning('El orden de eventos no se pudo actualizar', 'Acción rechazada');
                         return;
                     }
 
+                    toast.success('Orden de eventos actualizado correectamente', 'Éxito', 3000);
                     cargarEventos();
                 } catch (error) {
                     console.error('Error al mover evento:', error);
-                    alert('Error al actualizar orden de eventos');
+                    toast.error('No se pudo reordenar los eventos', 'Error de reordenamiento');
                 }
             }
 
@@ -972,16 +999,18 @@
                     });
 
                     if (response.ok) {
-                        alert(editingId ? 'Evento actualizado exitosamente' : 'Evento creado exitosamente');
+                        const msg = editingId ? 'Evento actualizado correctamente' : 'Nuevo evento creado exitosamente';
+                        const title = editingId ? 'Evento Actualizado' : 'Evento Creado';
+                        toast.success(msg, title, 4000);
                         cerrarModalEvento();
                         cargarEventos();
                         delete event.target.dataset.editingId;
                     } else {
-                        alert('Error al guardar el evento');
+                        toast.error('No se pudo guardar el evento. Verifica los datos e intenta nuevamente.', 'Error al guardar');
                     }
                 } catch (error) {
                     console.error('Error al guardar evento:', error);
-                    alert('Error al guardar el evento');
+                    toast.error('Error al guardar el evento: ' + error.message, 'Error');
                 }
             }
 
@@ -996,7 +1025,7 @@
                     const evento = (data.data || []).find(e => e.id === id);
 
                     if (!evento) {
-                        alert('Evento no encontrado');
+                        toast.warning('No se encontró el evento solicitado', 'Evento no localizado');
                         return;
                     }
 
@@ -2028,3 +2057,11 @@
             }
         });
     </script>
+
+    <!-- Scripts de UX Mejorada - Hito 5 -->
+    <script src="/js/toast-notification.js"></script>
+    <script src="/js/admin-dashboard-ux.js"></script>
+
+</body>
+
+</html>
