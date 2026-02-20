@@ -1,0 +1,52 @@
+    <!-- Cierre del contenido principal -->
+    
+    <footer class="bg-lamaBlack border-t border-gray-800 py-12 mt-12">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+                <div class="text-center md:text-left flex flex-col items-center md:items-start">
+                    <img src="/img/LAMARegionNorte.png" alt="L.A.M.A. Región Norte" class="h-20 w-auto mb-3">
+                    <span class="text-4xl font-headings text-lamaGold tracking-widest block mb-2">L.A.M.A.</span>
+                    <p class="text-xs text-gray-500 tracking-[0.5em]">LATIN AMERICAN</p>
+                    <p class="text-xs text-gray-500 tracking-[0.5em]">MOTORCYCLE ASSOCIATION</p>
+                </div>
+
+                <div class="text-center">
+                    <h4 class="text-lamaGold font-bold mb-4">NAVEGACIÓN</h4>
+                    <div class="flex flex-col space-y-2 text-sm text-gray-400">
+                        <a href="/" class="hover:text-lamaNeon transition-colors">Inicio</a>
+                        <a href="/eventos" class="hover:text-lamaNeon transition-colors">Eventos</a>
+                        <a href="/club" class="hover:text-lamaNeon transition-colors">Sobre Nosotros</a>
+                        <a href="/contacto" class="hover:text-lamaNeon transition-colors">Contacto</a>
+                    </div>
+                </div>
+
+                <div class="text-center md:text-right">
+                    <h4 class="text-lamaGold font-bold mb-4">SÍGUENOS</h4>
+                    <div class="flex justify-center md:justify-end space-x-4 text-sm">
+                        <a href="https://www.instagram.com/lamaregionnorte/" target="_blank" rel="noopener noreferrer" class="text-lamaBone hover:text-lamaNeon transition-colors" title="Instagram">Instagram</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center border-t border-gray-800 pt-8">
+                <p class="text-lamaNeon font-bold border border-lamaNeon inline-block px-4 py-2 rounded text-sm mb-4">
+                    HARDCORE TROPICAL 2026
+                </p>
+                <p class="text-gray-600 text-xs">
+                    © 2026 L.A.M.A. Región Norte Colombia. Todos los derechos reservados.
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const mobileBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        if (mobileBtn && mobileMenu) {
+            mobileBtn.addEventListener('click', function() {
+                mobileMenu.classList.toggle('hidden');
+            });
+        }
+    </script>
+</body>
+</html>

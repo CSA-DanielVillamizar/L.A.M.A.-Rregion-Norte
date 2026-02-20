@@ -1,0 +1,42 @@
+{
+  "name": "lama-hardcore-tropical-webapp",
+  "version": "1.0.0",
+  "description": "Web App Full Stack con estilo Hardcore Tropical para L.A.M.A. Región Norte",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js",
+    "reseed:municipios": "node scripts/reseed_municipios_catalogo.js --confirmar",
+    "cleanup:ids": "node scripts/cleanup_records_by_id.js",
+    "cleanup:ids:dryrun": "node scripts/cleanup_records_by_id.js --confirmar --dry-run"
+  },
+  "keywords": [
+    "express",
+    "tailwind",
+    "lama",
+    "hardcore-tropical"
+  ],
+  "author": "L.A.M.A. Team",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^1.6.5",
+    "body-parser": "^1.20.2",
+    "colombia-cities": "^1.0.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "ejs": "^3.1.9",
+    "express": "^4.18.2",
+    "express-session": "^1.19.0",
+    "joi": "^17.11.0",
+    "mssql": "^10.0.1",
+    "multer": "^2.0.2",
+    "pdfkit": "^0.17.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2"
+  },
+  "directories": {
+    "doc": "docs"
+  },
+  "type": "commonjs"
+}

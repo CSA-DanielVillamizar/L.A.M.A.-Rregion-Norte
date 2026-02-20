@@ -1,0 +1,68 @@
+<%- include('../partials/header') %>
+
+<div class="container mx-auto px-4 py-16">
+    <div class="text-center mb-16 animate-fade-in-up">
+        <h1 class="text-5xl md:text-7xl font-headings text-lamaGold tracking-widest mb-4">EVENTOS</h1>
+        <p class="text-xl text-lamaBone max-w-2xl mx-auto">
+            Únete a la hermandad en nuestros próximos encuentros épicos
+        </p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <% events.forEach(function(event) { %>
+        <article class="bg-lamaDark rounded-lg overflow-hidden border border-gray-800 hover:border-lamaNeon transition-all shadow-xl hover:shadow-2xl hover:shadow-lamaNeon/20 <%= event.destacado ? 'ring-2 ring-lamaGold' : '' %>">
+            <div class="relative h-48 bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center">
+                <% if (event.destacado) { %>
+                <div class="absolute top-4 right-4 bg-lamaGold text-lamaBlack px-3 py-1 rounded text-xs font-bold">
+                    DESTACADO
+                </div>
+                <% } %>
+                <div class="text-6xl"><% const eventId = String(event.id || ''); if (eventId.includes('vnorte')) { %>VN<% } else if (eventId.includes('aniversario')) { %>ANV<% } else if (eventId.includes('rally')) { %>RLY<% } else { %>EVT<% } %></div>
+            </div>
+            
+            <div class="p-6">
+                <h3 class="text-2xl font-headings text-lamaGold mb-2"><%= event.nombre %></h3>
+                <div class="space-y-2 text-sm text-lamaBone mb-4">
+                    <p class="flex items-center gap-2">
+                        <svg class="w-4 h-4 text-lamaNeon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                        <span><%= new Date(event.fecha).toLocaleDateString('es-CO', { year: 'numeric', month: 'long', day: 'numeric' }) %></span>
+                    </p>
+                    <p class="flex items-center gap-2">
+                        <svg class="w-4 h-4 text-lamaNeon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                        <span><%= event.ubicacion %></span>
+                    </p>
+                    <p class="flex items-center gap-2">
+                        <svg class="w-4 h-4 text-lamaNeon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <span><%= event.precio == null ? 'Por definir' : (event.moneda === 'USD' ? ('$' + event.precio + ' USD') : ('$' + event.precio.toLocaleString('es-CO') + ' COP')) %></span>
+                    </p>
+                </div>
+                
+                <p class="text-gray-400 text-sm mb-4"><%= event.descripcion %></p>
+                
+                <div class="mb-4">
+                    <div class="flex justify-between text-xs text-gray-400 mb-1">
+                        <span>Cupos: <%= event.registrados %>/<%= event.capacidad %></span>
+                        <span><%= event.porcentajeOcupacion %>%</span>
+                    </div>
+                    <div class="w-full bg-gray-700 rounded-full h-2">
+                        <div class="bg-lamaNeon rounded-full h-2 transition-all" style="width: <%= event.porcentajeOcupacion %>%"></div>
+                    </div>
+                </div>
+
+                <a href="/eventos/<%= event.id %>" class="block w-full text-center bg-lamaGold text-lamaBlack font-bold py-3 rounded hover:bg-lamaNeon transition-colors">
+                    VER DETALLES
+                </a>
+            </div>
+        </article>
+        <% }); %>
+    </div>
+</div>
+
+<%- include('../partials/footer') %>

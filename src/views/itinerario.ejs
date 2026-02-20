@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapa Interactivo del Evento - V Campeonato Regional</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <link href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" rel="stylesheet">
+    <style>
+        * {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a1919 0%, #2d2d2d 100%);
+        }
+
+        .lamaBlack {
+            background-color: #1a1919;
+        }
+
+        .lamaGold {
+            color: #f2d00d;
+        }
+
+        .lamaNeon {
+            color: #00f5d4;
+        }
+
+        .lamaBone {
+            color: #e1e4dc;
+        }
+
+        .glass-panel {
+            background: rgba(26, 25, 25, 0.8);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(242, 208, 13, 0.2);
+        }
+
+        .glow-neon {
+            box-shadow: 0 0 20px rgba(0, 245, 212, 0.3);
+        }
+
+        .glow-gold {
+            box-shadow: 0 0 15px rgba(242, 208, 13, 0.3);
+        }
+
+        .map-grid {
+            background-image: radial-gradient(circle, rgba(0, 245, 212, 0.05) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+
+        #map {
+            width: 100%;
+            height: 100%;
+            border-radius: 12px;
+        }
+
+        .leaflet-control-attribution {
+            display: none;
+        }
+    </style>
+</head>
+
+<body class="h-screen w-screen flex flex-col">
+    <!-- Header -->
+    <header class="h-20 glass-panel border-b border-amber-500/20 flex items-center justify-between px-8 z-50">
+        <div class="flex items-center gap-4">
+            <div
+                class="w-12 h-12 bg-gradient-to-br from-amber-400 to-amber-600 rounded-lg flex items-center justify-center">
+                <span class="material-icons text-black font-bold">map</span>
+            </div>
+            <div>
+                <h1 class="text-xl font-bold tracking-tighter uppercase leading-none lamaGold">V Campeonato Regional de
+                    Mototurismo</h1>
+                <p class="text-xs lamaNeon uppercase tracking-widest">Mapa Interactivo del Evento</p>
+            </div>
+        </div>
+        <a href="/"
+            class="px-6 py-2 bg-amber-500/20 border border-amber-500/40 rounded-lg lamaBone hover:bg-amber-500/30 transition-all text-sm uppercase font-semibold">
+            ← Volver
+        </a>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-1 flex overflow-hidden gap-6 p-6">
+        <!-- Left Sidebar -->
+        <aside class="w-96 flex flex-col gap-6">
+            <!-- Route Selection -->
+            <div class="glass-panel rounded-xl p-6 glow-neon">
+                <h2 class="lamaGold font-bold uppercase tracking-widest text-sm mb-4 flex items-center gap-2">
+                    <span class="material-icons text-sm">route</span>
+                    Seleccionar Ruta
+                </h2>
+                <div class="space-y-3">
+                    <button onclick="filterRoute('all')"
+                        class="w-full flex items-center justify-between p-3 rounded-lg bg-amber-500/30 border border-amber-500 text-white font-bold transition-all hover:bg-amber-500/40">
+                        <div class="flex items-center gap-2">
+                            <span class="material-icons">public</span>
+                            <span class="text-sm">VER TODO</span>
+                        </div>
+                        <span class="material-icons text-sm">check_circle</span>
+                    </button>
+                    <button onclick="filterRoute('agenda')"
+                        class="w-full flex items-center justify-between p-3 rounded-lg bg-amber-500/20 border border-amber-500/40 text-white hover:bg-amber-500/30 transition-all font-semibold">
+                        <div class="flex items-center gap-2 lamaGold">
+                            <span class="material-icons">event</span>
+                            <span class="text-sm">AGENDA EVENTO</span>
+                        </div>
+                    </button>
+                    <button onclick="filterRoute('hospedaje')"
+                        class="w-full flex items-center justify-between p-3 rounded-lg bg-white/10 border border-white/30 text-white hover:bg-white/20 transition-all font-semibold">
+                        <div class="flex items-center gap-2 lamaBone">
+                            <span class="material-icons">hotel</span>
+                            <span class="text-sm">HOSPEDAJE</span>
+                        </div>
+                    </button>
+                    <button onclick="filterRoute('atraccion')"
+                        class="w-full flex items-center justify-between p-3 rounded-lg bg-orange-500/20 border border-orange-500/40 text-white hover:bg-orange-500/30 transition-all font-semibold">
+                        <div class="flex items-center gap-2 text-orange-300">
+                            <span class="material-icons">attractions</span>
+                            <span class="text-sm">ATRACCIONES</span>
+                        </div>
+                    </button>
+                    <button onclick="filterRoute('interes')"
+                        class="w-full flex items-center justify-between p-3 rounded-lg bg-fuchsia-500/20 border border-fuchsia-500/40 text-white hover:bg-fuchsia-500/30 transition-all font-semibold">
+                        <div class="flex items-center gap-2 text-fuchsia-300">
+                            <span class="material-icons">place</span>
+                            <span class="text-sm">PUNTOS DE INTERÉS</span>
+                        </div>
+                    </button>
+                    <button onclick="filterRoute('playa')"
+                        class="w-full flex items-center justify-between p-3 rounded-lg bg-sky-500/20 border border-sky-500/40 text-white hover:bg-sky-500/30 transition-all font-semibold">
+                        <div class="flex items-center gap-2 text-sky-300">
+                            <span class="material-icons">beach_access</span>
+                            <span class="text-sm">PLAYAS</span>
+                        </div>
+                    </button>
+                    <button onclick="filterRoute('barrio')"
+                        class="w-full flex items-center justify-between p-3 rounded-lg bg-violet-500/20 border border-violet-500/40 text-white hover:bg-violet-500/30 transition-all font-semibold">
+                        <div class="flex items-center gap-2 text-violet-300">
+                            <span class="material-icons">apartment</span>
+                            <span class="text-sm">BARRIOS</span>
+                        </div>
+                    </button>
+                    <button onclick="filterRoute('comercio')"
+                        class="w-full flex items-center justify-between p-3 rounded-lg bg-emerald-500/20 border border-emerald-500/40 text-white hover:bg-emerald-500/30 transition-all font-semibold">
+                        <div class="flex items-center gap-2 text-emerald-300">
+                            <span class="material-icons">storefront</span>
+                            <span class="text-sm">COMERCIO</span>
+                        </div>
+                    </button>
+                    <button onclick="filterRoute('salud')"
+                        class="w-full flex items-center justify-between p-3 rounded-lg bg-red-500/20 border border-red-500/40 text-white hover:bg-red-500/30 transition-all font-semibold">
+                        <div class="flex items-center gap-2 text-red-300">
+                            <span class="material-icons">local_hospital</span>
+                            <span class="text-sm">SALUD</span>
+                        </div>
+                    </button>
+                    <button onclick="filterRoute('hotel')"
+                        class="w-full flex items-center justify-between p-3 rounded-lg bg-slate-500/20 border border-slate-500/40 text-white hover:bg-slate-500/30 transition-all font-semibold">
+                        <div class="flex items-center gap-2 text-slate-200">
+                            <span class="material-icons">hotel</span>
+                            <span class="text-sm">HOTELES</span>
+                        </div>
+                    </button>
+                    <button onclick="filterRoute('hostal')"
+                        class="w-full flex items-center justify-between p-3 rounded-lg bg-yellow-500/20 border border-yellow-500/40 text-white hover:bg-yellow-500/30 transition-all font-semibold">
+                        <div class="flex items-center gap-2 text-yellow-300">
+                            <span class="material-icons">night_shelter</span>
+                            <span class="text-sm">HOSTALES</span>
+                        </div>
+                    </button>
+                    <button onclick="filterRoute('nautica')"
+                        class="w-full flex items-center justify-between p-3 rounded-lg bg-cyan-500/20 border border-cyan-500/40 text-white hover:bg-cyan-500/30 transition-all font-semibold">
+                        <div class="flex items-center gap-2 lamaNeon">
+                            <span class="material-icons">directions_boat</span>
+                            <span class="text-sm">RUTA NÁUTICA</span>
+                        </div>
+                    </button>
+                    <button onclick="filterRoute('terrestre')"
+                        class="w-full flex items-center justify-between p-3 rounded-lg bg-amber-500/20 border border-amber-500/40 text-white hover:bg-amber-500/30 transition-all font-semibold">
+                        <div class="flex items-center gap-2 lamaGold">
+                            <span class="material-icons">directions_car</span>
+                            <span class="text-sm">RUTA TERRESTRE</span>
+                        </div>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Points of Interest -->
+            <div class="glass-panel rounded-xl p-6 glow-gold flex-1 overflow-y-auto">
+                <h2 class="lamaGold font-bold uppercase tracking-widest text-sm mb-4 flex items-center gap-2">
+                    <span class="material-icons text-sm">place</span>
+                    Puntos de Interés
+                </h2>
+                <div class="space-y-4" id="pointsList">
+                    <!-- Dinamicamente poblado -->
+                </div>
+            </div>
+
+            <!-- Info Box -->
+            <div class="glass-panel rounded-xl p-4">
+                <div class="flex items-center gap-2 text-xs lamaBone mb-2 uppercase font-bold tracking-widest">
+                    <span class="material-icons text-sm">info</span>
+                    Información Logística
+                </div>
+                <p class="text-xs text-gray-300 leading-relaxed">
+                    <span class="material-icons text-xs align-middle mr-1">two_wheeler</span><strong>Todos los
+                        participantes</strong> deben llevar ID y documentos.
+                    <br><br><span class="material-icons text-xs align-middle mr-1">apartment</span><strong>Hotel
+                        Sede:</strong> Mangrove Bay Hotel, San Andres Islas.
+                    <br><br><span
+                        class="material-icons text-xs align-middle mr-1">warning_amber</span><strong>Clima:</strong>
+                    Consultar pronóstico antes de salida.
+                </p>
+            </div>
+        </aside>
+
+        <!-- Map Area -->
+        <div class="flex-1 relative map-grid rounded-xl overflow-hidden">
+            <div id="map" class="w-full h-full"></div>
+
+            <!-- Weather Widget -->
+            <div class="absolute top-6 right-6 z-40">
+                <div class="glass-panel p-4 rounded-xl flex items-center gap-5 glow-neon border-l-4 border-l-cyan-400">
+                    <div class="flex items-center gap-3">
+                        <span class="material-icons text-3xl lamaNeon">wb_sunny</span>
+                        <div>
+                            <p class="text-2xl font-bold leading-none text-white">28°C</p>
+                            <p class="text-xs lamaBone uppercase tracking-widest">Despejado</p>
+                        </div>
+                    </div>
+                    <div class="h-8 w-px bg-white/10"></div>
+                    <div class="space-y-1">
+                        <div class="flex items-center gap-2 text-xs uppercase font-bold lamaNeon">
+                            <span class="material-icons text-sm">air</span>
+                            12 KTS E
+                        </div>
+                        <div class="flex items-center gap-2 text-xs uppercase font-bold lamaGold">
+                            <span class="material-icons text-sm">water_drop</span>
+                            HUM 75%
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SOS Button -->
+            <div class="absolute bottom-6 right-6 z-40">
+                <button onclick="alert('Contactando logística del evento...')"
+                    class="bg-red-500 text-white font-black px-6 py-3 rounded-xl flex items-center gap-2 glow-gold hover:scale-105 active:scale-95 transition-all uppercase tracking-tighter text-sm italic shadow-xl border-2 border-red-600">
+                    <span class="material-icons">contact_support</span>
+                    SOS
+                </button>
+            </div>
+
+            <!-- Legend -->
+            <div class="absolute bottom-6 left-6 z-40">
+                <div
+                    class="glass-panel px-4 py-2 rounded-lg flex items-center gap-6 text-xs font-bold uppercase tracking-widest">
+                    <div class="flex items-center gap-2">
+                        <div class="w-4 h-1 bg-cyan-400"></div>
+                        <span class="lamaNeon">Agenda Náutica</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <div class="w-4 h-1 bg-amber-400"></div>
+                        <span class="lamaGold">Agenda Terrestre</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <div class="w-4 h-1 bg-white"></div>
+                        <span class="lamaBone">Hospedaje</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <div class="w-4 h-1 bg-orange-400"></div>
+                        <span class="text-orange-300">Atracción</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <div class="w-4 h-1 bg-fuchsia-400"></div>
+                        <span class="text-fuchsia-300">Punto de interés</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <div class="w-4 h-1 bg-sky-400"></div>
+                        <span class="text-sky-300">Playa</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <div class="w-4 h-1 bg-violet-400"></div>
+                        <span class="text-violet-300">Barrio</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <div class="w-4 h-1 bg-emerald-400"></div>
+                        <span class="text-emerald-300">Comercio</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <div class="w-4 h-1 bg-red-400"></div>
+                        <span class="text-red-300">Salud</span>
+                    </div>
+                </div>
+            </div>
+    </main>
+    </main>
+
+    <script>
+        let map = L.map('map').setView([12.5847, -81.7006], 13);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: ''
+        }).addTo(map);
+
+        const puntos = [
+            {
+                id: 1,
+                nombre: "Aeropuerto Internacional Gustavo Rojas Pinilla",
+                descripcion: "Aterrizaje y recepción isleña",
+                coords: [12.5836, -81.7110],
+                categoria: "agenda",
+                tipoRuta: "terrestre",
+                hora: "Sáb 08:00 AM",
+                icono: "flight_land",
+                color: "#f2d00d"
+            },
+            {
+                id: 2,
+                nombre: "Mangrove Bay Hotel, San Andres Islas",
+                descripcion: "Hotel sede - Check-in y entrega de kits",
+                coords: [12.5760, -81.7002],
+                categoria: "agenda",
+                tipoRuta: "terrestre",
+                hora: "Sáb 09:00 AM",
+                icono: "apartment",
+                color: "#f2d00d"
+            },
+            {
+                id: 3,
+                nombre: "Muelle Portofino / Marina Tonino",
+                descripcion: "Formación escuadra naval - obligatorio",
+                coords: [12.5833, -81.6902],
+                categoria: "agenda",
+                tipoRuta: "nautica",
+                hora: "Sáb 01:30 PM",
+                icono: "sailing",
+                color: "#00f5d4"
+            },
+            {
+                id: 4,
+                nombre: "Bahía de San Andrés",
+                descripcion: "Inicio del campeonato náutico",
+                coords: [12.5823, -81.6909],
+                categoria: "agenda",
+                tipoRuta: "nautica",
+                hora: "Sáb 02:00 PM",
+                icono: "directions_boat",
+                color: "#00f5d4"
+            },
+            {
+                id: 5,
+                nombre: "Manglares Old Point",
+                descripcion: "Ruta náutica oficial",
+                coords: [12.5548, -81.7152],
+                categoria: "agenda",
+                tipoRuta: "nautica",
+                hora: "Sáb 02:30 PM",
+                icono: "water",
+                color: "#00f5d4"
+            },
+            {
+                id: 6,
+                nombre: "El Acuario",
+                descripcion: "Parada técnica ruta náutica",
+                coords: [12.5576, -81.6897],
+                categoria: "agenda",
+                tipoRuta: "nautica",
+                hora: "Sáb 03:30 PM",
+                icono: "waves",
+                color: "#00f5d4"
+            },
+            {
+                id: 7,
+                nombre: "Johnny Cay",
+                descripcion: "Desembarco y juegos playeros",
+                coords: [12.6228, -81.6918],
+                categoria: "agenda",
+                tipoRuta: "nautica",
+                hora: "Sáb 04:30 PM",
+                icono: "beach_access",
+                color: "#00f5d4"
+            },
+            {
+                id: 8,
+                nombre: "Chamey's Nautica - Kayak & Wind Surf",
+                descripcion: "Vista de amanecer y salida temprana",
+                coords: [12.5206, -81.7164],
+                categoria: "agenda",
+                tipoRuta: "nautica",
+                hora: "Dom 05:00 AM",
+                icono: "wb_sunny",
+                color: "#00f5d4"
+            },
+            {
+                id: 9,
+                nombre: "Cueva de Morgan",
+                descripcion: "Inicio caravana terrestre",
+                coords: [12.5574, -81.7099],
+                categoria: "agenda",
+                tipoRuta: "terrestre",
+                hora: "Dom 10:00 AM",
+                icono: "route",
+                color: "#f2d00d"
+            },
+            {
+                id: 10,
+                nombre: "La Piscinita",
+                descripcion: "Ruta turística terrestre",
+                coords: [12.5318, -81.7248],
+                categoria: "agenda",
+                tipoRuta: "terrestre",
+                hora: "Dom 10:30 AM",
+                icono: "pool",
+                color: "#f2d00d"
+            },
+            {
+                id: 11,
+                nombre: "Hoyo Soplador",
+                descripcion: "Ruta turística terrestre",
+                coords: [12.5155, -81.7301],
+                categoria: "agenda",
+                tipoRuta: "terrestre",
+                hora: "Dom 11:00 AM",
+                icono: "air",
+                color: "#f2d00d"
+            },
+            {
+                id: 12,
+                nombre: "West View",
+                descripcion: "Ruta turística terrestre",
+                coords: [12.5350, -81.7270],
+                categoria: "agenda",
+                tipoRuta: "terrestre",
+                hora: "Dom 11:20 AM",
+                icono: "visibility",
+                color: "#f2d00d"
+            },
+            {
+                id: 13,
+                nombre: "Letrero I LOVE SAI",
+                descripcion: "Foto oficial del evento",
+                coords: [12.5852, -81.7005],
+                categoria: "agenda",
+                tipoRuta: "terrestre",
+                hora: "Dom 12:00 PM",
+                icono: "photo_camera",
+                color: "#f2d00d"
+            },
+            {
+                id: 14,
+                nombre: "Restaurante de Playa (San Luis / Sound Bay)",
+                descripcion: "Almuerzo de clausura y premiación",
+                coords: [12.5238, -81.7049],
+                categoria: "agenda",
+                tipoRuta: "terrestre",
+                hora: "Dom 12:30 PM",
+                icono: "restaurant",
+                color: "#f2d00d"
+            },
+            {
+                id: 15,
+                nombre: "Mangrove Bay Hotel",
+                descripcion: "Hospedaje recomendado / hotel sede",
+                coords: [12.5760, -81.7002],
+                categoria: "hotel",
+                tipoRuta: "",
+                hora: "Hospedaje",
+                icono: "hotel",
+                color: "#e1e4dc"
+            },
+            {
+                id: 16,
+                nombre: "Apartamento Chamey Nautica",
+                descripcion: "Hospedaje cercano a actividades náuticas",
+                coords: [12.5212, -81.7162],
+                categoria: "hostal",
+                tipoRuta: "",
+                hora: "Hospedaje",
+                icono: "home",
+                color: "#fde047"
+            },
+            {
+                id: 17,
+                nombre: "Decameron Isleño",
+                descripcion: "Hotel y hospedaje en zona céntrica",
+                coords: [12.5863, -81.6992],
+                categoria: "hotel",
+                tipoRuta: "",
+                hora: "Hospedaje",
+                icono: "hotel_class",
+                color: "#e1e4dc"
+            },
+            {
+                id: 18,
+                nombre: "GHL Relax Hotel Sunrise",
+                descripcion: "Hospedaje con acceso a zona comercial",
+                coords: [12.5818, -81.6892],
+                categoria: "hotel",
+                tipoRuta: "",
+                hora: "Hospedaje",
+                icono: "hotel",
+                color: "#e1e4dc"
+            },
+            {
+                id: 19,
+                nombre: "Playa Spratt Bight",
+                descripcion: "Atracción turística principal",
+                coords: [12.5862, -81.6943],
+                categoria: "atraccion",
+                tipoRuta: "",
+                hora: "Atracción",
+                icono: "beach_access",
+                color: "#f59e0b"
+            },
+            {
+                id: 20,
+                nombre: "Rocky Cay",
+                descripcion: "Atracción natural y paseo turístico",
+                coords: [12.5483, -81.7093],
+                categoria: "atraccion",
+                tipoRuta: "",
+                hora: "Atracción",
+                icono: "landscape",
+                color: "#f59e0b"
+            },
+            {
+                id: 21,
+                nombre: "Primera Iglesia Bautista de La Loma",
+                descripcion: "Mirador y punto cultural recomendado",
+                coords: [12.5577, -81.7108],
+                categoria: "interes",
+                tipoRuta: "",
+                hora: "Punto de interés",
+                icono: "church",
+                color: "#d946ef"
+            },
+            {
+                id: 22,
+                nombre: "Casa Museo Isleña",
+                descripcion: "Patrimonio cultural y arquitectónico",
+                coords: [12.5448, -81.7148],
+                categoria: "interes",
+                tipoRuta: "",
+                hora: "Punto de interés",
+                icono: "museum",
+                color: "#d946ef"
+            },
+            {
+                id: 23,
+                nombre: "Malecón de Spratt Bight",
+                descripcion: "Zona peatonal y punto de encuentro",
+                coords: [12.5854, -81.6948],
+                categoria: "interes",
+                tipoRuta: "",
+                hora: "Punto de interés",
+                icono: "map",
+                color: "#d946ef"
+            },
+            {
+                id: 24,
+                nombre: "Playa de San Luis",
+                descripcion: "Playa tranquila ideal para descanso y fotos",
+                coords: [12.5232, -81.7046],
+                categoria: "playa",
+                tipoRuta: "",
+                hora: "Playa",
+                icono: "beach_access",
+                color: "#38bdf8"
+            },
+            {
+                id: 25,
+                nombre: "Sound Bay",
+                descripcion: "Zona de playa amplia para paseo en grupo",
+                coords: [12.5196, -81.7068],
+                categoria: "playa",
+                tipoRuta: "",
+                hora: "Playa",
+                icono: "surfing",
+                color: "#38bdf8"
+            },
+            {
+                id: 26,
+                nombre: "Cocoplum Beach",
+                descripcion: "Playa recomendada para baño y atardecer",
+                coords: [12.5440, -81.7098],
+                categoria: "playa",
+                tipoRuta: "",
+                hora: "Playa",
+                icono: "waves",
+                color: "#38bdf8"
+            },
+            {
+                id: 27,
+                nombre: "Barrio La Loma",
+                descripcion: "Sector tradicional con miradores naturales",
+                coords: [12.5589, -81.7118],
+                categoria: "barrio",
+                tipoRuta: "",
+                hora: "Barrio",
+                icono: "apartment",
+                color: "#a78bfa"
+            },
+            {
+                id: 28,
+                nombre: "Barrio San Luis",
+                descripcion: "Zona residencial costera con ambiente local",
+                coords: [12.5230, -81.7044],
+                categoria: "barrio",
+                tipoRuta: "",
+                hora: "Barrio",
+                icono: "holiday_village",
+                color: "#a78bfa"
+            },
+            {
+                id: 29,
+                nombre: "North End",
+                descripcion: "Centro urbano principal de San Andrés",
+                coords: [12.5867, -81.6955],
+                categoria: "barrio",
+                tipoRuta: "",
+                hora: "Barrio",
+                icono: "location_city",
+                color: "#a78bfa"
+            },
+            {
+                id: 30,
+                nombre: "Zona Comercial Peatonal",
+                descripcion: "Tiendas, souvenirs y puntos duty free",
+                coords: [12.5848, -81.6944],
+                categoria: "comercio",
+                tipoRuta: "",
+                hora: "Comercio",
+                icono: "storefront",
+                color: "#22c55e"
+            },
+            {
+                id: 31,
+                nombre: "New Point Plaza",
+                descripcion: "Centro comercial para compras y descanso",
+                coords: [12.5856, -81.6940],
+                categoria: "comercio",
+                tipoRuta: "",
+                hora: "Comercio",
+                icono: "shopping_bag",
+                color: "#22c55e"
+            },
+            {
+                id: 32,
+                nombre: "Hospital Departamental Clarence Lynd Newball",
+                descripcion: "Punto principal de atención médica",
+                coords: [12.5775, -81.7024],
+                categoria: "salud",
+                tipoRuta: "",
+                hora: "Salud",
+                icono: "local_hospital",
+                color: "#ef4444"
+            },
+            {
+                id: 33,
+                nombre: "Cruz Roja Colombiana - Seccional San Andrés",
+                descripcion: "Atención de apoyo y primeros auxilios",
+                coords: [12.5799, -81.6988],
+                categoria: "salud",
+                tipoRuta: "",
+                hora: "Salud",
+                icono: "health_and_safety",
+                color: "#ef4444"
+            },
+            {
+                id: 34,
+                nombre: "Decameron Marazul",
+                descripcion: "Hotel recomendado con acceso al mar",
+                coords: [12.5598, -81.7310],
+                categoria: "hotel",
+                tipoRuta: "",
+                hora: "Hospedaje",
+                icono: "hotel_class",
+                color: "#e1e4dc"
+            },
+            {
+                id: 35,
+                nombre: "Hotel Nattivo Collection",
+                descripcion: "Hotel en zona céntrica para grupos",
+                coords: [12.5843, -81.6928],
+                categoria: "hotel",
+                tipoRuta: "",
+                hora: "Hospedaje",
+                icono: "hotel",
+                color: "#e1e4dc"
+            },
+            {
+                id: 36,
+                nombre: "Viajero Hostel San Andrés",
+                descripcion: "Hostal para viajeros en zona central",
+                coords: [12.5835, -81.6941],
+                categoria: "hostal",
+                tipoRuta: "",
+                hora: "Hospedaje",
+                icono: "night_shelter",
+                color: "#fde047"
+            },
+            {
+                id: 37,
+                nombre: "Posada Nativa Miss Trinie",
+                descripcion: "Hostal/posada tradicional isleña",
+                coords: [12.5531, -81.7144],
+                categoria: "hostal",
+                tipoRuta: "",
+                hora: "Hospedaje",
+                icono: "home_work",
+                color: "#fde047"
+            }
+        ];
+
+        const mediaPorPunto = {
+            1: { tipo: 'foto', src: '/img/san-andres/Fotos/Aeropuerto.jpeg', alt: 'Aeropuerto Internacional Gustavo Rojas Pinilla' },
+            2: { tipo: 'video', src: '/img/san-andres/Videos/mangrovebayhotel.mp4', poster: '/img/san-andres/Fotos/Mangrove.jpg' },
+            3: { tipo: 'foto', src: '/img/san-andres/Fotos/chalupa.jpg', alt: 'Muelle Portofino / Marina Tonino' },
+            4: { tipo: 'video', src: '/img/san-andres/Videos/Mar7Colores1.mp4', poster: '/img/san-andres/Fotos/Mar_de_los_7_Colores.png' },
+            5: { tipo: 'foto', src: '/img/san-andres/Fotos/Manglares_Old_Point.jpg', alt: 'Manglares Old Point' },
+            6: { tipo: 'foto', src: '/img/san-andres/Fotos/Acuario.jpg', alt: 'El Acuario' },
+            7: { tipo: 'foto', src: '/img/san-andres/Fotos/Johnny_Cay.jpg', alt: 'Johnny Cay' },
+            8: { tipo: 'foto', src: '/img/san-andres/Fotos/ChameyNautica.jpg', alt: "Chamey's Nautica - Kayak & Wind Surf" },
+            9: { tipo: 'foto', src: '/img/san-andres/Fotos/Cueva_de_Morgan.jpg', alt: 'Cueva de Morgan' },
+            10: { tipo: 'video', src: '/img/san-andres/Videos/LaPiscinita.mp4', poster: '/img/san-andres/Fotos/Playa.jpg' },
+            11: { tipo: 'video', src: '/img/san-andres/Videos/san_andres_drone_hoyo_soplador.mp4', poster: '/img/san-andres/Fotos/Hoyo_Soplador.jpg' },
+            12: { tipo: 'foto', src: '/img/san-andres/Fotos/Parque_West_View.jpg', alt: 'West View' },
+            13: { tipo: 'foto', src: '/img/san-andres/Fotos/I_Love_S_A_I.jpg', alt: 'Letrero I LOVE SAI' },
+            14: { tipo: 'foto', src: '/img/san-andres/Fotos/RestauranteSoundBay.jpg', alt: 'Restaurante de Playa (San Luis / Sound Bay)' },
+            16: { tipo: 'foto', src: '/img/san-andres/Fotos/ApartamentoChamey.jpg', alt: 'Apartamento Chamey Nautica' },
+            17: { tipo: 'foto', src: '/img/san-andres/Fotos/DecameronIsleno.jpg', alt: 'Decameron Isleño' },
+            18: { tipo: 'foto', src: '/img/san-andres/Fotos/GHL.jpg', alt: 'GHL Relax Hotel Sunrise' },
+            19: { tipo: 'foto', src: '/img/san-andres/Fotos/Playa.jpg', alt: 'Playa Spratt Bight' },
+            20: { tipo: 'video', src: '/img/san-andres/Videos/RockyCay.mp4', poster: '/img/san-andres/Fotos/rose_cay.jpg' },
+            21: { tipo: 'foto', src: '/img/san-andres/Fotos/Iglesia.jpg', alt: 'Primera Iglesia Bautista de La Loma' },
+            22: { tipo: 'foto', src: '/img/san-andres/Fotos/CasaMuseo.jpg', alt: 'Casa Museo Isleña' },
+            23: { tipo: 'video', src: '/img/san-andres/Videos/san_andres_drone_city.mp4', poster: '/img/san-andres/Fotos/Malecon.jpg' },
+            24: { tipo: 'foto', src: '/img/san-andres/Fotos/Playa.jpg', alt: 'Playa de San Luis' },
+            26: { tipo: 'foto', src: '/img/san-andres/Fotos/Cayo_Acuario.jpg', alt: 'Cocoplum Beach' },
+            30: { tipo: 'foto', src: '/img/san-andres/Fotos/Malecon.jpg', alt: 'Zona Comercial Peatonal' },
+            34: { tipo: 'foto', src: '/img/san-andres/Fotos/DecameronMarazul.jpg', alt: 'Decameron Marazul' },
+            36: { tipo: 'foto', src: '/img/san-andres/Fotos/ViajeroHostel.jpg', alt: 'Viajero Hostel San Andrés' },
+            37: { tipo: 'foto', src: '/img/san-andres/Fotos/PosadaNativaMissTrinie.jpg', alt: 'Posada Nativa Miss Trinie' }
+        };
+
+        const marcadores = {};
+        puntos.forEach(punto => {
+            const marker = L.circleMarker(punto.coords, {
+                radius: 10,
+                fillColor: punto.color,
+                color: "#fff",
+                weight: 2,
+                opacity: 0.8,
+                fillOpacity: 0.9
+            });
+
+            const media = mediaPorPunto[punto.id];
+            const mediaHtml = media
+                ? (media.tipo === 'video'
+                    ? `<video autoplay muted loop playsinline preload="metadata" poster="${media.poster || ''}" style="width: 100%; height: 130px; object-fit: cover; border-radius: 12px; margin-bottom: 8px; box-shadow: 0 6px 18px rgba(0,0,0,.35);"><source src="${media.src}" type="video/mp4"></video>`
+                    : `<img src="${media.src}" alt="${media.alt || punto.nombre}" loading="lazy" style="width: 100%; height: 130px; object-fit: cover; border-radius: 12px; margin-bottom: 8px; box-shadow: 0 6px 18px rgba(0,0,0,.35);">`)
+                : '';
+
+            const popup = `
+                <div style="text-align: center; font-family: 'Space Grotesk'; padding: 10px;">
+                    ${mediaHtml}
+                    <h3 style="color: ${punto.color}; font-weight: bold; margin-bottom: 5px; font-size: 14px;">${punto.nombre}</h3>
+                    <p style="font-size: 12px; color: #e1e4dc; margin: 3px 0;">${punto.descripcion}</p>
+                    <p style="font-size: 11px; color: #888;"><span class="material-icons" style="font-size: 12px; vertical-align: middle;">schedule</span> ${punto.hora}</p>
+                    <p style="font-size: 11px; color: #bcbcbc;"><span class="material-icons" style="font-size: 12px; vertical-align: middle;">place</span> ${punto.categoria.toUpperCase()} ${punto.tipoRuta ? '· ' + punto.tipoRuta.toUpperCase() : ''}</p>
+                </div>
+            `;
+
+            marker.bindPopup(popup);
+            marker.addTo(map);
+            marcadores[punto.id] = { marker, punto };
+        });
+
+        function filterRoute(tipo) {
+            Object.values(marcadores).forEach(({ marker, punto }) => {
+                const coincide = tipo === 'all'
+                    || punto.categoria === tipo
+                    || punto.tipoRuta === tipo;
+
+                marker.setStyle(
+                    coincide
+                        ? { opacity: 1, fillOpacity: 1 }
+                        : { opacity: 0.25, fillOpacity: 0.25 }
+                );
+            });
+        }
+
+        function actualizarLista() {
+            const lista = document.getElementById('pointsList');
+            lista.innerHTML = puntos.map(punto => `
+                <div class="group cursor-pointer hover:scale-102 transition-transform" data-point-id="${punto.id}">
+                    <div class="flex items-center gap-3 p-2 rounded hover:bg-white/5">
+                        <div class="w-3 h-6 rounded-full" style="background-color: ${punto.color}; box-shadow: 0 0 10px ${punto.color}40;"></div>
+                        <div class="flex-1">
+                            <p class="text-sm font-bold text-white uppercase flex items-center gap-1"><span class="material-icons text-sm">${punto.icono}</span>${punto.nombre}</p>
+                            <p class="text-xs text-gray-300"><span class="material-icons text-xs align-middle mr-1">schedule</span>${punto.hora} • ${punto.descripcion}</p>
+                            <p class="text-[11px] text-gray-400 uppercase tracking-wide">${punto.categoria}${punto.tipoRuta ? ' · ' + punto.tipoRuta : ''}</p>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+            lista.querySelectorAll('[data-point-id]').forEach((item) => {
+                item.addEventListener('click', () => {
+                    const pointId = Number(item.getAttribute('data-point-id'));
+                    const entry = marcadores[pointId];
+                    if (!entry) {
+                        return;
+                    }
+
+                    map.setView(entry.punto.coords, 15, { animate: true });
+                    entry.marker.openPopup();
+                });
+            });
+        }
+
+        actualizarLista();
+
+        setTimeout(() => {
+            map.invalidateSize();
+        }, 100);
+    </script>
+</body>
+
+</html>

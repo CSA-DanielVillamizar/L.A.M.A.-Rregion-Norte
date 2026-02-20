@@ -1,0 +1,273 @@
+<%- include('partials/header') %>
+
+    <!-- Hero Section -->
+    <header class="relative min-h-[80vh] flex flex-col justify-center items-center text-center px-4 overflow-hidden">
+        <video class="absolute inset-0 w-full h-full object-cover" autoplay muted loop playsinline preload="metadata"
+            poster="/img/san-andres/Fotos/Mar_de_los_7_Colores.png">
+            <source src="/img/san-andres/Videos/san_andres_drone_all3.mp4" type="video/mp4">
+        </video>
+        <div class="absolute inset-0 bg-black/60"></div>
+        <div class="absolute inset-0 bg-gradient-to-t from-lamaBlack via-transparent to-transparent"></div>
+
+        <div class="relative z-10 w-full max-w-4xl animate-fade-in-up px-2 sm:px-0">
+            <p class="text-lamaNeon font-bold tracking-[0.2em] sm:tracking-[0.3em] text-xs sm:text-base mb-4">IDENTIDAD
+                VISUAL 2026</p>
+            <h1 class="text-4xl sm:text-6xl md:text-8xl font-headings mb-2 text-white leading-tight break-words">
+                <%= hero.title %>
+                    <span
+                        class="font-accent text-lamaNeon neon-text text-3xl sm:text-5xl md:text-7xl block md:inline mt-3 md:mt-0 break-words">
+                        <%= hero.subtitle %>
+                    </span>
+            </h1>
+            <h2 class="text-2xl sm:text-3xl md:text-5xl font-headings text-lamaGold mt-4 break-words">
+                <%= hero.tagline %>
+            </h2>
+            <p
+                class="mt-6 sm:mt-8 text-base sm:text-lg md:text-xl max-w-2xl mx-auto text-lamaBone font-light leading-relaxed">
+                <%= hero.description %>
+            </p>
+            <div class="mt-10 flex flex-col md:flex-row gap-4 justify-center">
+                <a href="https://lamaregionnorte.azurewebsites.net/registro-campeonato"
+                    class="w-full md:w-auto bg-lamaGold text-lamaBlack font-bold py-3 px-8 rounded hover:bg-white transition-colors cursor-pointer text-center min-h-[48px] flex items-center justify-center">
+                    <%= hero.eventDate %>
+                </a>
+                <a href="/eventos/vnorte-2026"
+                    class="w-full md:w-auto border-2 border-lamaNeon text-lamaNeon font-bold py-3 px-8 rounded hover:bg-lamaNeon hover:text-lamaBlack transition-colors text-center min-h-[48px] flex items-center justify-center">
+                    <%= hero.location %>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Features Section -->
+    <section class="container mx-auto px-4 py-24">
+        <h2 class="text-4xl md:text-6xl font-headings text-center text-lamaGold mb-16 tracking-widest">
+            LA EXPERIENCIA
+        </h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <% features.forEach(function(feature) { %>
+                <div
+                    class="bg-lamaDark p-8 rounded-lg border border-gray-800 hover:border-lamaNeon transition-all shadow-xl hover:shadow-2xl hover:shadow-lamaNeon/20 text-center">
+                    <div class="text-lamaNeon mb-4 flex justify-center"><%- feature.icon %></div>
+                    <h3 class="text-2xl font-headings text-lamaGold mb-4 tracking-wider">
+                        <%= feature.title %>
+                    </h3>
+                    <p class="text-lamaBone">
+                        <%= feature.description %>
+                    </p>
+                </div>
+                <% }); %>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="bg-lamaDark py-16 border-y border-gray-800">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+                <div>
+                    <div class="text-6xl font-headings text-lamaNeon neon-text mb-2">
+                        <%= stats.miembros %>
+                    </div>
+                    <p class="text-lamaGold font-bold tracking-wider">MIEMBROS ACTIVOS</p>
+                </div>
+                <div>
+                    <div class="text-6xl font-headings text-lamaGold mb-2">
+                        <%= stats.eventos %>
+                    </div>
+                    <p class="text-lamaGold font-bold tracking-wider">EVENTOS ANUALES</p>
+                </div>
+                <div>
+                    <div class="text-6xl font-headings text-lamaNeon neon-text mb-2">
+                        <%= stats.capitulos %>
+                    </div>
+                    <p class="text-lamaGold font-bold tracking-wider">CAPÍTULOS</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Experiencias Premium Section -->
+    <section class="container mx-auto px-4 py-24">
+        <h2 class="text-4xl md:text-6xl font-headings text-center text-lamaGold mb-4 tracking-widest">
+            EXPERIENCIAS PREMIUM
+        </h2>
+        <p class="text-center text-lamaBone mb-16 text-lg">Potencia tu experiencia en San Andrés con servicios
+            exclusivos</p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- TRASLADOS AEROPUERTO -->
+            <div class="service-card relative overflow-hidden border-2 border-lamaGold/50 rounded-[12px] p-6 cursor-pointer hover:border-lamaNeon hover:shadow-lg hover:shadow-lamaNeon/30 transition-all shadow-md"
+                data-service="traslado-aeropuerto" data-price="40000"
+                style="background-image: url('/img/san-andres/Fotos/Traslado_Aerpuerto.jpg'); background-size: cover; background-position: center;">
+                <div class="absolute inset-0 bg-gradient-to-b from-black/45 via-black/65 to-black/85"></div>
+                <div class="relative z-10 flex items-center gap-3 mb-4">
+                    <svg class="w-8 h-8 text-lamaGold" fill="currentColor" viewBox="0 0 24 24">
+                        <path
+                            d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.22.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm11 0c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zM5 11l1.5-4.5h11L19 11H5z" />
+                    </svg>
+                    <h3 class="text-lg font-headings text-lamaGold">Traslado Aeropuerto</h3>
+                </div>
+                <p class="relative z-10 text-sm text-lamaBone mb-4 leading-relaxed">Servicio de taxi entre Hotel y
+                    Aeropuerto.
+                    Transporte cómodo y seguro con conductor profesional.</p>
+                <div class="relative z-10 space-y-2 text-xs text-gray-300 mb-4">
+                    <p><span class="font-bold text-lamaNeon">•</span> Hotel → Aeropuerto O Aeropuerto → Hotel</p>
+                    <p><span class="font-bold text-lamaNeon">•</span> Conductor profesional incluido</p>
+                </div>
+                <div class="relative z-10 text-2xl font-bold text-lamaGold">$40.000</div>
+                <p class="relative z-10 text-xs text-gray-300 mt-2">por trayecto individual</p>
+            </div>
+
+            <!-- JET SKI -->
+            <div class="service-card relative overflow-hidden border-2 border-lamaGold/50 rounded-[12px] p-6 cursor-pointer hover:border-lamaNeon hover:shadow-lg hover:shadow-lamaNeon/30 transition-all shadow-md"
+                data-service="jet-ski" data-price="400000"
+                style="background-image: url('/img/san-andres/Fotos/jetski.jpg'); background-size: cover; background-position: center;">
+                <div class="absolute inset-0 bg-gradient-to-b from-black/40 via-black/60 to-black/80"></div>
+                <div class="relative z-10 flex items-center gap-3 mb-4">
+                    <h3 class="text-lg font-headings text-lamaGold">Cupo Jet Ski</h3>
+                </div>
+                <p class="relative z-10 text-sm text-lamaBone mb-4 leading-relaxed">Adrenalina máxima en las aguas
+                    turquesas de San Andrés. Experiencia emocionante para 2 personas.</p>
+                <div class="relative z-10 space-y-2 text-xs text-gray-300 mb-4">
+                    <p><span class="font-bold text-lamaNeon">•</span> Capacidad: 2 personas</p>
+                    <p><span class="font-bold text-lamaNeon">•</span> Duración: 1 hora</p>
+                    <p><span class="font-bold text-lamaNeon">•</span> Incluye: Chaleco salvavidas</p>
+                </div>
+                <div class="relative z-10 text-2xl font-bold text-lamaGold">$400.000</div>
+                <p class="relative z-10 text-xs text-gray-300 mt-2">por hora</p>
+            </div>
+
+            <!-- LANCHA DE LUJO/PONTÓN -->
+            <div class="service-card relative overflow-hidden border-2 border-lamaGold/50 rounded-[12px] p-6 cursor-pointer hover:border-lamaNeon hover:shadow-lg hover:shadow-lamaNeon/30 transition-all shadow-md"
+                data-service="lancha-lujo" data-price="80000"
+                style="background-image: url('/img/san-andres/Fotos/Pontones.jpg'); background-size: cover; background-position: center;">
+                <div class="absolute inset-0 bg-gradient-to-b from-black/45 via-black/65 to-black/85"></div>
+                <div class="relative z-10 flex items-center gap-3 mb-4">
+                    <h3 class="text-lg font-headings text-lamaGold">Lancha de Lujo/Pontón</h3>
+                </div>
+                <p class="relative z-10 text-sm text-lamaBone mb-4 leading-relaxed">Recorrido completo: manglares,
+                    tesoros escondidos. Domingo 9 am a 5 pm. Trae tu snorkel.</p>
+                <div class="relative z-10 space-y-2 text-xs text-gray-300 mb-4">
+                    <p><span class="font-bold text-lamaNeon">•</span> Recorrido: Isla completa con paradas</p>
+                    <p><span class="font-bold text-lamaNeon">•</span> Horario: 9 am - 5 pm</p>
+                    <p><span class="font-bold text-lamaNeon">•</span> Almuerzo: Se vende en la parada</p>
+                </div>
+                <div class="relative z-10 text-2xl font-bold text-lamaGold">$80.000</div>
+                <p class="relative z-10 text-xs text-gray-300 mt-2">por persona</p>
+            </div>
+
+            <!-- VELERO MAR DE 7 COLORES -->
+            <div class="service-card relative overflow-hidden border-2 border-lamaGold/50 rounded-[12px] p-6 cursor-pointer hover:border-lamaNeon hover:shadow-lg hover:shadow-lamaNeon/30 transition-all shadow-md"
+                data-service="velero-7colores" data-price="100000"
+                style="background-image: url('/img/san-andres/Fotos/Veleros.jpg'); background-size: cover; background-position: center;">
+                <div class="absolute inset-0 bg-gradient-to-b from-black/45 via-black/65 to-black/85"></div>
+                <div class="relative z-10 flex items-center gap-3 mb-4">
+                    <h3 class="text-lg font-headings text-lamaGold">Velero Mar 7 Colores</h3>
+                </div>
+                <p class="relative z-10 text-sm text-lamaBone mb-4 leading-relaxed">Navegación mágica por el legendario
+                    mar de 7 colores. Trae tus propias bebidas y refrigerio.</p>
+                <div class="relative z-10 space-y-2 text-xs text-gray-300 mb-4">
+                    <p><span class="font-bold text-lamaNeon">•</span> Navegación en velero profesional</p>
+                    <p><span class="font-bold text-lamaNeon">•</span> Duración: 4 horas</p>
+                    <p><span class="font-bold text-lamaNeon">•</span> Aviso: Trae tus bebidas y snacks</p>
+                </div>
+                <div class="relative z-10 text-2xl font-bold text-lamaGold">$100.000</div>
+                <p class="relative z-10 text-xs text-gray-300 mt-2">por persona</p>
+            </div>
+
+            <!-- MULA (GOLF CART) -->
+            <div class="service-card relative overflow-hidden border-2 border-lamaGold/50 rounded-[12px] p-6 cursor-pointer hover:border-lamaNeon hover:shadow-lg hover:shadow-lamaNeon/30 transition-all shadow-md"
+                data-service="mula-golfcart" data-price="250000"
+                style="background-image: url('/img/san-andres/Fotos/Mulitas.jpg'); background-size: cover; background-position: center;">
+                <div class="absolute inset-0 bg-gradient-to-b from-black/45 via-black/65 to-black/85"></div>
+                <div class="relative z-10 flex items-center gap-3 mb-4">
+                    <svg class="w-8 h-8 text-lamaGold" fill="currentColor" viewBox="0 0 24 24">
+                        <path
+                            d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.22.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm11 0c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zM5 11l1.5-4.5h11L19 11H5z" />
+                    </svg>
+                    <h3 class="text-lg font-headings text-lamaGold">Mula (Golf Cart)</h3>
+                </div>
+                <p class="relative z-10 text-sm text-lamaBone mb-4 leading-relaxed">Vuelta a la isla del domingo.
+                    Vehículo cómodo para
+                    recorrer todo San Andrés en familia.</p>
+                <div class="relative z-10 space-y-2 text-xs text-gray-300 mb-4">
+                    <p><span class="font-bold text-lamaNeon">•</span> Capacidad: 5 personas</p>
+                    <p><span class="font-bold text-lamaNeon">•</span> Horario: 9 am - 6 pm</p>
+                    <p><span class="font-bold text-lamaNeon">•</span> Nota: Uno del grupo conduce</p>
+                </div>
+                <div class="relative z-10 text-2xl font-bold text-lamaGold">$250.000</div>
+                <p class="relative z-10 text-xs text-gray-300 mt-2">por grupo de 5 personas</p>
+            </div>
+
+            <!-- CHIVA -->
+            <div class="service-card relative overflow-hidden border-2 border-lamaGold/50 rounded-[12px] p-6 cursor-pointer hover:border-lamaNeon hover:shadow-lg hover:shadow-lamaNeon/30 transition-all shadow-md"
+                data-service="chiva-tour" data-price="50000"
+                style="background-image: url('/img/san-andres/Fotos/chivas.jpg'); background-size: cover; background-position: center;">
+                <div class="absolute inset-0 bg-gradient-to-b from-black/45 via-black/65 to-black/85"></div>
+                <div class="relative z-10 flex items-center gap-3 mb-4">
+                    <svg class="w-8 h-8 text-lamaGold" fill="currentColor" viewBox="0 0 24 24">
+                        <path
+                            d="M4 16c0 .88.39 1.67 1 2.22V20c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h8v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1.78c.61-.55 1-1.34 1-2.22V6c0-3.5-3.58-4-8-4s-8 .5-8 4v10zm3.5 1c-.83 0-1.5-.67-1.5-1.5S6.67 14 7.5 14s1.5.67 1.5 1.5S8.33 17 7.5 17zm9 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm1.5-6H6V6h12v5z" />
+                    </svg>
+                    <h3 class="text-lg font-headings text-lamaGold">Cupo en Chiva</h3>
+                </div>
+                <p class="relative z-10 text-sm text-lamaBone mb-4 leading-relaxed">Experiencia folclórica auténtica.
+                    Recorrido
+                    turístico en el tradicional transporte de la isla.</p>
+                <div class="relative z-10 space-y-2 text-xs text-gray-300 mb-4">
+                    <p><span class="font-bold text-lamaNeon">•</span> Duración: 3 horas</p>
+                    <p><span class="font-bold text-lamaNeon">•</span> Ruta: Lugares más bellos</p>
+                    <p><span class="font-bold text-lamaNeon">•</span> Incluye: Guía turístico</p>
+                </div>
+                <div class="relative z-10 text-2xl font-bold text-lamaGold">$50.000</div>
+                <p class="relative z-10 text-xs text-gray-300 mt-2">por persona</p>
+            </div>
+
+            <!-- BURRO TOUR -->
+            <div class="service-card relative overflow-hidden border-2 border-lamaGold/50 rounded-[12px] p-6 cursor-pointer hover:border-lamaNeon hover:shadow-lg hover:shadow-lamaNeon/30 transition-all shadow-md"
+                data-service="tour-burro" data-price="140000"
+                style="background-image: url('/img/san-andres/Fotos/Ponton.jpg'); background-size: cover; background-position: center;">
+                <div class="absolute inset-0 bg-gradient-to-b from-black/45 via-black/65 to-black/85"></div>
+                <div class="relative z-10 flex items-center gap-3 mb-4">
+                    <svg class="w-8 h-8 text-lamaGold" fill="currentColor" viewBox="0 0 24 24">
+                        <path
+                            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z" />
+                    </svg>
+                    <h3 class="text-lg font-headings text-lamaGold">Burro Tour</h3>
+                </div>
+                <p class="relative z-10 text-sm text-lamaBone mb-4 leading-relaxed">Recorrido auténtico montando burro.
+                    Conecta con la
+                    naturaleza y la tradición sanandresana.</p>
+                <div class="relative z-10 space-y-2 text-xs text-gray-300 mb-4">
+                    <p><span class="font-bold text-lamaNeon">•</span> Duración: 2 horas</p>
+                    <p><span class="font-bold text-lamaNeon">•</span> Ruta: Senderos naturales</p>
+                    <p><span class="font-bold text-lamaNeon">•</span> Recomendación: Lleva agua</p>
+                </div>
+                <div class="relative z-10 text-2xl font-bold text-lamaGold">$140.000</div>
+                <p class="relative z-10 text-xs text-gray-300 mt-2">por persona</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="container mx-auto px-4 py-24 text-center">
+        <h2 class="text-3xl sm:text-5xl font-headings text-white mb-6 leading-tight">
+            ¿LISTO PARA LA <span class="text-lamaNeon neon-text">AVENTURA?</span>
+        </h2>
+        <p class="text-base sm:text-xl text-lamaBone mb-10 max-w-2xl mx-auto">
+            Únete a la hermandad más exclusiva de motociclistas de Latinoamérica
+        </p>
+        <div class="flex flex-col md:flex-row gap-4 justify-center">
+            <a href="/registro-campeonato"
+                class="bg-lamaGold text-lamaBlack font-bold py-4 px-10 rounded-lg hover:bg-lamaNeon hover:scale-105 transition-all text-lg">
+                REGISTRO OFICIAL
+            </a>
+            <a href="/eventos"
+                class="border-2 border-lamaBone text-lamaBone font-bold py-4 px-10 rounded-lg hover:bg-lamaBone hover:text-lamaBlack transition-all text-lg">
+                VER EVENTOS
+            </a>
+        </div>
+    </section>
+
+    <%- include('partials/footer') %>

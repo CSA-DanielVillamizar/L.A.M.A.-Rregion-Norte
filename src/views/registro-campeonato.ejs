@@ -1,0 +1,2675 @@
+<%- include('partials/header') %>
+
+<style>
+    .form-input {
+        background-color: #1A1A1A;
+        border: 2px solid #4A4A4A;
+        color: #F5F5DC;
+        transition: all 0.3s ease;
+    }
+
+    .form-input:focus {
+        outline: none;
+        border-color: #00F5FF;
+        box-shadow: 0 0 10px rgba(0, 245, 255, 0.3);
+    }
+
+    .form-label {
+        color: #F5F5DC;
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+        display: block;
+    }
+
+    .form-section {
+        background: linear-gradient(135deg, #1A1A1A 0%, #0A0A0A 100%);
+        border: 1px solid #D4AF37;
+        border-radius: 8px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 4px 20px rgba(212, 175, 55, 0.1);
+    }
+
+    .form-section-title {
+        color: #D4AF37;
+        font-size: 1.4rem;
+        margin-bottom: 1.5rem;
+        border-bottom: 2px solid #D4AF37;
+        padding-bottom: 0.5rem;
+    }
+
+    .btn-submit {
+        background: linear-gradient(135deg, #D4AF37 0%, #FFD700 100%);
+        color: #0A0A0A;
+        font-weight: bold;
+        padding: 1rem 2rem;
+        border: none;
+        border-radius: 8px;
+        font-size: 1.1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        width: 100%;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+    }
+
+    .btn-submit:hover {
+        background: linear-gradient(135deg, #00F5FF 0%, #00CED1 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(0, 245, 255, 0.4);
+    }
+
+    .modal-backdrop {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.7);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 50;
+        padding: 1rem;
+    }
+
+    .modal-backdrop.active {
+        display: flex;
+    }
+
+    .modal-card {
+        background: linear-gradient(135deg, rgba(18, 17, 10, 0.98) 0%, rgba(18, 17, 10, 0.95) 100%);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(242, 208, 13, 0.3);
+        border-radius: 12px;
+        padding: 0;
+        max-width: 900px;
+        width: 92%;
+        color: #e9e9e2;
+        max-height: 90vh;
+        overflow-y: auto;
+        box-shadow: 0 0 40px rgba(242, 208, 13, 0.2);
+    }
+
+    /* Success Header Styles */
+    .success-header {
+        text-align: center;
+        padding: 2rem 2rem 1.5rem 2rem;
+        border-bottom: 1px solid rgba(242, 208, 13, 0.2);
+    }
+
+    .success-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background: rgba(242, 208, 13, 0.1);
+        border: 2px solid #f2d00d;
+        margin-bottom: 1rem;
+    }
+
+    .success-icon svg {
+        width: 50px;
+        height: 50px;
+        stroke: #f2d00d;
+        stroke-width: 2;
+        fill: none;
+    }
+
+    .success-title {
+        font-family: 'Bebas Neue', 'Arial Black', sans-serif;
+        font-size: 3rem;
+        color: #f2d00d;
+        letter-spacing: 3px;
+        margin: 0 0 0.5rem 0;
+        text-transform: uppercase;
+    }
+
+    .success-subtitle {
+        font-size: 0.8rem;
+        color: rgba(233, 233, 226, 0.6);
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 3px;
+        margin: 0;
+    }
+
+    /* Summary Content Styles */
+    .summary-content {
+        padding: 0;
+    }
+
+    .summary-section-header {
+        background: rgba(242, 208, 13, 0.1);
+        border-bottom: 1px solid rgba(242, 208, 13, 0.2);
+        padding: 0.75rem 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .summary-section-title {
+        font-family: 'Bebas Neue', 'Arial Black', sans-serif;
+        font-size: 1.4rem;
+        color: #f2d00d;
+        letter-spacing: 2px;
+        margin: 0;
+    }
+
+    .registration-id {
+        background: #e9e9e2;
+        color: #12110a;
+        font-size: 0.6rem;
+        font-weight: 700;
+        padding: 0.4rem 0.8rem;
+        border-radius: 20px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .summary-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 3rem;
+        padding: 2rem;
+    }
+
+    .summary-column {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    .summary-column h3 {
+        font-size: 0.7rem;
+        font-weight: 700;
+        color: rgba(242, 208, 13, 0.6);
+        text-transform: uppercase;
+        letter-spacing: 3px;
+        border-bottom: 1px solid rgba(242, 208, 13, 0.1);
+        padding-bottom: 0.5rem;
+        margin: 0 0 1rem 0;
+    }
+
+    .summary-field {
+        display: flex;
+        flex-direction: column;
+        gap: 0.3rem;
+    }
+
+    .summary-label {
+        font-size: 0.7rem;
+        color: rgba(233, 233, 226, 0.5);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-weight: 500;
+    }
+
+    .summary-value {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #ffffff;
+    }
+
+    .payment-status {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: rgba(233, 233, 226, 0.1);
+        color: #e9e9e2;
+        border: 1px solid rgba(233, 233, 226, 0.2);
+        padding: 0.5rem 0.75rem;
+        border-radius: 8px;
+        font-size: 0.7rem;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-top: 1rem;
+    }
+
+    .payment-status-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #fbbf24;
+    }
+
+    .services-list {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .service-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 0.85rem;
+    }
+
+    .service-name {
+        color: rgba(233, 233, 226, 0.8);
+    }
+
+    .service-tag {
+        font-size: 0.6rem;
+        color: rgba(242, 208, 13, 0.8);
+        margin-left: 0.3rem;
+    }
+
+    .service-price {
+        font-family: 'Courier New', monospace;
+        color: #ffffff;
+        font-weight: 600;
+    }
+
+    .total-box {
+        margin-top: 2rem;
+        padding: 1rem;
+        background: rgba(242, 208, 13, 0.1);
+        border: 2px solid #f2d00d;
+        border-radius: 8px;
+        text-align: center;
+        box-shadow: 0 0 20px rgba(242, 208, 13, 0.2);
+    }
+
+    .total-label {
+        font-size: 0.6rem;
+        font-weight: 700;
+        color: #f2d00d;
+        text-transform: uppercase;
+        letter-spacing: 3px;
+        margin: 0 0 0.3rem 0;
+    }
+
+    .total-amount {
+        font-family: 'Bebas Neue', 'Arial Black', sans-serif;
+        font-size: 2.5rem;
+        color: #f2d00d;
+        letter-spacing: -1px;
+        margin: 0;
+    }
+
+    /* Action Buttons */
+    .action-area {
+        padding: 1rem 2rem 2rem 2rem;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .btn-download {
+        width: 100%;
+        background: #00f5d4;
+        color: #12110a;
+        font-weight: 700;
+        padding: 1rem;
+        border: none;
+        border-radius: 8px;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.75rem;
+        box-shadow: 0 0 15px rgba(0, 245, 212, 0.3);
+    }
+
+    .btn-download:hover {
+        background: rgba(0, 245, 212, 0.9);
+        transform: translateY(-2px);
+        box-shadow: 0 0 25px rgba(0, 245, 212, 0.5);
+    }
+
+    .btn-upload {
+        width: 100%;
+        background: transparent;
+        color: #f2d00d;
+        font-weight: 700;
+        padding: 1rem;
+        border: 2px solid #f2d00d;
+        border-radius: 8px;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.75rem;
+    }
+
+    .btn-upload:hover {
+        background: rgba(242, 208, 13, 0.1);
+    }
+
+    .validation-note {
+        text-align: center;
+        font-size: 0.65rem;
+        color: rgba(233, 233, 226, 0.5);
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        margin-top: 0.5rem;
+    }
+
+    /* Footer Chapters */
+    .chapters-footer {
+        padding: 2rem;
+        border-top: 1px solid rgba(242, 208, 13, 0.1);
+    }
+
+    .chapters-grid {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 1.5rem 2rem;
+    }
+
+    .chapter-name {
+        font-size: 0.65rem;
+        font-weight: 700;
+        color: rgba(242, 208, 13, 0.4);
+        text-transform: uppercase;
+        letter-spacing: 2px;
+    }
+
+    .unity-message {
+        text-align: center;
+        font-size: 0.65rem;
+        color: rgba(233, 233, 226, 0.3);
+        text-transform: uppercase;
+        letter-spacing: 4px;
+        margin-top: 1.5rem;
+    }
+
+    /* Ocultar PDF en la vista normal */
+    .pdf-only {
+        display: none !important;
+    }
+
+    @media (max-width: 768px) {
+        .summary-grid {
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+
+        .success-title {
+            font-size: 2rem;
+        }
+    }
+
+    @media print {
+        * {
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+
+        /* RESET BÁSICO */
+        html, body {
+            background: white !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            width: 100% !important;
+            height: auto !important;
+        }
+
+        /* OCULTAR TODOS LOS ELEMENTOS */
+        body > * {
+            display: none !important;
+        }
+
+        /* MOSTRAR SOLO EL MODAL DE ÉXITO */
+        #successModal {
+            display: block !important;
+            position: static !important;
+            inset: auto !important;
+            background: white !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            z-index: auto !important;
+        }
+
+        /* OCULTAR EL CONTENIDO DE ÉXITO */
+        .no-print {
+            display: none !important;
+        }
+
+        /* MOSTRAR MODAL CONTENT */
+        #successModal .modal-card {
+            display: block !important;
+            position: static !important;
+            background: white !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            border: none !important;
+            box-shadow: none !important;
+            width: 100% !important;
+            height: auto !important;
+            overflow: visible !important;
+        }
+
+        /* MOSTRAR PDF CONTENT */
+        #pdfContent {
+            display: block !important;
+            width: 210mm !important;
+            height: auto !important;
+            padding: 15mm 20mm !important;
+            margin: 0 !important;
+            background: white !important;
+        }
+
+        /* Estilos específicos para elementos del PDF */
+        .pdf-header {
+            display: flex !important;
+            justify-content: space-between !important;
+            align-items: flex-start !important;
+            margin-bottom: 4mm !important;
+            padding-bottom: 3mm !important;
+            border-bottom: 2px solid #0066cc !important;
+            page-break-after: avoid !important;
+        }
+
+        .pdf-header-left {
+            width: 35% !important;
+            display: flex !important;
+        }
+
+        .pdf-header-right {
+            width: 60% !important;
+            text-align: right !important;
+        }
+
+        .pdf-logo {
+            width: 50px !important;
+            height: auto !important;
+            display: block !important;
+        }
+
+        .pdf-event-title {
+            font-family: Arial, sans-serif !important;
+            font-size: 20pt !important;
+            font-weight: bold !important;
+            color: #0066cc !important;
+            margin: 0 !important;
+            text-transform: uppercase !important;
+            letter-spacing: 3px !important;
+            line-height: 1.2 !important;
+        }
+
+        .pdf-event-subtitle {
+            font-family: Arial, sans-serif !important;
+            font-size: 14pt !important;
+            font-weight: bold !important;
+            color: #333 !important;
+            margin: 2mm 0 0 0 !important;
+            letter-spacing: 2px !important;
+        }
+
+        .pdf-event-location {
+            font-size: 8pt !important;
+            color: #666 !important;
+            margin: 1mm 0 0 0 !important;
+            font-weight: bold !important;
+            text-transform: uppercase !important;
+            letter-spacing: 3px !important;
+        }
+
+        .pdf-id-bar {
+            background: #f0f0f0 !important;
+            color: #333 !important;
+            padding: 3mm !important;
+            margin: 0 0 4mm 0 !important;
+            display: flex !important;
+            justify-content: space-between !important;
+            align-items: flex-start !important;
+            border: 1px solid #ccc !important;
+            page-break-after: avoid !important;
+        }
+
+        .pdf-id-label {
+            font-size: 7pt !important;
+            color: #666 !important;
+            font-weight: bold !important;
+            text-transform: uppercase !important;
+            letter-spacing: 2px !important;
+            margin: 0 0 0.5mm 0 !important;
+        }
+
+        .pdf-id-value {
+            font-family: Arial, sans-serif !important;
+            font-size: 13pt !important;
+            font-weight: bold !important;
+            color: #0066cc !important;
+            margin: 0 !important;
+        }
+
+        .pdf-date-label {
+            font-size: 7pt !important;
+            color: #666 !important;
+            font-weight: bold !important;
+            text-transform: uppercase !important;
+            letter-spacing: 2px !important;
+            margin: 0 0 0.5mm 0 !important;
+        }
+
+        .pdf-date-value {
+            font-size: 10pt !important;
+            font-weight: bold !important;
+            color: #333 !important;
+            margin: 0 !important;
+        }
+
+        .pdf-info-grid {
+            display: grid !important;
+            grid-template-columns: repeat(3, 1fr) !important;
+            gap: 4mm !important;
+            margin: 0 0 4mm 0 !important;
+            padding: 0 0 3mm 0 !important;
+            border-bottom: 1px solid #ccc !important;
+            page-break-after: avoid !important;
+        }
+
+        .pdf-table {
+            width: 100% !important;
+            margin: 0 0 4mm 0 !important;
+            border-collapse: collapse !important;
+            display: table !important;
+            page-break-inside: avoid !important;
+        }
+
+        .pdf-table thead {
+            background: #0066cc !important;
+            border-bottom: 2px solid #0066cc !important;
+            display: table-header-group !important;
+        }
+
+        .pdf-table th {
+            font-family: Arial, sans-serif !important;
+            font-size: 10pt !important;
+            color: white !important;
+            text-align: left !important;
+            padding: 2mm !important;
+            font-weight: bold !important;
+            text-transform: uppercase !important;
+            letter-spacing: 1px !important;
+            display: table-cell !important;
+        }
+
+        .pdf-table tbody {
+            display: table-row-group !important;
+        }
+
+        .pdf-table tr {
+            display: table-row !important;
+            page-break-inside: avoid !important;
+            border-bottom: 1px solid #ddd !important;
+        }
+
+        .pdf-table td {
+            padding: 2mm !important;
+            font-size: 9pt !important;
+            display: table-cell !important;
+        }
+
+        .pdf-item-title {
+            font-weight: bold !important;
+            color: #333 !important;
+            margin: 0 0 0.5mm 0 !important;
+            font-size: 9pt !important;
+        }
+
+        .pdf-item-subtitle {
+            font-size: 7pt !important;
+            color: #666 !important;
+            text-transform: uppercase !important;
+            margin: 0 !important;
+        }
+
+        .pdf-info-label {
+            font-size: 7pt !important;
+            color: #666 !important;
+            font-weight: bold !important;
+            text-transform: uppercase !important;
+            letter-spacing: 2px !important;
+            margin: 0 0 0.5mm 0 !important;
+        }
+
+        .pdf-info-value {
+            font-weight: bold !important;
+            color: #333 !important;
+            font-size: 9pt !important;
+        }
+
+        .pdf-total-box {
+            background: #0066cc !important;
+            padding: 4mm !important;
+            width: 60mm !important;
+            text-align: center !important;
+            margin: 4mm 0 6mm auto !important;
+            border: 2px solid #0066cc !important;
+            page-break-after: avoid !important;
+        }
+
+        .pdf-total-label {
+            font-size: 7pt !important;
+            font-weight: bold !important;
+            text-transform: uppercase !important;
+            letter-spacing: 2px !important;
+            color: white !important;
+            margin: 0 0 1mm 0 !important;
+        }
+
+        .pdf-total {
+            font-family: Arial, sans-serif !important;
+            font-size: 24pt !important;
+            font-weight: bold !important;
+            color: white !important;
+            margin: 0 !important;
+        }
+
+        .pdf-total-currency {
+            font-size: 7pt !important;
+            font-weight: bold !important;
+            color: white !important;
+            text-transform: uppercase !important;
+            margin: 0.5mm 0 0 0 !important;
+        }
+
+    @media print {
+        /* Force exact colors */
+        * {
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+
+        /* Hide everything by default */
+        body > * {
+            display: none !important;
+        }
+
+        /* Show modal */
+        #successModal {
+            display: block !important;
+            position: static !important;
+            background: white !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            border: none !important;
+            box-shadow: none !important;
+            inset: auto !important;
+        }
+
+        #successModal .modal-card {
+            display: block !important;
+            position: static !important;
+            background: white !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            border: none !important;
+            width: 100% !important;
+            box-shadow: none !important;
+        }
+
+        /* Hide success content */
+        .no-print {
+            display: none !important;
+        }
+
+        /* Show and style PDF content */
+        #pdfContent {
+            display: block !important;
+            width: 210mm !important;
+            padding: 6mm 12mm !important;
+            margin: 0 !important;
+            background: white !important;
+        }
+
+        /* Make all PDF children visible and block */
+        #pdfContent * {
+            display: block !important;
+            visibility: visible !important;
+        }
+
+        /* Table and grid fixes */
+        #pdfContent table { display: table !important; border-collapse: collapse !important; width: 100% !important; }
+        #pdfContent thead { display: table-header-group !important; }
+        #pdfContent tbody { display: table-row-group !important; }
+        #pdfContent tr { display: table-row !important; }
+        #pdfContent td, #pdfContent th { display: table-cell !important; }
+        .pdf-info-grid { display: grid !important; grid-template-columns: repeat(3, 1fr) !important; }
+        .pdf-header { display: flex !important; }
+        .pdf-header-left { display: flex !important; }
+
+        /* PDF Styling */
+        .pdf-header {
+            justify-content: space-between !important;
+            align-items: center !important;
+            margin-bottom: 1mm !important;
+            padding-bottom: 1mm !important;
+            border-bottom: 2px solid #0066cc !important;
+        }
+
+        .pdf-header-left { width: 25% !important; }
+        .pdf-header-right { width: 70% !important; text-align: center !important; }
+        .pdf-logo { width: 60px !important; height: auto !important; }
+
+        .pdf-event-title {
+            font-size: 16pt !important;
+            font-weight: bold !important;
+            color: #0066cc !important;
+            margin: 0 !important;
+            text-transform: uppercase !important;
+            letter-spacing: 2px !important;
+        }
+
+        .pdf-event-subtitle {
+            font-size: 11pt !important;
+            font-weight: bold !important;
+            color: #333 !important;
+            margin: 1mm 0 0 0 !important;
+        }
+
+        .pdf-event-location {
+            font-size: 8pt !important;
+            color: #666 !important;
+            font-weight: bold !important;
+            text-transform: uppercase !important;
+            letter-spacing: 3px !important;
+            margin: 1mm 0 0 0 !important;
+        }
+
+        .pdf-id-bar {
+            background: #f0f0f0 !important;
+            color: #333 !important;
+            padding: 2mm !important;
+            margin: 0 0 2mm 0 !important;
+            display: flex !important;
+            justify-content: space-between !important;
+            border: 1px solid #ccc !important;
+        }
+
+        .pdf-id-label, .pdf-date-label {
+            font-size: 7pt !important;
+            color: #666 !important;
+            font-weight: bold !important;
+            text-transform: uppercase !important;
+            margin: 0 0 0.5mm 0 !important;
+        }
+
+        .pdf-id-value {
+            font-size: 13pt !important;
+            font-weight: bold !important;
+            color: #0066cc !important;
+            margin: 0 !important;
+        }
+
+        .pdf-date-value {
+            font-size: 10pt !important;
+            font-weight: bold !important;
+            color: #333 !important;
+        }
+
+        .pdf-info-grid {
+            gap: 2mm !important;
+            margin: 0 0 2mm 0 !important;
+            padding: 0 0 2mm 0 !important;
+            border-bottom: 1px solid #ccc !important;
+        }
+
+        .pdf-table {
+            width: 100% !important;
+            margin: 0 0 2mm 0 !important;
+            border-collapse: collapse !important;
+        }
+
+        .pdf-table thead {
+            background: #0066cc !important;
+            border-bottom: 2px solid #0066cc !important;
+        }
+
+        .pdf-table th {
+            font-size: 8pt !important;
+            color: white !important;
+            text-align: left !important;
+            padding: 1mm !important;
+            font-weight: bold !important;
+            text-transform: uppercase !important;
+        }
+
+        .pdf-table tr { border-bottom: 1px solid #ddd !important; }
+        .pdf-table td { padding: 1mm !important; font-size: 8pt !important; color: #333 !important; }
+
+        .pdf-item-title {
+            font-weight: bold !important;
+            color: #333 !important;
+            margin: 0 0 0.5mm 0 !important;
+            font-size: 9pt !important;
+        }
+
+        .pdf-item-subtitle {
+            font-size: 7pt !important;
+            color: #666 !important;
+            text-transform: uppercase !important;
+            margin: 0 !important;
+        }
+
+        .pdf-info-label {
+            font-size: 7pt !important;
+            color: #666 !important;
+            font-weight: bold !important;
+            text-transform: uppercase !important;
+            margin: 0 0 0.5mm 0 !important;
+        }
+
+        .pdf-info-value {
+            font-weight: bold !important;
+            color: #333 !important;
+            font-size: 9pt !important;
+        }
+
+        .pdf-total-box {
+            background: #0066cc !important;
+            padding: 2mm !important;
+            width: 50mm !important;
+            text-align: center !important;
+            margin: 2mm 0 2mm auto !important;
+            border: 2px solid #0066cc !important;
+        }
+
+        .pdf-total-label {
+            font-size: 7pt !important;
+            font-weight: bold !important;
+            text-transform: uppercase !important;
+            color: white !important;
+            margin: 0 0 1mm 0 !important;
+        }
+
+        .pdf-total {
+            font-size: 18pt !important;
+            font-weight: bold !important;
+            color: white !important;
+            margin: 0 !important;
+        }
+
+        .pdf-total-currency {
+            font-size: 7pt !important;
+            font-weight: bold !important;
+            color: white !important;
+            text-transform: uppercase !important;
+            margin: 0.5mm 0 0 0 !important;
+        }
+
+        .pdf-footer-section {
+            margin-top: 2mm !important;
+            padding-top: 2mm !important;
+            border-top: 1px solid #ccc !important;
+        }
+
+        .pdf-bank-info { width: 100% !important; }
+
+        .pdf-bank-title {
+            font-size: 9pt !important;
+            font-weight: bold !important;
+            color: #0066cc !important;
+            margin: 0 0 1mm 0 !important;
+            text-transform: uppercase !important;
+        }
+
+        .pdf-bank-item {
+            font-size: 7pt !important;
+            margin: 0.3mm 0 !important;
+            color: #666 !important;
+        }
+
+        .pdf-bank-item strong {
+            color: #333 !important;
+            font-weight: bold !important;
+        }
+    }
+
+</style>
+
+<div class="container mx-auto px-4 py-16">
+    <div class="max-w-7xl mx-auto">
+        <div class="text-center mb-12">
+            <h1 class="text-4xl md:text-6xl font-headings text-lamaGold tracking-widest mb-3">
+                INSCRIPCIÓN V CAMPEONATO REGIONAL
+            </h1>
+            <p class="text-lamaNeon neon-text text-lg">San Andrés Islas • Septiembre 12-13, 2026</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div class="lg:col-span-2">
+                <form id="campeonatoForm" class="space-y-0">
+                    <div class="form-section">
+                        <h2 class="form-section-title font-headings">TIPO DE PARTICIPANTE</h2>
+                        <div>
+                            <label class="form-label">Categoría *</label>
+                            <select name="categoria" id="categoria" class="form-input w-full px-4 py-3 rounded" required>
+                                <option value="">Seleccione...</option>
+                                <option value="DAMA L.A.M.A.">DAMA L.A.M.A.</option>
+                                <option value="FULL COLOR MEMBER">FULL COLOR MEMBER</option>
+                                <option value="ROCKET PROSPECT">ROCKET PROSPECT</option>
+                                <option value="PROSPECT">PROSPECT</option>
+                                <option value="ESPOSA (a)">ESPOSA (a)</option>
+                                <option value="CONYUGUE">CONYUGUE</option>
+                                <option value="PAREJA">PAREJA</option>
+                                <option value="HIJA (o)">HIJA (o)</option>
+                                <option value="INVITADA (O)">INVITADA (O)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h2 class="form-section-title font-headings">DATOS PERSONALES</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="form-label">Nombre Completo *</label>
+                                <input type="text" name="nombre" id="nombre" class="form-input w-full px-4 py-3 rounded" required>
+                            </div>
+                            <div>
+                                <label class="form-label">Documento (C.C./NUIP) *</label>
+                                <input type="text" name="documento" id="documento" class="form-input w-full px-4 py-3 rounded" required>
+                            </div>
+                            <div>
+                                <label class="form-label">EPS *</label>
+                                <input type="text" name="eps" id="eps" class="form-input w-full px-4 py-3 rounded" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h2 class="form-section-title font-headings">CONTACTO DE EMERGENCIA</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="form-label">Nombre *</label>
+                                <input type="text" name="emergencia_nombre" id="emergenciaNombre" class="form-input w-full px-4 py-3 rounded" required>
+                            </div>
+                            <div>
+                                <label class="form-label">Teléfono *</label>
+                                <input type="tel" name="emergencia_telefono" id="emergenciaTelefono" class="form-input w-full px-4 py-3 rounded" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h2 class="form-section-title font-headings">PERTENENCIA L.A.M.A.</h2>
+                        <div>
+                            <label class="form-label">Capítulo *</label>
+                            <select name="capitulo" id="capitulo" class="form-input w-full px-4 py-3 rounded" required>
+                                <option value="">Seleccione...</option>
+                                <option value="Barranquilla">Barranquilla</option>
+                                <option value="Bucaramanga">Bucaramanga</option>
+                                <option value="Cartagena">Cartagena</option>
+                                <option value="Cúcuta">Cúcuta</option>
+                                <option value="Floridablanca">Floridablanca</option>
+                                <option value="Medellín">Medellín</option>
+                                <option value="Puerto Colombia">Puerto Colombia</option>
+                                <option value="Valle Aburrá">Valle Aburrá</option>
+                                <option value="Zenu">Zenu</option>
+                                <option value="Otros">Otros</option>
+                            </select>
+                        </div>
+                        <div id="capituloOtroField" class="mt-4 hidden">
+                            <label class="form-label">Nombre del capítulo *</label>
+                            <input type="text" name="capitulo_otro" id="capituloOtro" class="form-input w-full px-4 py-3 rounded">
+                        </div>
+                        <div class="mt-4">
+                            <label class="form-label">¿Es Directivo? *</label>
+                            <select name="directivo" id="directivo" class="form-input w-full px-4 py-3 rounded" required>
+                                <option value="">Seleccione...</option>
+                                <option value="Sí">Sí</option>
+                                <option value="No">No</option>
+                            </select>
+                        </div>
+                        <div id="directivoFields" class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 hidden">
+                            <div>
+                                <label class="form-label">Ámbito *</label>
+                                <select name="ambito" id="ambito" class="form-input w-full px-4 py-3 rounded">
+                                    <option value="">Seleccione...</option>
+                                    <option value="Capítulo">Capítulo</option>
+                                    <option value="Región">Región</option>
+                                    <option value="País">País</option>
+                                    <option value="Continente">Continente</option>
+                                    <option value="Internacional">Internacional</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="form-label">Cargo *</label>
+                                <select name="cargo" id="cargo" class="form-input w-full px-4 py-3 rounded">
+                                    <option value="">Seleccione...</option>
+                                    <option value="Presidente">Presidente</option>
+                                    <option value="Vicepresidente">Vicepresidente</option>
+                                    <option value="Tesorero">Tesorero</option>
+                                    <option value="Secretario">Secretario</option>
+                                    <option value="Gerente de Negocios">Gerente de Negocios</option>
+                                    <option value="MTO">MTO</option>
+                                    <option value="Sargento de Armas">Sargento de Armas</option>
+                                    <option value="Road Captain">Road Captain</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h2 class="form-section-title font-headings">LOGÍSTICA</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="form-label">Fecha de llegada a San Andrés *</label>
+                                <input type="date" name="fecha_llegada" id="fechaLlegada" class="form-input w-full px-4 py-3 rounded" min="2026-09-07" required>
+                            </div>
+                            <div>
+                                <label class="form-label">Condición médica</label>
+                                <textarea name="condicion_medica" id="condicionMedica" class="form-input w-full px-4 py-3 rounded" rows="3"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h2 class="form-section-title font-headings">MERCADEO</h2>
+                        <div class="flex items-center gap-3 mb-4">
+                            <input type="checkbox" id="jersey" name="jersey" class="w-5 h-5">
+                            <label for="jersey" class="text-lamaBone">¿Interesado en Jersey Oficial ($70.000)?</label>
+                        </div>
+                        <div id="jerseyFields" class="grid grid-cols-1 md:grid-cols-2 gap-4 hidden">
+                            <div>
+                                <label class="form-label">Talla *</label>
+                                <select name="talla" id="talla" class="form-input w-full px-4 py-3 rounded">
+                                    <option value="">Seleccione...</option>
+                                    <option value="S">S</option>
+                                    <option value="M">M</option>
+                                    <option value="L">L</option>
+                                    <option value="XL">XL</option>
+                                    <option value="XXL">XXL</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- EXPERIENCIAS PREMIUM -->
+                    <div class="form-section">
+                        <h2 class="form-section-title font-headings">EXPERIENCIAS PREMIUM</h2>
+                        <p class="text-lamaBone mb-4 text-sm">Enriquece tu experiencia seleccionando servicios adicionales. Cada servicio se sumará automáticamente al total.</p>
+
+                        <!-- AVISO IMPORTANTE SOBRE EXPERIENCIAS REQUERIDAS -->
+                        <div class="bg-gradient-to-r from-amber-500/20 via-cyan-500/20 to-amber-500/20 border-2 border-amber-400/50 rounded-lg p-5 mb-6 backdrop-blur-sm">
+                            <div class="flex items-start gap-3">
+                                <div class="flex-shrink-0">
+                                    <svg class="w-8 h-8 text-amber-400" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h3 class="text-amber-400 font-bold text-base mb-2 flex items-center gap-2">
+                                        <span>IMPORTANTE: EXPERIENCIAS REQUERIDAS PARA EL EVENTO</span>
+                                    </h3>
+                                    <p class="text-white text-sm leading-relaxed mb-3">
+                                        Las siguientes experiencias marcadas con <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-bold bg-amber-500 text-black gap-1">
+                                            <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 24 24">
+                                                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                                            </svg>
+                                            EVENTO
+                                        </span> son parte de la agenda oficial del campeonato durante los dos días del evento:
+                                    </p>
+                                    <ul class="text-cyan-300 text-sm space-y-2">
+                                        <li class="flex items-start gap-2">
+                                            <svg class="w-5 h-5 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
+                                                <path d="M20 21c-1.39 0-2.78-.47-4-1.32-2.44 1.71-5.56 1.71-8 0C6.78 20.53 5.39 21 4 21H2v-2h2c1.38 0 2.74-.35 4-.99 2.52 1.29 5.48 1.29 8 0 1.26.65 2.62.99 4 .99h2v2h-2zM3.95 19H4c1.6 0 3.02-.88 4-2 .98 1.12 2.4 2 4 2s3.02-.88 4-2c.98 1.12 2.4 2 4 2h.05l1.89-6.68c.08-.26.06-.54-.06-.78s-.32-.42-.56-.53L20 10.62V6c0-1.1-.9-2-2-2h-3V1H9v3H6c-1.1 0-2 .9-2 2v4.62l-1.29.59c-.18.08-.34.21-.43.37L3.95 19zM6 6h12v3.97L12 8 6 9.97V6z"/>
+                                            </svg>
+                                            <span><strong>Lancha de Lujo/Pontón</strong> - Actividades náuticas sábado</span>
+                                        </li>
+                                        <li class="flex items-start gap-2">
+                                            <svg class="w-5 h-5 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
+                                                <path d="M20 21c-1.39 0-2.78-.47-4-1.32-2.44 1.71-5.56 1.71-8 0C6.78 20.53 5.39 21 4 21H2v-2h2c1.38 0 2.74-.35 4-.99 2.52 1.29 5.48 1.29 8 0 1.26.65 2.62.99 4 .99h2v2h-2zM3.95 19H4c1.6 0 3.02-.88 4-2 .98 1.12 2.4 2 4 2s3.02-.88 4-2c.98 1.12 2.4 2 4 2h.05l1.89-6.68c.08-.26.06-.54-.06-.78s-.32-.42-.56-.53L20 10.62V6c0-.55-.45-1-1-1h-1V2h-2v3H8V2H6v3H5c-.55 0-1 .45-1 1v4.62l-1.29.59c-.18.08-.34.21-.43.37L3.95 19zM6 6h12v3.97l-6-2.81L6 9.97V6zm5 5.47l1 .47 1-.47V3h-2v8.47z"/>
+                                            </svg>
+                                            <span><strong>Velero Mar 7 Colores</strong> - Regata domingo por la mañana</span>
+                                        </li>
+                                        <li class="flex items-start gap-2">
+                                            <svg class="w-5 h-5 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
+                                                <path d="M4 16c0 .88.39 1.67 1 2.22V20c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h8v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1.78c.61-.55 1-1.34 1-2.22V6c0-3.5-3.58-4-8-4s-8 .5-8 4v10zm3.5 1c-.83 0-1.5-.67-1.5-1.5S6.67 14 7.5 14s1.5.67 1.5 1.5S8.33 17 7.5 17zm9 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm1.5-6H6V6h12v5z"/>
+                                            </svg>
+                                            <span><strong>Cupo en Chiva</strong> - Caravana terrestre domingo</span>
+                                        </li>
+                                        <li class="flex items-start gap-2">
+                                            <svg class="w-5 h-5 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
+                                                <path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.22.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm11 0c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zM5 11l1.5-4.5h11L19 11H5z"/>
+                                            </svg>
+                                            <span><strong>Mula (Golf Cart)</strong> - Vuelta a la isla domingo</span>
+                                        </li>
+                                    </ul>
+                                    <div class="flex items-start gap-2 text-amber-200 text-xs mt-3 font-semibold">
+                                        <svg class="w-4 h-4 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
+                                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+                                        </svg>
+                                        <span>Si deseas participar en estas actividades del campeonato, tanto tú como tus acompañantes deben seleccionarlas en el formulario.</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            <!-- TRASLADOS AEROPUERTO -->
+                            <div class="service-card bg-lamaDark/40 backdrop-blur-md border-2 border-lamaGold/50 rounded-lg p-4 cursor-pointer hover:border-lamaNeon hover:shadow-lg hover:shadow-lamaNeon/20 transition-all" data-service="traslado-aeropuerto" data-price="40000">
+                                <div class="flex items-center gap-2 mb-3">
+                                    <svg class="w-6 h-6 text-lamaGold" fill="currentColor" viewBox="0 0 24 24"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.22.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm11 0c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zM5 11l1.5-4.5h11L19 11H5z"/></svg>
+                                    <h4 class="text-sm font-headings text-lamaGold">Traslado Aeropuerto</h4>
+                                </div>
+                                <p class="text-xs text-lamaBone mb-2 leading-relaxed">Taxi Hotel ↔ Aeropuerto con conductor profesional. Trayecto individual.</p>
+                                <div class="space-y-1 text-xs text-gray-400 mb-3">
+                                    <p>Hotel → Aeropuerto O Aeropuerto → Hotel</p>
+                                </div>
+                                <div class="text-lg font-bold text-lamaNeon">$40.000</div>
+                            </div>
+
+                            <!-- JET SKI -->
+                            <div class="service-card bg-lamaDark/40 backdrop-blur-md border-2 border-lamaGold/50 rounded-lg p-4 cursor-pointer hover:border-lamaNeon hover:shadow-lg hover:shadow-lamaNeon/20 transition-all" data-service="jet-ski" data-price="400000">
+                                <div class="flex items-center gap-2 mb-3">
+                                    <svg class="w-6 h-6 text-lamaGold" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M22 17c-1.39 0-2.78-.47-4-1.32-2.44 1.71-5.56 1.71-8 0C8.78 16.53 7.39 17 6 17H4v-2h2c1.38 0 2.74-.35 4-.99 2.52 1.29 5.48 1.29 8 0 1.26.65 2.62.99 4 .99h2v2h-2zM5.95 15H6c1.6 0 3.02-.88 4-2 .98 1.12 2.4 2 4 2s3.02-.88 4-2c.98 1.12 2.4 2 4 2h.05l1.89-6.68c.08-.26.06-.54-.06-.78s-.32-.42-.56-.53L22 6.62V3c0-1.1-.9-2-2-2h-4V0H8v1H4c-1.1 0-2 .9-2 2v3.62l-1.29.59c-.18.08-.34.21-.43.37L5.95 15zM4 3h16v3.97L14 5 4 6.97V3zm8 2l6 2.81V9H6V7.81L14 5z"/>
+                                    </svg>
+                                    <h4 class="text-sm font-headings text-lamaGold">Cupo Jet Ski</h4>
+                                </div>
+                                <p class="text-xs text-lamaBone mb-2 leading-relaxed">Adrenalina en aguas turquesas para 2 personas.</p>
+                                <div class="space-y-1 text-xs text-gray-400 mb-3">
+                                    <p>1 hora · Incluye chaleco salvavidas</p>
+                                </div>
+                                <div class="text-lg font-bold text-lamaNeon">$400.000</div>
+                            </div>
+
+                            <!-- LANCHA DE LUJO/PONTÓN -->
+                            <div class="service-card bg-lamaDark/40 backdrop-blur-md border-2 border-lamaGold/50 rounded-lg p-4 cursor-pointer hover:border-lamaNeon hover:shadow-lg hover:shadow-lamaNeon/20 transition-all relative" data-service="lancha-lujo" data-price="80000">
+                                <div class="absolute bottom-2 right-2 bg-amber-500 text-black text-[10px] font-black px-2 py-1 rounded flex items-center gap-1">
+                                    <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                                    </svg>
+                                    <span>EVENTO</span>
+                                </div>
+                                <div class="flex items-center gap-2 mb-3">
+                                    <svg class="w-6 h-6 text-lamaGold" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M20 21c-1.39 0-2.78-.47-4-1.32-2.44 1.71-5.56 1.71-8 0C6.78 20.53 5.39 21 4 21H2v-2h2c1.38 0 2.74-.35 4-.99 2.52 1.29 5.48 1.29 8 0 1.26.65 2.62.99 4 .99h2v2h-2zM3.95 19H4c1.6 0 3.02-.88 4-2 .98 1.12 2.4 2 4 2s3.02-.88 4-2c.98 1.12 2.4 2 4 2h.05l1.89-6.68c.08-.26.06-.54-.06-.78s-.32-.42-.56-.53L20 10.62V6c0-1.1-.9-2-2-2h-3V1H9v3H6c-1.1 0-2 .9-2 2v4.62l-1.29.59c-.18.08-.34.21-.43.37L3.95 19zM6 6h12v3.97L12 8 6 9.97V6z"/>
+                                    </svg>
+                                    <h4 class="text-sm font-headings text-lamaGold">Lancha de Lujo</h4>
+                                </div>
+                                <p class="text-xs text-lamaBone mb-2 leading-relaxed">Recorrido isla completa. 9 am - 5 pm. Trae tu snorkel.</p>
+                                <div class="space-y-1 text-xs text-gray-400 mb-3">
+                                    <p>Almuerzo: Se vende en la parada</p>
+                                </div>
+                                <div class="text-lg font-bold text-lamaNeon">$80.000</div>
+                            </div>
+
+                            <!-- VELERO MAR DE 7 COLORES -->
+                            <div class="service-card bg-lamaDark/40 backdrop-blur-md border-2 border-lamaGold/50 rounded-lg p-4 cursor-pointer hover:border-lamaNeon hover:shadow-lg hover:shadow-lamaNeon/20 transition-all relative" data-service="velero-7colores" data-price="100000">
+                                <div class="absolute bottom-2 right-2 bg-amber-500 text-black text-[10px] font-black px-2 py-1 rounded flex items-center gap-1">
+                                    <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                                    </svg>
+                                    <span>EVENTO</span>
+                                </div>
+                                <div class="flex items-center gap-2 mb-3">
+                                    <svg class="w-6 h-6 text-lamaGold" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M20 21c-1.39 0-2.78-.47-4-1.32-2.44 1.71-5.56 1.71-8 0C6.78 20.53 5.39 21 4 21H2v-2h2c1.38 0 2.74-.35 4-.99 2.52 1.29 5.48 1.29 8 0 1.26.65 2.62.99 4 .99h2v2h-2zM3.95 19H4c1.6 0 3.02-.88 4-2 .98 1.12 2.4 2 4 2s3.02-.88 4-2c.98 1.12 2.4 2 4 2h.05l1.89-6.68c.08-.26.06-.54-.06-.78s-.32-.42-.56-.53L20 10.62V6c0-.55-.45-1-1-1h-1V2h-2v3H8V2H6v3H5c-.55 0-1 .45-1 1v4.62l-1.29.59c-.18.08-.34.21-.43.37L3.95 19zM6 6h12v3.97l-6-2.81L6 9.97V6zm5 5.47l1 .47 1-.47V3h-2v8.47z"/>
+                                    </svg>
+                                    <h4 class="text-sm font-headings text-lamaGold">Velero 7 Colores</h4>
+                                </div>
+                                <p class="text-xs text-lamaBone mb-2 leading-relaxed">Navegación mar de 7 colores. Trae tus bebidas.</p>
+                                <div class="space-y-1 text-xs text-gray-400 mb-3">
+                                    <p>4 horas · Trae tus snacks</p>
+                                </div>
+                                <div class="text-lg font-bold text-lamaNeon">$100.000</div>
+                            </div>
+
+                            <!-- MULA (GOLF CART) -->
+                            <div class="service-card bg-lamaDark/40 backdrop-blur-md border-2 border-lamaGold/50 rounded-lg p-4 cursor-pointer hover:border-lamaNeon hover:shadow-lg hover:shadow-lamaNeon/20 transition-all relative" data-service="mula-golfcart" data-price="250000">
+                                <div class="absolute bottom-2 right-2 bg-amber-500 text-black text-[10px] font-black px-2 py-1 rounded flex items-center gap-1">
+                                    <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                                    </svg>
+                                    <span>EVENTO</span>
+                                </div>
+                                <div class="flex items-center gap-2 mb-3">
+                                    <svg class="w-6 h-6 text-lamaGold" fill="currentColor" viewBox="0 0 24 24"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.22.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm11 0c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zM5 11l1.5-4.5h11L19 11H5z"/></svg>
+                                    <h4 class="text-sm font-headings text-lamaGold">Mula (Golf Cart)</h4>
+                                </div>
+                                <p class="text-xs text-lamaBone mb-2 leading-relaxed">Vuelta a la isla domingo. Para 5 personas.</p>
+                                <div class="space-y-1 text-xs text-gray-400 mb-3">
+                                    <p>9 am - 6 pm · Uno del grupo conduce</p>
+                                </div>
+                                <div class="text-lg font-bold text-lamaNeon">$250.000</div>
+                            </div>
+
+                            <!-- CHIVA -->
+                            <div class="service-card bg-lamaDark/40 backdrop-blur-md border-2 border-lamaGold/50 rounded-lg p-4 cursor-pointer hover:border-lamaNeon hover:shadow-lg hover:shadow-lamaNeon/20 transition-all relative" data-service="chiva-tour" data-price="50000">
+                                <div class="absolute bottom-2 right-2 bg-amber-500 text-black text-[10px] font-black px-2 py-1 rounded flex items-center gap-1">
+                                    <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                                    </svg>
+                                    <span>EVENTO</span>
+                                </div>
+                                <div class="flex items-center gap-2 mb-3">
+                                    <svg class="w-6 h-6 text-lamaGold" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M4 16c0 .88.39 1.67 1 2.22V20c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h8v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1.78c.61-.55 1-1.34 1-2.22V6c0-3.5-3.58-4-8-4s-8 .5-8 4v10zm3.5 1c-.83 0-1.5-.67-1.5-1.5S6.67 14 7.5 14s1.5.67 1.5 1.5S8.33 17 7.5 17zm9 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm1.5-6H6V6h12v5z"/>
+                                    </svg>
+                                    <h4 class="text-sm font-headings text-lamaGold">Cupo en Chiva</h4>
+                                </div>
+                                <p class="text-xs text-lamaBone mb-2 leading-relaxed">Experiencia folclórica auténtica de San Andrés.</p>
+                                <div class="space-y-1 text-xs text-gray-400 mb-3">
+                                    <p>3 horas · Guía turístico</p>
+                                </div>
+                                <div class="text-lg font-bold text-lamaNeon">$50.000</div>
+                            </div>
+
+                            <!-- BURRO TOUR -->
+                            <div class="service-card bg-lamaDark/40 backdrop-blur-md border-2 border-lamaGold/50 rounded-lg p-4 cursor-pointer hover:border-lamaNeon hover:shadow-lg hover:shadow-lamaNeon/20 transition-all" data-service="tour-burro" data-price="140000">
+                                <div class="flex items-center gap-2 mb-3">
+                                    <svg class="w-6 h-6 text-lamaGold" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+                                    <h4 class="text-sm font-headings text-lamaGold">Burro Tour</h4>
+                                </div>
+                                <p class="text-xs text-lamaBone mb-2 leading-relaxed">Recorrido auténtico conectando con la naturaleza.</p>
+                                <div class="space-y-1 text-xs text-gray-400 mb-3">
+                                    <p>2 horas · Lleva agua</p>
+                                </div>
+                                <div class="text-lg font-bold text-lamaNeon">$140.000</div>
+                            </div>
+                        </div>
+
+                        <!-- Campos hidden para servicios -->
+                        <input type="hidden" id="servicios-seleccionados" name="servicios_adicionales" value="[]">
+                        <input type="hidden" id="valor_total_pagar" name="valor_total" value="120000">
+                    </div>
+
+                    <div class="form-section">
+                        <div class="flex items-center gap-3 mb-4">
+                            <input type="checkbox" id="acompanante" name="acompanante" class="w-5 h-5">
+                            <label for="acompanante" class="text-lamaBone">¿Asistirá con acompañante?</label>
+                        </div>
+                        <div id="acompananteFields" class="space-y-4 hidden">
+                            <button type="button" id="addAcompananteBtn" class="btn-upload w-full">Agregar acompañante</button>
+                            <div id="acompanantesContainer" class="space-y-4"></div>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <button type="submit" class="btn-submit">REGISTRAR INSCRIPCIÓN</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="space-y-6">
+                <div class="bg-lamaDark p-6 rounded-lg border border-gray-800">
+                    <h3 class="text-lamaGold font-bold text-lg mb-4">RESUMEN DE PAGO</h3>
+                    <div class="space-y-3 text-lamaBone text-sm">
+                        <div class="flex justify-between">
+                            <span>Inscripción</span>
+                            <span id="resInscripcion">$150.000</span>
+                        </div>
+                        <div class="flex justify-between" id="resAcompanantesRow" style="display: none;">
+                            <span id="resAcompanantesLabel">Acompañantes</span>
+                            <span id="resAcompanantes">$0</span>
+                        </div>
+                        <div class="flex justify-between" id="resJerseyRow">
+                            <span id="resJerseyLabel">Jersey</span>
+                            <span id="resJersey">$0</span>
+                        </div>
+                        <div class="flex justify-between" id="resServiciosRow" style="display: none;">
+                            <span id="resServiciosLabel">Servicios Premium</span>
+                            <span id="resServicios">$0</span>
+                        </div>
+                        <div class="border-t border-gray-700 pt-3 flex justify-between font-bold text-lamaGold">
+                            <span>Total a transferir</span>
+                            <span id="resTotal">$150.000</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-lamaDark p-6 rounded-lg border border-gray-800">
+                    <p class="text-gray-400 text-sm">
+                        Al enviar, se abrirá WhatsApp con el resumen para validación de pago.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <section class="mt-16 mb-16">
+            <h2 class="text-4xl font-headings text-center text-lamaGold mb-8 tracking-widest">
+                INFORMACIÓN BANCARIA
+            </h2>
+
+            <div class="max-w-4xl mx-auto bg-lamaDark rounded-xl border-2 border-lamaNeon shadow-2xl shadow-lamaNeon/20 overflow-hidden">
+                <div class="p-8 space-y-6">
+                    <div class="bg-lamaBlack rounded-lg p-6 border border-lamaGold">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-lamaGold font-bold text-xl">BANCOLOMBIA</h3>
+                            <span class="text-lamaNeon text-sm">Ahorros</span>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-lamaBone">
+                            <div>
+                                <p class="text-gray-400 text-xs mb-1">Número de Cuenta</p>
+                                <p class="font-mono text-lg font-bold">1234 5678 9012</p>
+                            </div>
+                            <div>
+                                <p class="text-gray-400 text-xs mb-1">Titular</p>
+                                <p class="font-bold">L.A.M.A. REGIÓN NORTE</p>
+                            </div>
+                            <div>
+                                <p class="text-gray-400 text-xs mb-1">NIT</p>
+                                <p class="font-mono">900.123.456-7</p>
+                            </div>
+                            <div>
+                                <p class="text-gray-400 text-xs mb-1">Tipo de Cuenta</p>
+                                <p>Ahorros</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-lamaBlack rounded-lg p-6 border border-lamaNeon">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-lamaNeon font-bold text-xl neon-text">NEQUI</h3>
+                            <span class="text-lamaGold text-sm">Electrónico</span>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-lamaBone">
+                            <div>
+                                <p class="text-gray-400 text-xs mb-1">Número Nequi</p>
+                                <p class="font-mono text-lg font-bold">310 632 8171</p>
+                            </div>
+                            <div>
+                                <p class="text-gray-400 text-xs mb-1">Titular</p>
+                                <p class="font-bold">L.A.M.A. REGIÓN NORTE</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-gradient-to-r from-lamaGold/10 to-transparent rounded-lg p-6 border-l-4 border-lamaGold">
+                        <h4 class="text-lamaGold font-bold mb-3">INSTRUCCIONES IMPORTANTES:</h4>
+                        <ul class="text-lamaBone space-y-2 text-sm">
+                            <li class="flex items-start">
+                                <span class="text-lamaNeon mr-2">1.</span>
+                                <span>Completa el formulario de registro en esta página</span>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-lamaNeon mr-2">2.</span>
+                                <span>Realiza la transferencia o consignación al valor total calculado</span>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-lamaNeon mr-2">3.</span>
+                                <span>Guarda el comprobante de pago (screenshot o PDF)</span>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-lamaNeon mr-2">4.</span>
+                                <span>Serás redirigido a WhatsApp para enviar el comprobante</span>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-lamaNeon mr-2">5.</span>
+                                <span>Recibirás confirmación oficial en máximo 24 horas</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="text-center pt-4 border-t border-gray-800">
+                        <p class="text-gray-400 text-xs">
+                            Nunca compartas tus claves bancarias. L.A.M.A. solo solicitará el comprobante de pago.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+
+<div id="successModal" class="modal-backdrop">
+    <div class="modal-card">
+        <!-- Vista normal (no impresión) - MODAL DE ÉXITO -->
+        <div class="no-print">
+            <!-- Header Success Section -->
+            <header class="success-header">
+                <div class="success-icon">
+                    <svg viewBox="0 0 24 24">
+                        <circle cx="12" cy="12" r="10"/>
+                        <path d="M9 12l2 2 4-4"/>
+                    </svg>
+                </div>
+                <h1 class="success-title">¡FORMULARIO ENVIADO CON ÉXITO!</h1>
+                <p class="success-subtitle">V Campeonato de Mototurismo Región Norte</p>
+            </header>
+
+            <!-- Summary Card -->
+            <section class="summary-content">
+                <div class="summary-section-header">
+                    <h2 class="summary-section-title">Resumen de Inscripción</h2>
+                    <span class="registration-id" id="modal-registro-id">ID DE REGISTRO: #MN-2024-8842</span>
+                </div>
+
+                <div class="summary-grid">
+                    <!-- Column 1: Participant Details -->
+                    <div class="summary-column">
+                        <h3>Datos del Participante</h3>
+                        <div class="summary-field">
+                            <label class="summary-label">Nombre Completo</label>
+                            <p class="summary-value" id="modal-nombre">-</p>
+                        </div>
+                        <div class="summary-field">
+                            <label class="summary-label">Capítulo L.A.M.A.</label>
+                            <p class="summary-value" id="modal-capitulo">-</p>
+                        </div>
+                        <div class="summary-field">
+                            <label class="summary-label">Documento ID</label>
+                            <p class="summary-value" id="modal-documento">-</p>
+                        </div>
+                        <div class="summary-field">
+                            <label class="summary-label">Estado de Pago</label>
+                            <span class="payment-status">
+                                <span class="payment-status-dot"></span>
+                                Pendiente de Validación
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Column 2: Selected Package & Costs -->
+                    <div class="summary-column">
+                        <h3>Servicios Seleccionados</h3>
+                        <div class="services-list">
+                            <div class="service-item">
+                                <span class="service-name">Inscripción Base<span class="service-tag">(OBLIGATORIO)</span></span>
+                                <span class="service-price">$150.000</span>
+                            </div>
+                            <div class="service-item" id="modal-acomp-insc-item" style="display: none;">
+                                <span class="service-name" id="modal-acomp-insc-label">Acompañantes</span>
+                                <span class="service-price" id="modal-acomp-insc-total">$0</span>
+                            </div>
+                            <div class="service-item" id="modal-jersey-item" style="display: none;">
+                                <span class="service-name" id="modal-jersey-label">Jersey Oficial</span>
+                                <span class="service-price" id="modal-jersey-total">$0</span>
+                            </div>
+                            <div class="service-item" id="modal-servicios-item" style="display: none;">
+                                <span class="service-name" id="modal-servicios-label">Servicios Premium</span>
+                                <span class="service-price" id="modal-servicios-total">$0</span>
+                            </div>
+                        </div>
+
+                        <div class="total-box">
+                            <p class="total-label">Total a Pagar</p>
+                            <p class="total-amount" id="modal-total">$150.000</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Area -->
+                <div class="action-area">
+                    <button id="printBtn" class="btn-download">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="7 10 12 15 17 10"></polyline>
+                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
+                        <span>Descargar Comprobante de Inscripción (PDF)</span>
+                    </button>
+                    <button id="uploadBtn" class="btn-upload" type="button">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="17 8 12 3 7 8"></polyline>
+                            <line x1="12" y1="3" x2="12" y2="15"></line>
+                        </svg>
+                        <span>Subir Comprobante de Pago</span>
+                    </button>
+                    <input id="comprobanteInput" type="file" accept="image/*,.pdf" style="display:none;">
+                    <p id="modal-comprobante-status" class="validation-note">Sin comprobante adjunto</p>
+                    <button id="closeModalBtn" class="btn-upload">
+                        <span>Cerrar</span>
+                    </button>
+                    <p class="validation-note">
+                        Su inscripción será validada en un plazo de 24 a 48 horas tras el pago.
+                    </p>
+                </div>
+            </section>
+
+            <!-- Footer: Regional Unity -->
+            <footer class="chapters-footer">
+                <div class="chapters-grid">
+                    <span class="chapter-name">Barranquilla</span>
+                    <span class="chapter-name">Bucaramanga</span>
+                    <span class="chapter-name">Cartagena</span>
+                    <span class="chapter-name">Cúcuta</span>
+                    <span class="chapter-name">Floridablanca</span>
+                    <span class="chapter-name">Medellín</span>
+                    <span class="chapter-name">Puerto Colombia</span>
+                    <span class="chapter-name">Valle de Aburrá</span>
+                    <span class="chapter-name">Zenú</span>
+                </div>
+                <p class="unity-message">
+                    Uniendo al Norte, Kilómetro a Kilómetro
+                </p>
+            </footer>
+        </div>
+
+        <!-- Contenido del PDF (solo impresión) -->
+        <div id="pdfContent" class="pdf-only">
+            <!-- Encabezado con Logo y Título -->
+            <div class="pdf-header">
+                <div class="pdf-header-left">
+                    <img src="/img/LAMARegionNorte.png" alt="L.A.M.A. Región Norte" class="pdf-logo">
+                </div>
+                <div class="pdf-header-right">
+                    <h1 class="pdf-event-title">V CAMPEONATO<br>REGIONAL</h1>
+                    <h2 class="pdf-event-subtitle">SAN ANDRÉS 2026</h2>
+                    <p class="pdf-event-location">R E G I Ó N &nbsp; N O R T E &nbsp; - &nbsp; C O L O M B I A</p>
+                </div>
+            </div>
+
+            <!-- Barra de ID -->
+            <div class="pdf-id-bar">
+                <div>
+                    <p class="pdf-id-label">I D &nbsp; D E &nbsp; R E G I S T R O</p>
+                    <p class="pdf-id-value" id="pdf-registro-id">#MN-2026-XXXX</p>
+                </div>
+                <div style="text-align: right;">
+                    <p class="pdf-date-label">F E C H A &nbsp; D E &nbsp; E M I S I Ó N</p>
+                    <p class="pdf-date-value" id="pdf-fecha-generacion"></p>
+                </div>
+            </div>
+
+            <!-- Grid de Información Principal -->
+            <div class="pdf-info-grid">
+                <div>
+                    <p class="pdf-info-label">N O M B R E &nbsp; C O M P L E T O</p>
+                    <p class="pdf-info-value" id="pdf-nombre"></p>
+                </div>
+                <div id="pdf-directivo-info" style="display: none;">
+                    <p class="pdf-info-label">R O L &nbsp; D I R E C T I V O</p>
+                    <p class="pdf-info-value"><span id="pdf-cargo"></span> - <span id="pdf-ambito"></span></p>
+                </div>
+                <div>
+                    <p class="pdf-info-label">C A P Í T U L O &nbsp; L . A . M . A .</p>
+                    <p class="pdf-info-value" id="pdf-capitulo"></p>
+                </div>
+                <div>
+                    <p class="pdf-info-label">N Ú M E R O &nbsp; D E &nbsp; I D</p>
+                    <p class="pdf-info-value" id="pdf-documento"></p>
+                </div>
+            </div>
+
+            <!-- Tabla de Conceptos -->
+            <table class="pdf-table">
+                <thead>
+                    <tr>
+                        <th>CONCEPTO / SERVICIO</th>
+                        <th>VALOR (COP)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <p class="pdf-item-title">Inscripción Base al Campeonato</p>
+                            <p class="pdf-item-subtitle">CATEGORÍA: <span id="pdf-categoria"></span></p>
+                        </td>
+                        <td>$150.000</td>
+                    </tr>
+                    <tr id="pdf-jersey-row" style="display: none;">
+                        <td>
+                            <p class="pdf-item-title" id="pdf-jersey-title">Jersey Oficial</p>
+                            <p class="pdf-item-subtitle">TOTAL: <span id="pdf-jersey-count"></span></p>
+                        </td>
+                        <td id="pdf-jersey-total">$0</td>
+                    </tr>
+                    <tr id="pdf-acompanante-row" style="display: none;">
+                        <td>
+                            <p class="pdf-item-title">Acompañantes</p>
+                            <p class="pdf-item-subtitle" id="pdf-acomp-subtitle">TOTAL: <span id="pdf-acomp-count"></span></p>
+                        </td>
+                        <td id="pdf-acomp-total">$0</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- Información Adicional Compacta -->
+            <div style="margin: 3mm 0; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 3mm; font-size: 8pt;">
+                <div>
+                    <p class="pdf-info-label">E P S</p>
+                    <p class="pdf-info-value"><span id="pdf-eps"></span></p>
+                </div>
+                <div>
+                    <p class="pdf-info-label">F E C H A &nbsp; D E &nbsp; L L E G A D A</p>
+                    <p class="pdf-info-value"><span id="pdf-fecha-llegada"></span></p>
+                </div>
+                <div>
+                    <p class="pdf-info-label">C O N D I C I Ó N &nbsp; M É D I C A</p>
+                    <p class="pdf-info-value"><span id="pdf-condicion"></span></p>
+                </div>
+                <div style="grid-column: 1 / 3;">
+                    <p class="pdf-info-label">C O N T A C T O &nbsp; D E &nbsp; E M E R G E N C I A</p>
+                    <p class="pdf-info-value"><span id="pdf-contacto-nombre"></span> - <span id="pdf-contacto-telefono"></span></p>
+                </div>
+            </div>
+
+            <!-- Total -->
+            <div class="pdf-total-box">
+                <p class="pdf-total-label">T O T A L &nbsp; A &nbsp; P A G A R</p>
+                <p class="pdf-total" id="pdf-total"></p>
+                <p class="pdf-total-currency">Pesos Colombianos</p>
+            </div>
+
+            <!-- Footer con Instrucciones -->
+            <div class="pdf-footer-section">
+                <div class="pdf-bank-info">
+                    <h3 class="pdf-bank-title">INSTRUCCIONES DE PAGO</h3>
+                    <p class="pdf-bank-item"><strong>Banco:</strong> Por definir</p>
+                    <p class="pdf-bank-item"><strong>Tipo de Cuenta:</strong> Ahorros</p>
+                    <p class="pdf-bank-item"><strong>Número:</strong> Por definir</p>
+                    <p class="pdf-bank-item"><strong>Titular:</strong> L.A.M.A. Región Norte</p>
+                    <p class="pdf-bank-item" style="font-style: italic; margin-top: 2mm;">* Envíe el comprobante al WhatsApp: <strong>+57 310 632 8171</strong></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const form = document.getElementById('campeonatoForm');
+    const capituloSelect = document.getElementById('capitulo');
+    const capituloOtroField = document.getElementById('capituloOtroField');
+    const capituloOtroInput = document.getElementById('capituloOtro');
+    const directivoSelect = document.getElementById('directivo');
+    const directivoFields = document.getElementById('directivoFields');
+    const jerseyCheckbox = document.getElementById('jersey');
+    const jerseyFields = document.getElementById('jerseyFields');
+    const acompananteCheckbox = document.getElementById('acompanante');
+    const acompananteFields = document.getElementById('acompananteFields');
+    const acompanantesContainer = document.getElementById('acompanantesContainer');
+    const addAcompananteBtn = document.getElementById('addAcompananteBtn');
+    const resInscripcion = document.getElementById('resInscripcion');
+    const resAcompanantesRow = document.getElementById('resAcompanantesRow');
+    const resAcompanantes = document.getElementById('resAcompanantes');
+    const resAcompanantesLabel = document.getElementById('resAcompanantesLabel');
+    const resJersey = document.getElementById('resJersey');
+    const resJerseyLabel = document.getElementById('resJerseyLabel');
+    const resServicios = document.getElementById('resServicios');
+    const resServiciosLabel = document.getElementById('resServiciosLabel');
+    const resServiciosRow = document.getElementById('resServiciosRow');
+    const resTotal = document.getElementById('resTotal');
+    const successModal = document.getElementById('successModal');
+    const printBtn = document.getElementById('printBtn');
+    const closeModalBtn = document.getElementById('closeModalBtn');
+    const uploadBtn = document.getElementById('uploadBtn');
+    const comprobanteInput = document.getElementById('comprobanteInput');
+    const comprobanteStatus = document.getElementById('modal-comprobante-status');
+
+    const BASE_PRICE = 150000;
+    const JERSEY_PRICE = 70000;
+    let registroActual = {};
+
+    /**
+     * Crea un bloque de acompañante dinámico.
+     * @param {number} index Índice del acompañante.
+     * @returns {HTMLElement} Nodo del acompañante.
+     */
+    function crearAcompananteItem(index) {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'acompanante-item border border-gray-800 rounded p-4';
+        wrapper.dataset.index = index;
+        wrapper.innerHTML = `
+            <div class="flex justify-between items-center mb-3">
+                <span class="text-lamaGold font-bold text-sm">Acompañante #${index}</span>
+                <button type="button" class="text-red-400 text-xs remove-acompanante">Quitar</button>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                <div>
+                    <label class="form-label">Nombre del acompañante *</label>
+                    <input type="text" class="form-input w-full px-4 py-3 rounded acompanante-nombre" placeholder="Nombre completo">
+                </div>
+                <div>
+                    <label class="form-label">Documento *</label>
+                    <input type="text" class="form-input w-full px-4 py-3 rounded acompanante-documento" placeholder="Documento">
+                </div>
+                <div>
+                    <label class="form-label">Teléfono *</label>
+                    <input type="tel" class="form-input w-full px-4 py-3 rounded acompanante-telefono" placeholder="Teléfono">
+                </div>
+                <div class="flex items-center gap-3 mt-2">
+                    <input type="checkbox" class="w-5 h-5 acompanante-jersey">
+                    <label class="text-lamaBone">¿Interesado en Jersey Oficial ($70.000)?</label>
+                </div>
+                <div class="acompanante-talla-field hidden">
+                    <label class="form-label">Talla *</label>
+                    <select class="form-input w-full px-4 py-3 rounded acompanante-talla">
+                        <option value="">Seleccione...</option>
+                        <option value="S">S</option>
+                        <option value="M">M</option>
+                        <option value="L">L</option>
+                        <option value="XL">XL</option>
+                        <option value="XXL">XXL</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- SERVICIOS PREMIUM POR PERSONA PARA ACOMPAÑANTES -->
+            <div class="border-t border-gray-700 pt-4">
+                <label class="text-lamaGold font-bold text-xs mb-3 block">SERVICIOS ADICIONALES (Costos por persona)</label>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <!-- LANCHA DE LUJO -->
+                    <div class="acompanante-service-card bg-gray-900/40 border border-gray-700 rounded p-3 cursor-pointer hover:border-lamaGold transition-all" data-service-acompanante="lancha-lujo-${index}" data-acompanante-idx="${index}">
+                        <div class="flex items-center gap-2 mb-2">
+                            <input type="checkbox" class="acompanante-service-check w-4 h-4" data-service="lancha-lujo" data-price="80000" data-acompanante="${index}">
+                            <label class="text-xs font-headings text-lamaGold cursor-pointer">Lancha de Lujo</label>
+                        </div>
+                        <p class="text-xs text-gray-400">Recorrido isla completa. 9am-5pm</p>
+                        <p class="text-xs text-lamaNeon font-bold mt-1">$80.000</p>
+                    </div>
+
+                    <!-- VELERO 7 COLORES -->
+                    <div class="acompanante-service-card bg-gray-900/40 border border-gray-700 rounded p-3 cursor-pointer hover:border-lamaGold transition-all" data-service-acompanante="velero-7colores-${index}" data-acompanante-idx="${index}">
+                        <div class="flex items-center gap-2 mb-2">
+                            <input type="checkbox" class="acompanante-service-check w-4 h-4" data-service="velero-7colores" data-price="100000" data-acompanante="${index}">
+                            <label class="text-xs font-headings text-lamaGold cursor-pointer">Velero 7 Colores</label>
+                        </div>
+                        <p class="text-xs text-gray-400">Navegación mar de 7 colores. 4h</p>
+                        <p class="text-xs text-lamaNeon font-bold mt-1">$100.000</p>
+                    </div>
+
+                    <!-- CUPO EN CHIVA -->
+                    <div class="acompanante-service-card bg-gray-900/40 border border-gray-700 rounded p-3 cursor-pointer hover:border-lamaGold transition-all" data-service-acompanante="chiva-tour-${index}" data-acompanante-idx="${index}">
+                        <div class="flex items-center gap-2 mb-2">
+                            <input type="checkbox" class="acompanante-service-check w-4 h-4" data-service="chiva-tour" data-price="50000" data-acompanante="${index}">
+                            <label class="text-xs font-headings text-lamaGold cursor-pointer">Cupo en Chiva</label>
+                        </div>
+                        <p class="text-xs text-gray-400">Experiencia folclórica. 3h</p>
+                        <p class="text-xs text-lamaNeon font-bold mt-1">$50.000</p>
+                    </div>
+
+                    <!-- BURRO TOUR -->
+                    <div class="acompanante-service-card bg-gray-900/40 border border-gray-700 rounded p-3 cursor-pointer hover:border-lamaGold transition-all" data-service-acompanante="tour-burro-${index}" data-acompanante-idx="${index}">
+                        <div class="flex items-center gap-2 mb-2">
+                            <input type="checkbox" class="acompanante-service-check w-4 h-4" data-service="tour-burro" data-price="140000" data-acompanante="${index}">
+                            <label class="text-xs font-headings text-lamaGold cursor-pointer">Burro Tour</label>
+                        </div>
+                        <p class="text-xs text-gray-400">Recorrido natural. 2h</p>
+                        <p class="text-xs text-lamaNeon font-bold mt-1">$140.000</p>
+                    </div>
+                </div>
+                <input type="hidden" class="acompanante-servicios-json" data-acompanante="${index}" value="[]">
+            </div>
+        `;
+
+        // Agregar eventos para servicios de acompañantes
+        const checkboxes = wrapper.querySelectorAll('.acompanante-service-check');
+        checkboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                const acompananteIdx = this.dataset.acompanante;
+                const acompananteItem = document.querySelector(`.acompanante-item[data-index="${acompananteIdx}"]`);
+
+                if (acompananteItem) {
+                    actualizarServiciosAcompanante(acompananteItem);
+                }
+            });
+
+            // Permitir click en la tarjeta para checkbox
+            const card = checkbox.closest('.acompanante-service-card');
+            if (card) {
+                card.addEventListener('click', function(e) {
+                    if (e.target !== checkbox) {
+                        checkbox.checked = !checkbox.checked;
+                        checkbox.dispatchEvent(new Event('change', { bubbles: true }));
+                    }
+                });
+            }
+        });
+
+        return wrapper;
+    }
+
+    /**
+     * Actualiza los servicios de un acompañante específico
+     */
+    function actualizarServiciosAcompanante(acompananteItem) {
+        const acompananteIdx = acompananteItem.dataset.index;
+        const checkboxes = acompananteItem.querySelectorAll('.acompanante-service-check:checked');
+
+        const servicios = Array.from(checkboxes).map(cb => ({
+            servicio: cb.dataset.service,
+            precio: parseInt(cb.dataset.price),
+            nombre: cb.closest('.acompanante-service-card').querySelector('.text-lamaGold').textContent.trim()
+        }));
+
+        const jsonInput = acompananteItem.querySelector('.acompanante-servicios-json');
+        if (jsonInput) {
+            jsonInput.value = JSON.stringify(servicios);
+        }
+
+        // Actualizar resumen de pago
+        if (typeof updateResumenPago === 'function') {
+            updateResumenPago();
+        }
+    }
+
+    /**
+     * Recalcula los índices visuales de los acompañantes.
+     */
+    function actualizarIndiceAcompanantes() {
+        const items = Array.from(acompanantesContainer.querySelectorAll('.acompanante-item'));
+        items.forEach((item, idx) => {
+            const title = item.querySelector('span.text-lamaGold');
+            if (title) title.textContent = `Acompañante #${idx + 1}`;
+            item.dataset.index = idx + 1;
+        });
+    }
+
+    /**
+     * Actualiza la visibilidad de campos condicionales.
+     */
+    function toggleConditionalFields() {
+        directivoFields.classList.toggle('hidden', directivoSelect.value !== 'Sí');
+        jerseyFields.classList.toggle('hidden', !jerseyCheckbox.checked);
+        acompananteFields.classList.toggle('hidden', !acompananteCheckbox.checked);
+        capituloOtroField.classList.toggle('hidden', capituloSelect.value !== 'Otros');
+        if (!acompananteCheckbox.checked) {
+            acompanantesContainer.innerHTML = '';
+        } else if (acompanantesContainer.children.length === 0) {
+            acompanantesContainer.appendChild(crearAcompananteItem(1));
+        }
+        updateResumenPago();
+    }
+
+    /**
+     * Calcula el total de pago en tiempo real.
+     */
+    function updateResumenPago() {
+        const acompanantes = Array.from(acompanantesContainer.querySelectorAll('.acompanante-item'));
+        const acompanantesCount = acompanantes.length;
+        const acompanantesJerseyCount = acompanantes.filter(item => {
+            const checkbox = item.querySelector('.acompanante-jersey');
+            return checkbox && checkbox.checked;
+        }).length;
+        const jerseysCount = (jerseyCheckbox.checked ? 1 : 0) + acompanantesJerseyCount;
+
+        // Obtener servicios premium del participante principal
+        const inputServicios = document.getElementById('servicios-seleccionados');
+        let totalServicios = 0;
+        let serviciosArray = [];
+
+        if (inputServicios && inputServicios.value) {
+            try {
+                serviciosArray = JSON.parse(inputServicios.value);
+                totalServicios = serviciosArray.reduce((sum, svc) => sum + (svc.precio || 0), 0);
+            } catch (e) {
+                totalServicios = 0;
+            }
+        }
+
+        // Obtener servicios premium de los acompañantes
+        let totalServiciosAcompanantes = 0;
+        let serviciosAcompantesArray = [];
+        acompanantes.forEach(acompanante => {
+            const jsonInput = acompanante.querySelector('.acompanante-servicios-json');
+            if (jsonInput && jsonInput.value) {
+                try {
+                    const servicios = JSON.parse(jsonInput.value);
+                    servicios.forEach(svc => {
+                        totalServiciosAcompanantes += (svc.precio || 0);
+                        serviciosAcompantesArray.push({
+                            ...svc,
+                            acompanante: acompanante.querySelector('.acompanante-nombre')?.value || `Acompañante #${acompanante.dataset.index}`
+                        });
+                    });
+                } catch (e) {
+                    // Error al parsear JSON
+                }
+            }
+        });
+
+        const totalServiciosPrincipal = totalServicios + totalServiciosAcompanantes;
+        const totalServiciosItems = serviciosArray.length + serviciosAcompantesArray.length;
+
+        const totalInscripcion = BASE_PRICE * (1 + acompanantesCount);
+        const totalJerseys = jerseysCount * JERSEY_PRICE;
+        const total = totalInscripcion + totalJerseys + totalServiciosPrincipal;
+
+        resInscripcion.textContent = `$${BASE_PRICE.toLocaleString('es-CO')}`;
+        if (acompanantesCount > 0) {
+            resAcompanantesRow.style.display = 'flex';
+            resAcompanantesLabel.textContent = `Acompañantes (${acompanantesCount} x $150.000)`;
+            resAcompanantes.textContent = `$${(BASE_PRICE * acompanantesCount).toLocaleString('es-CO')}`;
+        } else {
+            resAcompanantesRow.style.display = 'none';
+            resAcompanantes.textContent = '$0';
+        }
+
+        if (jerseysCount > 0) {
+            resJerseyLabel.textContent = `Jersey (${jerseysCount} x $70.000)`;
+            resJersey.textContent = `$${totalJerseys.toLocaleString('es-CO')}`;
+        } else {
+            resJerseyLabel.textContent = 'Jersey';
+            resJersey.textContent = '$0';
+        }
+
+        if (totalServiciosPrincipal > 0) {
+            resServiciosRow.style.display = 'flex';
+            resServiciosLabel.textContent = `Servicios Premium (${totalServiciosItems} items)`;
+            resServicios.textContent = `$${totalServiciosPrincipal.toLocaleString('es-CO')}`;
+        } else {
+            resServiciosRow.style.display = 'none';
+            resServicios.textContent = '$0';
+        }
+
+        resTotal.textContent = `$${total.toLocaleString('es-CO')}`;
+    }
+
+    /**
+     * Valida campos obligatorios y formatos básicos.
+     * @returns {Array<string>} Lista de errores.
+     */
+    function validarFormulario() {
+        const errors = [];
+        const documento = document.getElementById('documento').value.trim();
+        const eps = document.getElementById('eps').value.trim();
+        const emergenciaNombre = document.getElementById('emergenciaNombre').value.trim();
+        const emergenciaTelefono = document.getElementById('emergenciaTelefono').value.trim();
+
+        if (!documento) errors.push('Documento es obligatorio');
+        if (!eps) errors.push('EPS es obligatorio');
+        if (!emergenciaNombre) errors.push('Nombre de emergencia es obligatorio');
+        if (!emergenciaTelefono) errors.push('Teléfono de emergencia es obligatorio');
+
+        if (directivoSelect.value === 'Sí') {
+            if (!document.getElementById('ambito').value) errors.push('Ámbito directivo es obligatorio');
+            if (!document.getElementById('cargo').value) errors.push('Cargo directivo es obligatorio');
+        }
+
+        if (capituloSelect.value === 'Otros' && !capituloOtroInput.value.trim()) {
+            errors.push('Nombre del capítulo es obligatorio');
+        }
+
+        if (jerseyCheckbox.checked && !document.getElementById('talla').value) {
+            errors.push('La talla de jersey es obligatoria');
+        }
+
+        if (acompananteCheckbox.checked) {
+            const acompanantes = Array.from(acompanantesContainer.querySelectorAll('.acompanante-item'));
+            if (acompanantes.length === 0) {
+                errors.push('Debe agregar al menos un acompañante');
+            }
+            acompanantes.forEach((item, index) => {
+                const nombre = (item.querySelector('.acompanante-nombre')?.value || '').trim();
+                const documento = (item.querySelector('.acompanante-documento')?.value || '').trim();
+                const telefono = (item.querySelector('.acompanante-telefono')?.value || '').trim();
+                const jersey = item.querySelector('.acompanante-jersey')?.checked || false;
+                const talla = (item.querySelector('.acompanante-talla')?.value || '').trim();
+                const label = `Acompañante #${index + 1}`;
+                if (!nombre) errors.push(`${label}: Nombre es obligatorio`);
+                if (!documento) errors.push(`${label}: Documento es obligatorio`);
+                if (!telefono) errors.push(`${label}: Teléfono es obligatorio`);
+                if (jersey && !talla) errors.push(`${label}: Talla de jersey es obligatoria`);
+            });
+        }
+
+        return errors;
+    }
+
+    /**
+     * Construye el mensaje de WhatsApp con resumen detallado de inscripción.
+     * @param {Object} data Datos capturados del formulario.
+     * @param {string} numeroInscripcion Número de inscripción generado.
+     * @param {number} total Total a pagar.
+     * @param {Array} servicios Servicios premium seleccionados (participante).
+     * @param {Array} serviciosAcompanantes Servicios de acompañantes.
+     * @returns {string} Mensaje formateado.
+     */
+    function construirMensajeWhatsApp(data, numeroInscripcion, total, servicios = [], serviciosAcompanantes = []) {
+        let mensaje = '';
+        mensaje += 'V CAMPEONATO REGIONAL DE MOTOTURISMO\n';
+        mensaje += 'L.A.M.A. REGIÓN NORTE - COLOMBIA\n\n';
+        mensaje += 'Registro para el evento en San Andrés\n\n';
+
+        // DATOS DEL PARTICIPANTE
+        mensaje += `Participante: ${data.nombre}\n`;
+        mensaje += `Cédula: ${data.documento}\n`;
+        mensaje += `Categoría: ${data.categoria}\n`;
+        mensaje += `EPS: ${data.eps}\n`;
+        mensaje += `Capítulo: ${data.capitulo}\n`;
+        mensaje += `Directivo: ${data.directivo}\n`;
+        if (data.directivo === 'Sí') {
+            mensaje += `Cargo Directivo: ${(data.cargo || '').trim()} ${(data.ambito || '').trim()}\n`;
+        }
+        mensaje += `Fecha de Llegada: ${data.fecha_llegada}\n`;
+        mensaje += `Condición Médica: ${data.condicion_medica || 'NO'}\n`;
+        mensaje += `Contacto de Emergencia: ${data.emergencia_nombre}\n`;
+        mensaje += `Teléfono Emergencia: ${data.emergencia_telefono}\n`;
+        mensaje += `Jersey Oficial: ${data.jersey ? 'Sí' : 'No'}${data.jersey ? ` (Talla: ${data.talla})` : ''}\n`;
+
+        // ACOMPAÑANTES
+        if (data.acompanantes && data.acompanantes.length) {
+            mensaje += `Acompañante: Sí\n`;
+            data.acompanantes.forEach((acompanante) => {
+                mensaje += `Nombre Acompañante: ${acompanante.nombre || ''}\n`;
+                mensaje += `Documento Acompañante: ${acompanante.documento || ''}\n`;
+                mensaje += `Teléfono Acompañante: ${acompanante.telefono || ''}\n`;
+                if (acompanante.jersey) {
+                    mensaje += `Jersey Oficial: Sí (Talla: ${acompanante.talla || ''})\n`;
+                }
+            });
+        } else {
+            mensaje += 'Acompañante: No\n';
+        }
+
+        // DESGLOSE DE COSTOS
+        mensaje += '\n----------------------------------------\n';
+        const acompanantesCount = (data.acompanantes && data.acompanantes.length) ? data.acompanantes.length : 0;
+        const acompanantesJerseyCount = (data.acompanantes)
+            ? data.acompanantes.filter(item => item.jersey).length
+            : 0;
+        const jerseysCount = (data.jersey ? 1 : 0) + acompanantesJerseyCount;
+        const inscripcionTotal = 150000 * (1 + acompanantesCount);
+        const jerseyTotal = 70000 * jerseysCount;
+
+        mensaje += 'Inscripción Base (OBLIGATORIO)\n';
+        mensaje += `$${inscripcionTotal.toLocaleString('es-CO')}\n`;
+
+        if (acompanantesCount > 0) {
+            mensaje += `Acompañantes (${acompanantesCount} x $150.000)\n`;
+            mensaje += `$${(150000 * acompanantesCount).toLocaleString('es-CO')}\n`;
+        }
+
+        if (jerseysCount > 0) {
+            mensaje += `Jersey Oficial (${jerseysCount} x $70.000)\n`;
+            mensaje += `$${jerseyTotal.toLocaleString('es-CO')}\n`;
+        }
+
+        // Servicios Premium desglosados
+        if ((servicios && servicios.length > 0) || (serviciosAcompanantes && serviciosAcompanantes.length > 0)) {
+            // Contar servicios por tipo
+            const conteoServicios = {};
+
+            // Contar servicios del participante
+            servicios.forEach(svc => {
+                const nombre = svc.nombre;
+                conteoServicios[nombre] = (conteoServicios[nombre] || 0) + 1;
+            });
+
+            // Contar servicios de acompañantes
+            serviciosAcompanantes.forEach(svc => {
+                const nombre = svc.nombre;
+                conteoServicios[nombre] = (conteoServicios[nombre] || 0) + 1;
+            });
+
+            // Construir línea de servicios
+            let serviciosLinea = 'Servicios Premium (';
+            const serviciosDescripcion = Object.entries(conteoServicios)
+                .map(([nombre, cantidad]) => `${cantidad} ${nombre}`)
+                .join(', ');
+            serviciosLinea += serviciosDescripcion + ')\n';
+            mensaje += serviciosLinea;
+
+            const totalServicios = (servicios.reduce((sum, svc) => sum + svc.precio, 0)) +
+                                   (serviciosAcompanantes.reduce((sum, svc) => sum + svc.precio, 0));
+            mensaje += `$${totalServicios.toLocaleString('es-CO')}\n`;
+        }
+
+        mensaje += '\n----------------------------------------\n';
+        mensaje += `TOTAL A PAGAR: $${total.toLocaleString('es-CO')} COP\n`;
+        mensaje += '----------------------------------------\n\n';
+
+        mensaje += `Número de Inscripción: #${numeroInscripcion}\n`;
+        mensaje += `Referencia para transferencia bancaria: #${numeroInscripcion}\n\n`;
+        mensaje += 'A continuación adjunto el comprobante de transferencia.';
+
+        return mensaje;
+    }
+
+    /**
+     * Abre WhatsApp con el mensaje generado en una nueva pestaña.
+     * @param {string} mensaje Texto de WhatsApp.
+     */
+    function enviarWhatsApp(mensaje) {
+        const url = `https://wa.me/573106328171?text=${encodeURIComponent(mensaje)}`;
+        window.open(url, '_blank');
+    }
+
+    /**
+     * Obtiene registros almacenados en localStorage.
+     * @returns {Array<Object>} Lista de registros guardados.
+     */
+    function obtenerRegistrosLocales() {
+        const raw = localStorage.getItem('registro_campeonato');
+        if (!raw) return [];
+        try {
+            const parsed = JSON.parse(raw);
+            return Array.isArray(parsed) ? parsed : [parsed];
+        } catch (error) {
+            return [];
+        }
+    }
+
+    /**
+     * Actualiza el comprobante dentro del registro en localStorage.
+     * @param {string} documento Documento del participante.
+     * @param {Object} comprobante Objeto del comprobante.
+     */
+    function actualizarComprobanteLocal(documento, comprobante) {
+        const registros = obtenerRegistrosLocales();
+        const indice = registros.findIndex(item => String(item.documento || '').trim() === documento);
+        if (indice !== -1) {
+            registros[indice].comprobante = comprobante;
+            localStorage.setItem('registro_campeonato', JSON.stringify(registros));
+        }
+    }
+
+    /**
+     * Verifica si ya existe un registro con el documento indicado.
+     * @param {string} documento Documento a validar.
+     * @returns {boolean} True si ya existe.
+     */
+    function existeRegistroPorDocumento(documento) {
+        const registros = obtenerRegistrosLocales();
+        return registros.some(item => String(item.documento || '').trim() === documento);
+    }
+
+    /**
+     * Convierte el formulario en JSON y lo guarda en localStorage.
+     * @returns {Object} Datos capturados.
+     */
+    function capturarDatos() {
+        const capituloFinal = capituloSelect.value === 'Otros'
+            ? capituloOtroInput.value.trim()
+            : capituloSelect.value;
+        const acompanantes = Array.from(acompanantesContainer.querySelectorAll('.acompanante-item')).map(item => {
+            const nombre = (item.querySelector('.acompanante-nombre')?.value || '').trim();
+            const documento = (item.querySelector('.acompanante-documento')?.value || '').trim();
+            const telefono = (item.querySelector('.acompanante-telefono')?.value || '').trim();
+            const jersey = item.querySelector('.acompanante-jersey')?.checked || false;
+            const talla = (item.querySelector('.acompanante-talla')?.value || '').trim();
+            return { nombre, documento, telefono, jersey, talla };
+        });
+        const data = {
+            categoria: document.getElementById('categoria').value,
+            nombre: document.getElementById('nombre').value.trim(),
+            documento: document.getElementById('documento').value.trim(),
+            eps: document.getElementById('eps').value.trim(),
+            emergencia_nombre: document.getElementById('emergenciaNombre').value.trim(),
+            emergencia_telefono: document.getElementById('emergenciaTelefono').value.trim(),
+            capitulo: capituloFinal,
+            directivo: directivoSelect.value,
+            ambito: document.getElementById('ambito').value,
+            cargo: document.getElementById('cargo').value,
+            fecha_llegada: document.getElementById('fechaLlegada').value,
+            condicion_medica: document.getElementById('condicionMedica').value.trim(),
+            jersey: jerseyCheckbox.checked,
+            talla: document.getElementById('talla').value,
+            acompanante: acompananteCheckbox.checked,
+            acompanantes
+        };
+
+        // Guardar en variable global para el PDF
+        registroActual = data;
+
+        const registros = obtenerRegistrosLocales();
+        registros.push(data);
+        localStorage.setItem('registro_campeonato', JSON.stringify(registros));
+        return data;
+    }
+
+    /**
+     * Gestiona el envío del formulario y el flujo de WhatsApp.
+     * @param {Event} event Evento de submit.
+     */
+    async function handleFormSubmit(event) {
+        event.preventDefault();
+
+        const errors = validarFormulario();
+        if (errors.length > 0) {
+            alert(errors.join('\n'));
+            return;
+        }
+
+        const documento = document.getElementById('documento').value.trim();
+        if (existeRegistroPorDocumento(documento)) {
+            alert('Este documento ya tiene un registro previo.');
+            return;
+        }
+
+        const data = capturarDatos();
+
+        // OBTENER EL TOTAL EXACTO DEL RESUMEN (lo que realmente ve el usuario)
+        let totalServicios = BASE_PRICE; // Valor inicial
+        const totalText = resTotal.textContent.replace(/[^\d]/g, ''); // Extraer solo números de "$X.XXX.XXX"
+        if (totalText) {
+            totalServicios = parseInt(totalText);
+        }
+
+        // Obtener servicios premium del participante principal
+        let serviciosPrincipal = [];
+        const inputServicios = document.getElementById('servicios-seleccionados');
+        if (inputServicios && inputServicios.value) {
+            try {
+                serviciosPrincipal = JSON.parse(inputServicios.value);
+            } catch (e) {
+                console.error('Error al parsear servicios principales:', e);
+            }
+        }
+
+        // Obtener servicios premium de acompañantes
+        let serviciosAcompanantes = [];
+        if (Array.isArray(data.acompanantes)) {
+            data.acompanantes.forEach((acompanante, idx) => {
+                const jsonInput = document.querySelector(`.acompanante-item[data-index="${idx + 1}"] .acompanante-servicios-json`);
+                if (jsonInput && jsonInput.value) {
+                    try {
+                        const servicios = JSON.parse(jsonInput.value);
+                        servicios.forEach(svc => {
+                            serviciosAcompanantes.push({
+                                ...svc,
+                                acompanante: acompanante.nombre || `Acompañante #${idx + 1}`
+                            });
+                        });
+                    } catch (e) {
+                        console.error(`Error al parsear servicios del acompañante ${idx + 1}:`, e);
+                    }
+                }
+            });
+        }
+
+        try {
+            const response = await fetch('/eventos/vnorte-2026/registro', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    categoria: data.categoria,
+                    nombre: data.nombre,
+                    documento: data.documento,
+                    eps: data.eps,
+                    emergencia_nombre: data.emergencia_nombre,
+                    emergencia_telefono: data.emergencia_telefono,
+                    capitulo: data.capitulo,
+                    directivo: data.directivo,
+                    ambito: data.ambito,
+                    cargo: data.cargo,
+                    fecha_llegada: data.fecha_llegada,
+                    condicion_medica: data.condicion_medica,
+                    jersey: data.jersey,
+                    talla: data.talla,
+                    acompanante: data.acompanante,
+                    acompanantes: data.acompanantes,
+                    servicios_principal: serviciosPrincipal,
+                    servicios_acompanantes: serviciosAcompanantes,
+                    total_servicios: totalServicios
+                })
+            });
+
+            const result = await response.json();
+            if (!result.success) {
+                alert(result.message || 'Error al registrar la inscripción');
+                return;
+            }
+
+            const numeroInscripcion = Math.floor(100000 + Math.random() * 900000);
+            const mensaje = construirMensajeWhatsApp(data, numeroInscripcion, totalServicios, serviciosPrincipal, serviciosAcompanantes);
+            llenarPDF();
+            successModal.classList.add('active');
+
+            enviarWhatsApp(mensaje);
+        } catch (error) {
+            alert('Error de conexión. Intente nuevamente.');
+        }
+    }
+
+    function llenarPDF() {
+        // ID de Registro (generado dinámicamente)
+        const registroId = '#MN-2026-' + Math.floor(1000 + Math.random() * 9000);
+
+        // Poblar MODAL (vista de éxito)
+        document.getElementById('modal-registro-id').textContent = 'ID DE REGISTRO: ' + registroId;
+        document.getElementById('modal-nombre').textContent = registroActual.nombre || '-';
+        document.getElementById('modal-capitulo').textContent = registroActual.capitulo || '-';
+        document.getElementById('modal-documento').textContent = registroActual.documento || '-';
+
+        const acompanantes = Array.isArray(registroActual.acompanantes) ? registroActual.acompanantes : [];
+        const acompanantesCount = acompanantes.length;
+        const acompanantesJerseyCount = acompanantes.filter(item => item.jersey).length;
+        const jerseysCount = (registroActual.jersey ? 1 : 0) + acompanantesJerseyCount;
+        const totalInscripcion = BASE_PRICE * (1 + acompanantesCount);
+        const totalJerseys = jerseysCount * JERSEY_PRICE;
+
+        // Obtener servicios premium del participante principal
+        let serviciosPrincipal = [];
+        let totalServiciosPrincipal = 0;
+        const inputServicios = document.getElementById('servicios-seleccionados');
+        if (inputServicios && inputServicios.value) {
+            try {
+                serviciosPrincipal = JSON.parse(inputServicios.value);
+                totalServiciosPrincipal = serviciosPrincipal.reduce((sum, svc) => sum + (svc.precio || 0), 0);
+            } catch (e) {
+                console.error('Error al parsear servicios principales:', e);
+            }
+        }
+
+        // Obtener servicios premium de acompañantes
+        let serviciosAcompanantes = [];
+        let totalServiciosAcompanantes = 0;
+        acompanantes.forEach((acompanante, idx) => {
+            const jsonInput = document.querySelector(`.acompanante-item[data-index="${idx + 1}"] .acompanante-servicios-json`);
+            if (jsonInput && jsonInput.value) {
+                try {
+                    const servicios = JSON.parse(jsonInput.value);
+                    servicios.forEach(svc => {
+                        totalServiciosAcompanantes += (svc.precio || 0);
+                        serviciosAcompanantes.push({
+                            ...svc,
+                            acompanante: acompanante.nombre || `Acompañante #${idx + 1}`
+                        });
+                    });
+                } catch (e) {
+                    console.error(`Error al parsear servicios del acompañante ${idx + 1}:`, e);
+                }
+            }
+        });
+
+        const totalServicios = totalServiciosPrincipal + totalServiciosAcompanantes;
+        const totalCompleto = totalInscripcion + totalJerseys + totalServicios;
+
+        // Acompañantes en el modal
+        if (acompanantesCount > 0) {
+            document.getElementById('modal-acomp-insc-item').style.display = 'flex';
+            document.getElementById('modal-acomp-insc-label').textContent = `Acompañantes (${acompanantesCount} x $150.000)`;
+            document.getElementById('modal-acomp-insc-total').textContent = `$${(BASE_PRICE * acompanantesCount).toLocaleString('es-CO')}`;
+        } else {
+            document.getElementById('modal-acomp-insc-item').style.display = 'none';
+        }
+
+        // Jersey en el modal
+        if (jerseysCount > 0) {
+            document.getElementById('modal-jersey-item').style.display = 'flex';
+            document.getElementById('modal-jersey-label').textContent = `Jersey Oficial (${jerseysCount} x $70.000)`;
+            document.getElementById('modal-jersey-total').textContent = `$${totalJerseys.toLocaleString('es-CO')}`;
+        } else {
+            document.getElementById('modal-jersey-item').style.display = 'none';
+        }
+
+        // Servicios en el modal
+        const modalServiciosItem = document.getElementById('modal-servicios-item');
+        if (modalServiciosItem) {
+            if (totalServicios > 0) {
+                modalServiciosItem.style.display = 'flex';
+                document.getElementById('modal-servicios-label').textContent = `Servicios Premium (${serviciosPrincipal.length + serviciosAcompanantes.length} items)`;
+                document.getElementById('modal-servicios-total').textContent = `$${totalServicios.toLocaleString('es-CO')}`;
+            } else {
+                modalServiciosItem.style.display = 'none';
+            }
+        }
+
+        // Total en el modal - USANDO EL TOTAL COMPLETO CON SERVICIOS
+        const totalCOP = `$${totalCompleto.toLocaleString('es-CO')}`;
+        document.getElementById('modal-total').textContent = totalCOP;
+        if (registroActual.comprobante && registroActual.comprobante.nombre) {
+            comprobanteStatus.textContent = `Comprobante adjunto: ${registroActual.comprobante.nombre}`;
+        } else {
+            comprobanteStatus.textContent = 'Sin comprobante adjunto';
+        }
+
+        // Poblar PDF
+        document.getElementById('pdf-registro-id').textContent = registroId;
+
+        // Información del participante
+        document.getElementById('pdf-categoria').textContent = registroActual.categoria || '';
+        document.getElementById('pdf-nombre').textContent = registroActual.nombre || '';
+        document.getElementById('pdf-documento').textContent = registroActual.documento || '';
+        document.getElementById('pdf-capitulo').textContent = registroActual.capitulo || '';
+        document.getElementById('pdf-eps').textContent = registroActual.eps || '';
+
+        // Contacto de emergencia
+        document.getElementById('pdf-contacto-nombre').textContent = registroActual.emergencia_nombre || '';
+        document.getElementById('pdf-contacto-telefono').textContent = registroActual.emergencia_telefono || '';
+
+        // Fecha de llegada
+        document.getElementById('pdf-fecha-llegada').textContent = registroActual.fecha_llegada || '';
+
+        // Condición médica
+        document.getElementById('pdf-condicion').textContent = registroActual.condicion_medica || 'Ninguna';
+
+        // Detalles de directivo
+        if (registroActual.directivo === 'Sí') {
+            document.getElementById('pdf-directivo-info').style.display = 'block';
+            const cargo = (registroActual.cargo || '').trim();
+            const ambito = (registroActual.ambito || '').trim();
+            document.getElementById('pdf-cargo').textContent = cargo;
+            document.getElementById('pdf-ambito').textContent = ambito;
+            if (!cargo && !ambito) {
+                document.getElementById('pdf-cargo').textContent = 'Directivo';
+                document.getElementById('pdf-ambito').textContent = '';
+            }
+        }
+
+        // Jersey
+        if (jerseysCount > 0) {
+            document.getElementById('pdf-jersey-row').style.display = 'table-row';
+            document.getElementById('pdf-jersey-count').textContent = `${jerseysCount} x $70.000`;
+            document.getElementById('pdf-jersey-total').textContent = `$${totalJerseys.toLocaleString('es-CO')}`;
+        } else {
+            document.getElementById('pdf-jersey-row').style.display = 'none';
+        }
+
+        // Acompañantes
+        if (acompanantesCount > 0) {
+            document.getElementById('pdf-acompanante-row').style.display = 'table-row';
+            document.getElementById('pdf-acomp-count').textContent = `${acompanantesCount} x $150.000`;
+            document.getElementById('pdf-acomp-total').textContent = `$${(BASE_PRICE * acompanantesCount).toLocaleString('es-CO')}`;
+        } else {
+            document.getElementById('pdf-acompanante-row').style.display = 'none';
+        }
+
+        // Total
+        document.getElementById('pdf-total').textContent = totalCOP;
+
+        // Fecha de generación
+        const ahora = new Date();
+        const fecha = ahora.toLocaleDateString('es-CO', { year: 'numeric', month: 'long', day: 'numeric' });
+        const hora = ahora.toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit' });
+        document.getElementById('pdf-fecha-generacion').textContent = `${fecha} a las ${hora}`;
+    }
+
+    form.addEventListener('submit', handleFormSubmit);
+    capituloSelect.addEventListener('change', toggleConditionalFields);
+    directivoSelect.addEventListener('change', toggleConditionalFields);
+    jerseyCheckbox.addEventListener('change', () => {
+        toggleConditionalFields();
+        updateResumenPago();
+    });
+    acompananteCheckbox.addEventListener('change', toggleConditionalFields);
+    addAcompananteBtn.addEventListener('click', () => {
+        const nextIndex = acompanantesContainer.children.length + 1;
+        acompanantesContainer.appendChild(crearAcompananteItem(nextIndex));
+        updateResumenPago();
+    });
+    acompanantesContainer.addEventListener('click', (event) => {
+        const target = event.target;
+        if (target && target.classList.contains('remove-acompanante')) {
+            const item = target.closest('.acompanante-item');
+            if (item) {
+                item.remove();
+                actualizarIndiceAcompanantes();
+                updateResumenPago();
+            }
+        }
+    });
+    acompanantesContainer.addEventListener('change', (event) => {
+        const target = event.target;
+        if (target && target.classList.contains('acompanante-jersey')) {
+            const item = target.closest('.acompanante-item');
+            const tallaField = item ? item.querySelector('.acompanante-talla-field') : null;
+            if (tallaField) {
+                tallaField.classList.toggle('hidden', !target.checked);
+            }
+        }
+        updateResumenPago();
+    });
+    acompanantesContainer.addEventListener('input', updateResumenPago);
+    printBtn.addEventListener('click', () => {
+        llenarPDF();
+        setTimeout(() => window.print(), 100);
+    });
+    uploadBtn.addEventListener('click', () => {
+        comprobanteInput.click();
+    });
+    comprobanteInput.addEventListener('change', () => {
+        const archivo = comprobanteInput.files && comprobanteInput.files[0];
+        if (!archivo) return;
+        const maxSizeMb = 5;
+        if (archivo.size > maxSizeMb * 1024 * 1024) {
+            alert(`El comprobante supera ${maxSizeMb}MB. Por favor adjunta uno más liviano.`);
+            comprobanteInput.value = '';
+            return;
+        }
+        const lector = new FileReader();
+        lector.onload = () => {
+            const comprobante = {
+                nombre: archivo.name,
+                tipo: archivo.type,
+                tamano: archivo.size,
+                dataUrl: lector.result
+            };
+            registroActual.comprobante = comprobante;
+            if (registroActual.documento) {
+                actualizarComprobanteLocal(registroActual.documento, comprobante);
+            }
+            comprobanteStatus.textContent = `Comprobante adjunto: ${archivo.name}`;
+        };
+        lector.readAsDataURL(archivo);
+    });
+    closeModalBtn.addEventListener('click', () => {
+        successModal.classList.remove('active');
+        document.getElementById('pdfContent').style.display = 'none';
+    });
+
+    /**
+     * Valida si el documento ya está registrado en tiempo real.
+     * Se ejecuta al salir del campo (blur event).
+     */
+    const documentoInput = document.getElementById('documento');
+    let documentoYaValidado = false;
+    let documentoExiste = false;
+
+    documentoInput.addEventListener('blur', async function() {
+        const documento = this.value.trim();
+
+        if (!documento) {
+            // Si está vacío, limpiar estado
+            documentoYaValidado = false;
+            documentoExiste = false;
+            this.classList.remove('is-invalid');
+            const alertDiv = document.getElementById('documentoAlertDiv');
+            if (alertDiv) alertDiv.remove();
+            form.style.display = 'block';
+            return;
+        }
+
+        try {
+            const response = await fetch(`/api/check-documento/${documento}`);
+            const data = await response.json();
+
+            if (data.existe) {
+                documentoExiste = true;
+                documentoYaValidado = true;
+
+                // Agregar clase de error al input
+                documentoInput.classList.add('is-invalid');
+                documentoInput.style.borderColor = '#dc3545';
+                documentoInput.style.backgroundColor = '#fff5f5';
+
+                // Crear mensaje de alerta
+                let alertDiv = document.getElementById('documentoAlertDiv');
+                if (!alertDiv) {
+                    alertDiv = document.createElement('div');
+                    alertDiv.id = 'documentoAlertDiv';
+                    documentoInput.parentElement.appendChild(alertDiv);
+                }
+
+                alertDiv.innerHTML = `
+                    <div style="
+                        margin-top: 10px;
+                        padding: 12px;
+                        background-color: #f8d7da;
+                        border: 1px solid #f5c6cb;
+                        border-radius: 4px;
+                        color: #721c24;
+                        font-weight: bold;
+                        text-align: center;
+                    ">
+                        ⚠️ Este documento ya está registrado para el V Campeonato Regional.
+                        <br>
+                        <small style="display: block; margin-top: 8px; font-weight: normal;">
+                            Si crees que es un error, contacta con nosotros.
+                        </small>
+                    </div>
+                `;
+
+                // Ocultar el formulario
+                form.style.display = 'none';
+
+                // Deshabilitar botón de envío
+                const submitBtn = form.querySelector('button[type="submit"]');
+                if (submitBtn) {
+                    submitBtn.disabled = true;
+                    submitBtn.style.opacity = '0.5';
+                }
+            } else {
+                documentoExiste = false;
+                documentoYaValidado = true;
+
+                // Remover clase de error
+                documentoInput.classList.remove('is-invalid');
+                documentoInput.style.borderColor = '';
+                documentoInput.style.backgroundColor = '';
+
+                // Remover mensaje de alerta
+                const alertDiv = document.getElementById('documentoAlertDiv');
+                if (alertDiv) alertDiv.remove();
+
+                // Mostrar formulario
+                form.style.display = 'block';
+
+                // Habilitar botón de envío
+                const submitBtn = form.querySelector('button[type="submit"]');
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.style.opacity = '1';
+                }
+            }
+        } catch (error) {
+            console.error('Error al validar documento:', error);
+            // En caso de error, permitir continuar
+            documentoExiste = false;
+            documentoYaValidado = true;
+            form.style.display = 'block';
+        }
+    });
+
+    // Evento que se dispara cuando se cambia el documento para limpiar validación
+    documentoInput.addEventListener('input', function() {
+        if (documentoYaValidado) {
+            documentoYaValidado = false;
+            documentoExiste = false;
+            this.classList.remove('is-invalid');
+            this.style.borderColor = '';
+            this.style.backgroundColor = '';
+            const alertDiv = document.getElementById('documentoAlertDiv');
+            if (alertDiv) alertDiv.remove();
+            form.style.display = 'block';
+            const submitBtn = form.querySelector('button[type="submit"]');
+            if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.style.opacity = '1';
+            }
+        }
+    });
+
+    toggleConditionalFields();
+    updateResumenPago();
+</script>
+
+<!-- Script para gestionar servicios premium -->
+<script src="/js/servicios-premium.js"></script>
+<script>
+    // Inicializar ServicesPremium
+    // La clase ya llama a updateResumenPago() en su método actualizarFormulario()
+    const serviciosPremium = new ServiciosPremium();
+</script>
+
+<%- include('partials/footer') %>

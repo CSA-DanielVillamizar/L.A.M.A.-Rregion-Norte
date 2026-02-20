@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+        }
+        .font-headings { font-family: 'Bebas Neue', cursive; }
+        .lamaGold { color: #f2d00d; }
+        .lamaNeon { color: #00f5d4; }
+        .bg-lamaBlack { background-color: #12110a; }
+        .bg-lamaDark { background-color: #1a1919; }
+        .border-lamaGold { border-color: #f2d00d; }
+        .border-lamaNeon { border-color: #00f5d4; }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4">
+    <div class="w-full max-w-md">
+        <!-- Logo -->
+        <div class="text-center mb-8">
+            <h1 class="font-headings text-6xl lamaGold mb-2">L.A.M.A.</h1>
+            <p class="lamaNeon text-sm uppercase tracking-widest">Panel de Administración</p>
+        </div>
+
+        <!-- Login Card -->
+        <div class="bg-lamaDark rounded-lg shadow-2xl p-8 border border-gray-800">
+            <h2 class="font-headings text-3xl text-white mb-6 text-center">INICIAR SESIÓN</h2>
+            
+            <% if (error) { %>
+            <div class="bg-red-900/30 border border-red-500 text-red-200 px-4 py-3 rounded mb-4">
+                <p class="text-sm"><%= error %></p>
+            </div>
+            <% } %>
+
+            <form action="/admin/login" method="POST" class="space-y-6">
+                <div>
+                    <label for="username" class="block text-gray-300 text-sm font-semibold mb-2">
+                        Usuario
+                    </label>
+                    <input 
+                        type="text" 
+                        id="username" 
+                        name="username" 
+                        required
+                        class="w-full px-4 py-3 bg-lamaBlack border border-gray-700 rounded text-white focus:outline-none focus:border-lamaNeon transition-colors"
+                        placeholder="admin"
+                    >
+                </div>
+
+                <div>
+                    <label for="password" class="block text-gray-300 text-sm font-semibold mb-2">
+                        Contraseña
+                    </label>
+                    <input 
+                        type="password" 
+                        id="password" 
+                        name="password" 
+                        required
+                        class="w-full px-4 py-3 bg-lamaBlack border border-gray-700 rounded text-white focus:outline-none focus:border-lamaNeon transition-colors"
+                        placeholder="••••••••"
+                    >
+                </div>
+
+                <button 
+                    type="submit"
+                    class="w-full bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-lamaBlack font-bold py-3 px-4 rounded transition-all duration-200 transform hover:scale-105"
+                >
+                    INGRESAR
+                </button>
+            </form>
+
+            <div class="mt-6 text-center">
+                <a href="/" class="text-gray-400 hover:lamaNeon text-sm transition-colors">
+                    ← Volver al sitio principal
+                </a>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="mt-8 text-center text-gray-500 text-xs">
+            <p>© 2026 L.A.M.A. - Todos los derechos reservados</p>
+        </div>
+    </div>
+</body>
+</html>
