@@ -1,84 +1,81 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1780" height="920" viewBox="0 0 1780 920" role="img" aria-label="Runbook operativo con iconos oficiales Microsoft Azure y GitHub">
+<svg xmlns="http://www.w3.org/2000/svg" width="1780" height="920" viewBox="0 0 1780 920" role="img" aria-label="Arquitectura operativa de respuesta a incidentes con stencils oficiales Azure y GitHub">
   <defs>
     <style>
       .t { font-family: 'Segoe UI', Arial, sans-serif; fill: #0f172a; }
       .title { font-size: 30px; font-weight: 700; }
       .subtitle { font-size: 13px; fill: #475569; }
       .h { font-size: 16px; font-weight: 700; }
-      .s { font-size: 13px; }
+      .s { font-size: 13px; fill: #334155; }
+      .tag { font-size: 12px; font-weight: 700; fill: #475569; }
+      .zone { rx: 14; ry: 14; stroke-width: 2; }
       .box { rx: 12; ry: 12; stroke-width: 2; }
       .line { stroke-width: 2.3; fill: none; marker-end: url(#arrow); }
-      .tag { font-size: 12px; font-weight: 700; }
     </style>
     <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
       <polygon points="0 0, 10 3, 0 6" fill="#334155"/>
     </marker>
   </defs>
 
-  <text x="890" y="50" class="t title" text-anchor="middle">Runbook Operativo - 503 / Startup Timeout (Iconografía Oficial)</text>
-  <text x="890" y="73" class="t subtitle" text-anchor="middle">Diagnóstico, recuperación y validación con iconografía oficial Microsoft/GitHub</text>
+  <text x="890" y="50" class="t title" text-anchor="middle">L.A.M.A. Región Norte - Arquitectura Operativa de Incidentes</text>
+  <text x="890" y="73" class="t subtitle" text-anchor="middle">Modelo de observación, contención y recuperación para 503 / startup timeout</text>
 
-  <ellipse cx="230" cy="205" rx="132" ry="60" fill="#fee2e2" stroke="#b91c1c" stroke-width="2"/>
-  <text x="230" y="200" class="t h" text-anchor="middle">Alerta detectada</text>
-  <text x="230" y="221" class="t s" text-anchor="middle">HTTP 503 / Site Disabled</text>
+  <rect x="40" y="140" width="380" height="700" class="zone" fill="#eef2ff" stroke="#4338ca"/>
+  <text x="60" y="168" class="t tag">DETECCIÓN Y TRIAGE</text>
+  <rect x="80" y="240" width="300" height="130" class="box" fill="#fee2e2" stroke="#b91c1c"/>
+  <text x="230" y="286" class="t h" text-anchor="middle">Señal de incidente</text>
+  <text x="230" y="309" class="t s" text-anchor="middle">HTTP 503 · startup timeout · degraded health</text>
 
-  <rect x="430" y="155" width="300" height="106" class="box" fill="#e0f2fe" stroke="#0369a1"/>
-  <image href="icons-official/azure-app-service.svg" x="446" y="168" width="28" height="28"/>
-  <text x="580" y="194" class="t h" text-anchor="middle">1) Estado base</text>
-  <text x="580" y="216" class="t s" text-anchor="middle">az webapp show / deployment list</text>
+  <rect x="80" y="430" width="300" height="170" class="box" fill="#e0f2fe" stroke="#0369a1"/>
+  <image href="icons-official/azure-app-service.svg" x="100" y="455" width="30" height="30"/>
+  <text x="230" y="480" class="t h" text-anchor="middle">Diagnóstico inicial</text>
+  <text x="230" y="503" class="t s" text-anchor="middle">deployment state · logs de aplicación</text>
+  <text x="230" y="525" class="t s" text-anchor="middle">validación de startup command</text>
 
-  <polygon points="810,150 940,205 810,260 680,205" fill="#fef3c7" stroke="#d97706" stroke-width="2"/>
-  <text x="810" y="201" class="t h" text-anchor="middle">¿deployment status=4?</text>
+  <rect x="450" y="140" width="860" height="700" class="zone" fill="#ecfeff" stroke="#0891b2"/>
+  <text x="470" y="168" class="t tag">CAPA DE EJECUCIÓN EN AZURE</text>
 
-  <rect x="760" y="320" width="230" height="110" class="box" fill="#dcfce7" stroke="#16a34a"/>
-  <text x="875" y="357" class="t h" text-anchor="middle">2A) Reintentar</text>
-  <text x="875" y="378" class="t s" text-anchor="middle">runtime zip + restart</text>
+  <rect x="500" y="230" width="360" height="170" class="box" fill="#dcfce7" stroke="#16a34a"/>
+  <image href="icons-official/azure-app-service.svg" x="520" y="255" width="34" height="34"/>
+  <text x="680" y="282" class="t h" text-anchor="middle">Contención (App Service)</text>
+  <text x="680" y="305" class="t s" text-anchor="middle">restart / stop-start / redeploy controlado</text>
+  <text x="680" y="327" class="t s" text-anchor="middle">cierre de ventana de indisponibilidad</text>
 
-  <rect x="1060" y="145" width="330" height="120" class="box" fill="#ede9fe" stroke="#6d28d9"/>
-  <image href="icons-official/azure-app-service.svg" x="1076" y="159" width="28" height="28"/>
-  <text x="1225" y="184" class="t h" text-anchor="middle">2B) Inspeccionar logs</text>
-  <text x="1225" y="206" class="t s" text-anchor="middle">az webapp log tail / docker logs</text>
+  <rect x="900" y="230" width="360" height="170" class="box" fill="#fee2e2" stroke="#b91c1c"/>
+  <image href="icons-official/azure-sql-database.svg" x="920" y="255" width="34" height="34"/>
+  <text x="1080" y="282" class="t h" text-anchor="middle">Dependencias de datos</text>
+  <text x="1080" y="305" class="t s" text-anchor="middle">conectividad SQL · credenciales · latencia</text>
+  <text x="1080" y="327" class="t s" text-anchor="middle">consistencia de acceso transaccional</text>
 
-  <polygon points="1225,315 1375,380 1225,445 1075,380" fill="#ffe4e6" stroke="#e11d48" stroke-width="2"/>
-  <text x="1225" y="373" class="t h" text-anchor="middle">¿MODULE_NOT_FOUND?</text>
+  <rect x="500" y="460" width="760" height="150" class="box" fill="#ede9fe" stroke="#6d28d9"/>
+  <text x="880" y="502" class="t h" text-anchor="middle">Validación Técnica Integral</text>
+  <text x="880" y="525" class="t s" text-anchor="middle">smoke tests · endpoints / /capitulos /itinerario · validación HTML crítica</text>
+  <text x="880" y="547" class="t s" text-anchor="middle">confirmación de estabilidad posterior al fix</text>
 
-  <rect x="1420" y="320" width="280" height="120" class="box" fill="#ecfccb" stroke="#4d7c0f"/>
-  <text x="1560" y="358" class="t h" text-anchor="middle">3A) Corregir artefacto</text>
-  <text x="1560" y="380" class="t s" text-anchor="middle">package.json + lock</text>
-  <text x="1560" y="400" class="t s" text-anchor="middle">rebuild + redeploy</text>
+  <rect x="500" y="650" width="760" height="150" class="box" fill="#ecfccb" stroke="#4d7c0f"/>
+  <text x="880" y="692" class="t h" text-anchor="middle">Causa raíz y aprendizaje operacional</text>
+  <text x="880" y="715" class="t s" text-anchor="middle">actualización de runbook · controles preventivos · checklist de despliegue</text>
+  <text x="880" y="737" class="t s" text-anchor="middle">criterio de cierre con evidencia verificable</text>
 
-  <polygon points="1225,500 1375,565 1225,630 1075,565" fill="#f3f4f6" stroke="#374151" stroke-width="2"/>
-  <text x="1225" y="558" class="t h" text-anchor="middle">¿Timeout persiste?</text>
+  <rect x="1340" y="140" width="400" height="700" class="zone" fill="#f8fafc" stroke="#334155"/>
+  <text x="1360" y="168" class="t tag">GOBIERNO Y TRAZABILIDAD</text>
+  <rect x="1380" y="250" width="320" height="170" class="box" fill="#f3f4f6" stroke="#111827"/>
+  <image href="icons-official/github-mark.svg" x="1402" y="275" width="32" height="32"/>
+  <text x="1540" y="302" class="t h" text-anchor="middle">Registro en GitHub</text>
+  <text x="1540" y="325" class="t s" text-anchor="middle">cambios auditables del incidente</text>
+  <text x="1540" y="347" class="t s" text-anchor="middle">evidencia de mitigación y cierre</text>
 
-  <rect x="760" y="505" width="280" height="136" class="box" fill="#ffedd5" stroke="#ea580c"/>
-  <text x="900" y="542" class="t h" text-anchor="middle">3B) Recuperación</text>
-  <text x="900" y="564" class="t s" text-anchor="middle">restart / stop-start</text>
-  <text x="900" y="585" class="t s" text-anchor="middle">startup command / puerto / warmup</text>
+  <rect x="1380" y="500" width="320" height="220" class="box" fill="#e2e8f0" stroke="#475569"/>
+  <text x="1540" y="546" class="t h" text-anchor="middle">Salida Ejecutiva</text>
+  <text x="1540" y="569" class="t s" text-anchor="middle">estado servicio: estable</text>
+  <text x="1540" y="591" class="t s" text-anchor="middle">riesgo residual: controlado</text>
+  <text x="1540" y="613" class="t s" text-anchor="middle">acciones preventivas: aplicadas</text>
 
-  <rect x="1080" y="690" width="320" height="120" class="box" fill="#dbeafe" stroke="#1d4ed8"/>
-  <text x="1240" y="729" class="t h" text-anchor="middle">4) Validación funcional</text>
-  <text x="1240" y="751" class="t s" text-anchor="middle">200 en /, /capitulos, /itinerario</text>
-
-  <ellipse cx="1560" cy="745" rx="138" ry="60" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/>
-  <image href="icons-official/github-mark.svg" x="1438" y="718" width="24" height="24"/>
-  <text x="1560" y="738" class="t h" text-anchor="middle">Incidente resuelto</text>
-  <text x="1560" y="759" class="t s" text-anchor="middle">documentar causa raíz</text>
-
-  <line x1="362" y1="205" x2="430" y2="205" class="line" stroke="#0369a1"/>
-  <line x1="730" y1="205" x2="680" y2="205" class="line" stroke="#d97706"/>
-  <line x1="810" y1="260" x2="875" y2="320" class="line" stroke="#b91c1c"/>
-  <line x1="940" y1="205" x2="1060" y2="205" class="line" stroke="#16a34a"/>
-  <line x1="1225" y1="265" x2="1225" y2="315" class="line" stroke="#6d28d9"/>
-  <line x1="1375" y1="380" x2="1420" y2="380" class="line" stroke="#4d7c0f"/>
-  <line x1="1225" y1="445" x2="1225" y2="500" class="line" stroke="#374151"/>
-  <line x1="1075" y1="565" x2="1040" y2="565" class="line" stroke="#ea580c"/>
-  <line x1="900" y1="641" x2="1080" y2="750" class="line" stroke="#1d4ed8"/>
-  <line x1="1225" y1="630" x2="1225" y2="690" class="line" stroke="#1d4ed8"/>
-  <line x1="1400" y1="750" x2="1422" y2="750" class="line" stroke="#16a34a"/>
-
-  <text x="830" y="290" class="t tag" fill="#b91c1c">NO</text>
-  <text x="952" y="194" class="t tag" fill="#166534">SÍ</text>
-  <text x="1388" y="368" class="t tag" fill="#166534">SÍ</text>
-  <text x="1240" y="485" class="t tag" fill="#334155">NO</text>
-  <text x="1050" y="555" class="t tag" fill="#ea580c">SÍ</text>
+  <line x1="380" y1="305" x2="500" y2="305" class="line" stroke="#b91c1c"/>
+  <line x1="380" y1="515" x2="500" y2="305" class="line" stroke="#0369a1"/>
+  <line x1="860" y1="315" x2="900" y2="315" class="line" stroke="#16a34a"/>
+  <line x1="680" y1="400" x2="680" y2="460" class="line" stroke="#6d28d9"/>
+  <line x1="1080" y1="400" x2="1080" y2="460" class="line" stroke="#6d28d9"/>
+  <line x1="880" y1="610" x2="880" y2="650" class="line" stroke="#4d7c0f"/>
+  <line x1="1310" y1="725" x2="1380" y2="610" class="line" stroke="#475569"/>
+  <line x1="1260" y1="530" x2="1380" y2="330" class="line" stroke="#111827"/>
 </svg>
