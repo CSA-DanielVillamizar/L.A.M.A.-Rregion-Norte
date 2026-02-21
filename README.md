@@ -28,6 +28,7 @@ Web App Full Stack con estilo visual "Hardcore Tropical" para L.A.M.A. Región N
 ## Arquitectura
 
 > Nota: Las variantes **con iconos oficiales** usan activos de `Azure Public Service Icons (Microsoft)` y `GitHub Mark` oficial.
+> Nota: Las variantes **con iconos oficiales** usan activos del repositorio `dwarfered/azure-architecture-icons-for-drawio` (Azure) y `GitHub Mark` oficial.
 
 > Trazabilidad de fuentes: `docs/icons-official/SOURCES.md`
 
