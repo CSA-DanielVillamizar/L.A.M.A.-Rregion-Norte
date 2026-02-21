@@ -19,9 +19,9 @@ Estos assets se usan en las variantes `*-iconos.*` de los diagramas.
 
 ## GitHub (oficial)
 
-- Asset oficial de marca: **GitHub Mark**
-- Fuente usada: <https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png>
-- Archivo local: `github-mark.png`
+- Asset oficial de marca: **GitHub Invertocat (Mark)**
+- Fuente oficial (brand toolkit): <https://brand.github.com/GitHub_Logos.zip>
+- Archivo local: `github-mark.svg` (copiado de `GitHub Logos/SVG/GitHub_Invertocat_Black.svg`)
 
 ## Diagramas que consumen estos iconos
 

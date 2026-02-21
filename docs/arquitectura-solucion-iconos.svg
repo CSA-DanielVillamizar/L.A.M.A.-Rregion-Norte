@@ -57,7 +57,7 @@
   <text x="1240" y="384" class="t s" text-anchor="middle">Pool Global (mssql)</text>
 
   <rect x="560" y="670" width="230" height="90" class="box" fill="#f3f4f6" stroke="#374151"/>
-  <image href="icons-official/github-mark.png" x="575" y="683" width="26" height="26"/>
+  <image href="icons-official/github-mark.svg" x="575" y="683" width="26" height="26"/>
   <text x="675" y="715" class="t h" text-anchor="middle">GitHub Repository</text>
   <text x="675" y="736" class="t s" text-anchor="middle">main</text>
 
