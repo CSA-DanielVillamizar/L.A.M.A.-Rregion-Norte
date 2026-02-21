@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1450" height="900" viewBox="0 0 1450 900" role="img" aria-label="Arquitectura de solución con iconos oficiales">
+  <defs>
+    <style>
+      .t { font-family: 'Segoe UI', Arial, sans-serif; fill: #0f172a; }
+      .title { font-size: 30px; font-weight: 700; }
+      .h { font-size: 16px; font-weight: 700; }
+      .s { font-size: 13px; }
+      .box { rx: 12; ry: 12; stroke-width: 2; }
+      .line { stroke-width: 2.2; fill: none; marker-end: url(#arrow); }
+    </style>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="#334155"/>
+    </marker>
+  </defs>
+
+  <text x="725" y="52" class="t title" text-anchor="middle">L.A.M.A. Región Norte - Arquitectura (Iconografía Oficial)</text>
+
+  <rect x="50" y="300" width="200" height="82" class="box" fill="#e0f2fe" stroke="#0284c7"/>
+  <text x="150" y="346" class="t h" text-anchor="middle">Usuario / Admin</text>
+
+  <rect x="290" y="285" width="230" height="112" class="box" fill="#dbeafe" stroke="#2563eb"/>
+  <text x="405" y="332" class="t h" text-anchor="middle">Navegador Web</text>
+  <text x="405" y="355" class="t s" text-anchor="middle">Desktop / Mobile</text>
+
+  <rect x="560" y="180" width="520" height="440" class="box" fill="#ecfeff" stroke="#0891b2"/>
+  <image href="icons/microsoft-azure.svg" x="575" y="194" width="26" height="26"/>
+  <text x="825" y="212" class="t h" text-anchor="middle">Azure App Service (Linux)</text>
+  <text x="825" y="233" class="t s" text-anchor="middle">lamaregionnorte.azurewebsites.net</text>
+
+  <rect x="600" y="255" width="190" height="94" class="box" fill="#fef3c7" stroke="#d97706"/>
+  <image href="icons/nodejs.svg" x="612" y="267" width="24" height="24"/>
+  <text x="700" y="298" class="t h" text-anchor="middle">Node.js + Express</text>
+  <text x="700" y="319" class="t s" text-anchor="middle">server.js</text>
+
+  <rect x="820" y="255" width="230" height="94" class="box" fill="#f3e8ff" stroke="#7e22ce"/>
+  <text x="935" y="298" class="t h" text-anchor="middle">Routes</text>
+  <text x="935" y="319" class="t s" text-anchor="middle">main / event / api</text>
+
+  <rect x="600" y="372" width="190" height="84" class="box" fill="#fce7f3" stroke="#be185d"/>
+  <text x="700" y="418" class="t h" text-anchor="middle">Controllers</text>
+
+  <rect x="820" y="372" width="230" height="84" class="box" fill="#ffe4e6" stroke="#e11d48"/>
+  <text x="935" y="418" class="t h" text-anchor="middle">Services</text>
+
+  <rect x="600" y="480" width="190" height="92" class="box" fill="#e0e7ff" stroke="#4338ca"/>
+  <text x="700" y="523" class="t h" text-anchor="middle">Views EJS</text>
+  <text x="700" y="544" class="t s" text-anchor="middle">+ Partials globales</text>
+
+  <rect x="820" y="480" width="230" height="92" class="box" fill="#e0f2fe" stroke="#0369a1"/>
+  <text x="935" y="523" class="t h" text-anchor="middle">public/</text>
+  <text x="935" y="544" class="t s" text-anchor="middle">CSS + JS + Assets</text>
+
+  <rect x="1110" y="318" width="260" height="144" class="box" fill="#fee2e2" stroke="#b91c1c"/>
+  <image href="icons/sqlserver.svg" x="1122" y="332" width="24" height="24"/>
+  <text x="1240" y="362" class="t h" text-anchor="middle">Azure SQL Database</text>
+  <text x="1240" y="384" class="t s" text-anchor="middle">Pool Global (mssql)</text>
+
+  <rect x="560" y="670" width="230" height="90" class="box" fill="#f3f4f6" stroke="#374151"/>
+  <image href="icons/github.svg" x="575" y="684" width="24" height="24"/>
+  <text x="675" y="715" class="t h" text-anchor="middle">GitHub Repository</text>
+  <text x="675" y="736" class="t s" text-anchor="middle">main</text>
+
+  <rect x="830" y="670" width="250" height="90" class="box" fill="#ecfccb" stroke="#4d7c0f"/>
+  <image href="icons/docker.svg" x="845" y="684" width="24" height="24"/>
+  <image href="icons/npm.svg" x="876" y="684" width="24" height="24"/>
+  <text x="955" y="715" class="t h" text-anchor="middle">Zip Deploy / OneDeploy</text>
+  <text x="955" y="736" class="t s" text-anchor="middle">Azure CLI</text>
+
+  <line x1="250" y1="341" x2="290" y2="341" class="line" stroke="#0284c7"/>
+  <line x1="520" y1="341" x2="600" y2="302" class="line" stroke="#2563eb"/>
+  <line x1="790" y1="302" x2="820" y2="302" class="line" stroke="#7e22ce"/>
+  <line x1="935" y1="349" x2="700" y2="372" class="line" stroke="#be185d"/>
+  <line x1="790" y1="414" x2="820" y2="414" class="line" stroke="#e11d48"/>
+  <line x1="700" y1="456" x2="700" y2="480" class="line" stroke="#4338ca"/>
+  <line x1="700" y1="315" x2="935" y2="480" class="line" stroke="#0369a1"/>
+  <line x1="1050" y1="414" x2="1110" y2="390" class="line" stroke="#b91c1c"/>
+  <line x1="790" y1="715" x2="830" y2="715" class="line" stroke="#374151"/>
+  <line x1="955" y1="670" x2="905" y2="620" class="line" stroke="#4d7c0f"/>
+</svg>
