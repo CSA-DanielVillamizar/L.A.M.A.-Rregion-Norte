@@ -7,6 +7,7 @@
       .h { font-size: 16px; font-weight: 700; }
       .s { font-size: 13px; fill: #334155; }
       .tag { font-size: 12px; font-weight: 700; fill: #475569; }
+      .flow { font-size: 12px; font-weight: 700; fill: #1e293b; }
       .zone { rx: 14; ry: 14; stroke-width: 2; }
       .box { rx: 12; ry: 12; stroke-width: 2; }
       .line { stroke-width: 2.3; fill: none; marker-end: url(#arrow); }
@@ -78,4 +79,16 @@
   <line x1="880" y1="610" x2="880" y2="650" class="line" stroke="#4d7c0f"/>
   <line x1="1310" y1="725" x2="1380" y2="610" class="line" stroke="#475569"/>
   <line x1="1260" y1="530" x2="1380" y2="330" class="line" stroke="#111827"/>
+
+  <text x="420" y="296" class="t flow">F1</text>
+  <text x="420" y="438" class="t flow">F2</text>
+  <text x="872" y="306" class="t flow">F3</text>
+  <text x="692" y="438" class="t flow">F4</text>
+  <text x="1092" y="438" class="t flow">F5</text>
+  <text x="892" y="636" class="t flow">F6</text>
+  <text x="1320" y="664" class="t flow">F7</text>
+  <text x="1272" y="424" class="t flow">F8</text>
+
+  <rect x="60" y="860" width="1230" height="36" class="box" fill="#f8fafc" stroke="#94a3b8"/>
+  <text x="80" y="883" class="t s">Leyenda: F1/F2 triage→contención · F3/F4/F5 dependencias técnicas y validación · F6 aprendizaje operacional · F7/F8 gobierno y evidencia en GitHub</text>
 </svg>
