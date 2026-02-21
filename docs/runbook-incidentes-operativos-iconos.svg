@@ -60,7 +60,7 @@
   <text x="1240" y="751" class="t s" text-anchor="middle">200 en /, /capitulos, /itinerario</text>
 
   <ellipse cx="1560" cy="745" rx="138" ry="60" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/>
-  <image href="icons-official/github-mark.png" x="1438" y="718" width="24" height="24"/>
+  <image href="icons-official/github-mark.svg" x="1438" y="718" width="24" height="24"/>
   <text x="1560" y="738" class="t h" text-anchor="middle">Incidente resuelto</text>
   <text x="1560" y="759" class="t s" text-anchor="middle">documentar causa raíz</text>
 

@@ -24,7 +24,7 @@
   <text x="380" y="279" class="t h" text-anchor="middle">Git</text>
 
   <rect x="510" y="240" width="210" height="86" class="box" fill="#f3f4f6" stroke="#111827"/>
-  <image href="icons-official/github-mark.png" x="526" y="254" width="26" height="26"/>
+  <image href="icons-official/github-mark.svg" x="526" y="254" width="26" height="26"/>
   <text x="615" y="279" class="t h" text-anchor="middle">GitHub Repo</text>
   <text x="615" y="299" class="t s" text-anchor="middle">main</text>
 
