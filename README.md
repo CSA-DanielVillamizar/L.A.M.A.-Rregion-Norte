@@ -39,6 +39,12 @@ Web App Full Stack con estilo visual "Hardcore Tropical" para L.A.M.A. Región N
 
 - Fuente editable Draw.io: `docs/flujo-despliegue-operativo.drawio`
 
+### Runbook de Incidentes (503 / Startup Timeout)
+
+![Runbook operativo de incidentes](docs/runbook-incidentes-operativos.svg)
+
+- Fuente editable Draw.io: `docs/runbook-incidentes-operativos.drawio`
+
 ```
 /
 ├── src/
