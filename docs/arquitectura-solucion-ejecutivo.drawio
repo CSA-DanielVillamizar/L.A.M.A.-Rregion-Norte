@@ -1,0 +1,19 @@
+<mxfile host="app.diagrams.net" modified="2026-02-20T00:00:00.000Z" agent="GitHub Copilot" version="26.0.9" etag="lama-arq-ejecutivo-2026">
+  <diagram id="arq-ej" name="Arquitectura Ejecutiva">
+    <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1000" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/><mxCell id="1" parent="0"/>
+        <mxCell id="t" value="Arquitectura Ejecutiva - L.A.M.A. Región Norte" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontStyle=1;fontSize=24;" vertex="1" parent="1"><mxGeometry x="350" y="20" width="860" height="40" as="geometry"/></mxCell>
+        <mxCell id="c1" value="Canal Web" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#2563EB;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="80" y="270" width="220" height="90" as="geometry"/></mxCell>
+        <mxCell id="c2" value="Aplicación Web&#xa;Node.js + Express + EJS" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ECFEFF;strokeColor=#0891B2;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="380" y="230" width="310" height="170" as="geometry"/></mxCell>
+        <mxCell id="c3" value="Azure SQL Database&#xa;Persistencia transaccional" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEE2E2;strokeColor=#B91C1C;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="770" y="250" width="250" height="130" as="geometry"/></mxCell>
+        <mxCell id="c4" value="Gobierno Técnico&#xa;Repositorio GitHub" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F3F4F6;strokeColor=#374151;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="1110" y="230" width="240" height="170" as="geometry"/></mxCell>
+        <mxCell id="c5" value="Resultado de negocio&#xa;Portal estable y operable" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ECFCCB;strokeColor=#4D7C0F;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="480" y="490" width="460" height="120" as="geometry"/></mxCell>
+        <mxCell id="e1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#2563EB;endArrow=block;endFill=1;" edge="1" parent="1" source="c1" target="c2"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e2" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#B91C1C;endArrow=block;endFill=1;" edge="1" parent="1" source="c2" target="c3"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e3" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#374151;endArrow=block;endFill=1;" edge="1" parent="1" source="c3" target="c4"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e4" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#4D7C0F;endArrow=block;endFill=1;" edge="1" parent="1" source="c2" target="c5"><mxGeometry relative="1" as="geometry"/></mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

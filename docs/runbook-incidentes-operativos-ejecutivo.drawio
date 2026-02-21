@@ -1,0 +1,22 @@
+<mxfile host="app.diagrams.net" modified="2026-02-20T00:00:00.000Z" agent="GitHub Copilot" version="26.0.9" etag="lama-runbook-ejecutivo-2026">
+  <diagram id="run-ej" name="Runbook Ejecutivo">
+    <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1000" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/><mxCell id="1" parent="0"/>
+        <mxCell id="t" value="Runbook Ejecutivo - Incidentes 503 / Timeout" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontStyle=1;fontSize=24;" vertex="1" parent="1"><mxGeometry x="340" y="20" width="900" height="40" as="geometry"/></mxCell>
+        <mxCell id="n1" value="Detectar incidente" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEE2E2;strokeColor=#B91C1C;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="90" y="280" width="250" height="90" as="geometry"/></mxCell>
+        <mxCell id="n2" value="Diagnóstico técnico" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EDE9FE;strokeColor=#6D28D9;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="420" y="220" width="300" height="110" as="geometry"/></mxCell>
+        <mxCell id="n3" value="Contención y recuperación" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFEDD5;strokeColor=#EA580C;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="420" y="390" width="300" height="110" as="geometry"/></mxCell>
+        <mxCell id="n4" value="Corrección de causa raíz" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ECFCCB;strokeColor=#4D7C0F;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="800" y="220" width="300" height="110" as="geometry"/></mxCell>
+        <mxCell id="n5" value="Validación integral" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#1D4ED8;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="800" y="390" width="300" height="110" as="geometry"/></mxCell>
+        <mxCell id="n6" value="Cierre ejecutivo" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="1180" y="300" width="240" height="110" as="geometry"/></mxCell>
+        <mxCell id="e1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#6D28D9;endArrow=block;endFill=1;" edge="1" parent="1" source="n1" target="n2"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e2" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#EA580C;endArrow=block;endFill=1;" edge="1" parent="1" source="n2" target="n3"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e3" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#4D7C0F;endArrow=block;endFill=1;" edge="1" parent="1" source="n2" target="n4"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e4" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#1D4ED8;endArrow=block;endFill=1;" edge="1" parent="1" source="n3" target="n5"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e5" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#16A34A;endArrow=block;endFill=1;" edge="1" parent="1" source="n4" target="n6"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e6" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#16A34A;endArrow=block;endFill=1;" edge="1" parent="1" source="n5" target="n6"><mxGeometry relative="1" as="geometry"/></mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
