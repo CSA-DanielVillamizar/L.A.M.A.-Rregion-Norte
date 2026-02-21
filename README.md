@@ -33,6 +33,12 @@ Web App Full Stack con estilo visual "Hardcore Tropical" para L.A.M.A. Región N
 
 - Fuente editable Draw.io: `docs/arquitectura-solucion.drawio`
 
+### Diagrama de Despliegue Operativo
+
+![Diagrama de flujo de despliegue operativo](docs/flujo-despliegue-operativo.svg)
+
+- Fuente editable Draw.io: `docs/flujo-despliegue-operativo.drawio`
+
 ```
 /
 ├── src/
