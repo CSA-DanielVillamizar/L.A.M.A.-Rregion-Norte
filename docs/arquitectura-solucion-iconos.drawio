@@ -1,30 +1,33 @@
-<mxfile host="app.diagrams.net" modified="2026-02-20T00:00:00.000Z" agent="GitHub Copilot" version="26.0.9" etag="lama-arq-iconos-official-2026">
+<mxfile host="app.diagrams.net" modified="2026-02-21T00:00:00.000Z" agent="GitHub Copilot" version="26.0.9" etag="lama-arq-iconos-official-2026-v2">
   <diagram id="lama-arq-iconos-official" name="Arquitectura Iconos Oficiales">
     <mxGraphModel dx="1500" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1000" math="0" shadow="0">
       <root>
-        <mxCell id="0"/><mxCell id="1" parent="0"/>
-        <mxCell id="t" value="L.A.M.A. Región Norte - Arquitectura (Iconografía Oficial)" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontStyle=1;fontSize=24;" vertex="1" parent="1"><mxGeometry x="350" y="20" width="900" height="40" as="geometry"/></mxCell>
-        <mxCell id="u" value="Usuario / Admin" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E0F2FE;strokeColor=#0284C7;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="50" y="300" width="190" height="80" as="geometry"/></mxCell>
-        <mxCell id="b" value="Navegador Web" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#2563EB;" vertex="1" parent="1"><mxGeometry x="280" y="285" width="220" height="110" as="geometry"/></mxCell>
-        <mxCell id="az" value="Azure App Service (Linux)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ECFEFF;strokeColor=#0891B2;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="540" y="180" width="520" height="440" as="geometry"/></mxCell>
-        <mxCell id="azicon" style="shape=image;html=1;imageAspect=0;aspect=fixed;image=icons-official/azure-app-service.svg;" vertex="1" parent="1"><mxGeometry x="555" y="194" width="28" height="28" as="geometry"/></mxCell>
-        <mxCell id="node" value="Node.js + Express" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF3C7;strokeColor=#D97706;" vertex="1" parent="1"><mxGeometry x="590" y="255" width="190" height="90" as="geometry"/></mxCell>
-        <mxCell id="routes" value="Routes" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F3E8FF;strokeColor=#7E22CE;" vertex="1" parent="1"><mxGeometry x="810" y="255" width="230" height="90" as="geometry"/></mxCell>
-        <mxCell id="ctl" value="Controllers" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FCE7F3;strokeColor=#BE185D;" vertex="1" parent="1"><mxGeometry x="590" y="365" width="190" height="80" as="geometry"/></mxCell>
-        <mxCell id="svc" value="Services" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFE4E6;strokeColor=#E11D48;" vertex="1" parent="1"><mxGeometry x="810" y="365" width="230" height="80" as="geometry"/></mxCell>
-        <mxCell id="sql" value="Azure SQL Database" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEE2E2;strokeColor=#B91C1C;" vertex="1" parent="1"><mxGeometry x="1090" y="315" width="260" height="140" as="geometry"/></mxCell>
-        <mxCell id="sqlicon" style="shape=image;html=1;imageAspect=0;aspect=fixed;image=icons-official/azure-sql-database.svg;" vertex="1" parent="1"><mxGeometry x="1104" y="328" width="24" height="24" as="geometry"/></mxCell>
-        <mxCell id="gh" value="GitHub Repository" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F3F4F6;strokeColor=#374151;" vertex="1" parent="1"><mxGeometry x="540" y="670" width="230" height="90" as="geometry"/></mxCell>
-        <mxCell id="ghicon" style="shape=image;html=1;imageAspect=0;aspect=fixed;image=icons-official/github-mark.svg;" vertex="1" parent="1"><mxGeometry x="554" y="684" width="24" height="24" as="geometry"/></mxCell>
-        <mxCell id="dep" value="Zip Deploy / OneDeploy" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ECFCCB;strokeColor=#4D7C0F;" vertex="1" parent="1"><mxGeometry x="810" y="670" width="250" height="90" as="geometry"/></mxCell>
-        <mxCell id="e1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;endArrow=block;endFill=1;" edge="1" parent="1" source="u" target="b"><mxGeometry relative="1" as="geometry"/></mxCell>
-        <mxCell id="e2" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;endArrow=block;endFill=1;" edge="1" parent="1" source="b" target="node"><mxGeometry relative="1" as="geometry"/></mxCell>
-        <mxCell id="e3" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;endFill=1;" edge="1" parent="1" source="node" target="routes"><mxGeometry relative="1" as="geometry"/></mxCell>
-        <mxCell id="e4" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;endFill=1;" edge="1" parent="1" source="routes" target="ctl"><mxGeometry relative="1" as="geometry"/></mxCell>
-        <mxCell id="e5" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;endFill=1;" edge="1" parent="1" source="ctl" target="svc"><mxGeometry relative="1" as="geometry"/></mxCell>
-        <mxCell id="e6" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;endFill=1;" edge="1" parent="1" source="svc" target="sql"><mxGeometry relative="1" as="geometry"/></mxCell>
-        <mxCell id="e7" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;endFill=1;" edge="1" parent="1" source="gh" target="dep"><mxGeometry relative="1" as="geometry"/></mxCell>
-        <mxCell id="e8" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;endFill=1;" edge="1" parent="1" source="dep" target="az"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        <mxCell id="t" value="L.A.M.A. Región Norte - Diagrama de Arquitectura" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontStyle=1;fontSize=24;" vertex="1" parent="1"><mxGeometry x="330" y="20" width="940" height="40" as="geometry"/></mxCell>
+        <mxCell id="z1" value="CANAL / CONSUMIDORES" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EEF2FF;strokeColor=#4338CA;fontStyle=1;verticalAlign=top;spacingTop=14;" vertex="1" parent="1"><mxGeometry x="40" y="140" width="320" height="620" as="geometry"/></mxCell>
+        <mxCell id="u1" value="Usuarios Web&#xa;Desktop / Mobile" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#2563EB;" vertex="1" parent="1"><mxGeometry x="80" y="220" width="240" height="110" as="geometry"/></mxCell>
+        <mxCell id="u2" value="Administración&#xa;Operación portal" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E0F2FE;strokeColor=#0284C7;" vertex="1" parent="1"><mxGeometry x="80" y="390" width="240" height="110" as="geometry"/></mxCell>
+        <mxCell id="z2" value="SUSCRIPCIÓN AZURE / CAPA DE APLICACIÓN" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ECFEFF;strokeColor=#0891B2;fontStyle=1;verticalAlign=top;spacingTop=14;" vertex="1" parent="1"><mxGeometry x="390" y="140" width="760" height="620" as="geometry"/></mxCell>
+        <mxCell id="app" value="Azure App Service (Linux)&#xa;Hosting web + runtime Node.js" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#CFFAFE;strokeColor=#06B6D4;" vertex="1" parent="1"><mxGeometry x="440" y="220" width="660" height="140" as="geometry"/></mxCell>
+        <mxCell id="appi" style="shape=image;html=1;imageAspect=0;aspect=fixed;image=icons-official/azure-app-service.svg;" vertex="1" parent="1"><mxGeometry x="460" y="240" width="34" height="34" as="geometry"/></mxCell>
+        <mxCell id="m1" value="Express + EJS" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF3C7;strokeColor=#D97706;" vertex="1" parent="1"><mxGeometry x="470" y="300" width="180" height="46" as="geometry"/></mxCell>
+        <mxCell id="m2" value="MVC + Service Layer" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F3E8FF;strokeColor=#7E22CE;" vertex="1" parent="1"><mxGeometry x="680" y="300" width="180" height="46" as="geometry"/></mxCell>
+        <mxCell id="m3" value="Assets públicos" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E0E7FF;strokeColor=#4338CA;" vertex="1" parent="1"><mxGeometry x="890" y="300" width="180" height="46" as="geometry"/></mxCell>
+        <mxCell id="data" value="Azure SQL Database&#xa;Persistencia transaccional + pool global (mssql)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEE2E2;strokeColor=#B91C1C;" vertex="1" parent="1"><mxGeometry x="440" y="410" width="660" height="130" as="geometry"/></mxCell>
+        <mxCell id="datai" style="shape=image;html=1;imageAspect=0;aspect=fixed;image=icons-official/azure-sql-database.svg;" vertex="1" parent="1"><mxGeometry x="460" y="430" width="34" height="34" as="geometry"/></mxCell>
+        <mxCell id="ops" value="Operación y Confiabilidad&#xa;health checks · validación endpoints · runbook 503/startup timeout" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ECFCCB;strokeColor=#4D7C0F;" vertex="1" parent="1"><mxGeometry x="440" y="580" width="660" height="150" as="geometry"/></mxCell>
+        <mxCell id="z3" value="DEVOPS / GOBIERNO" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#334155;fontStyle=1;verticalAlign=top;spacingTop=14;" vertex="1" parent="1"><mxGeometry x="1180" y="140" width="230" height="620" as="geometry"/></mxCell>
+        <mxCell id="gh" value="GitHub&#xa;Repo principal" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F3F4F6;strokeColor=#111827;" vertex="1" parent="1"><mxGeometry x="1210" y="230" width="170" height="120" as="geometry"/></mxCell>
+        <mxCell id="ghi" style="shape=image;html=1;imageAspect=0;aspect=fixed;image=icons-official/github-mark.svg;" vertex="1" parent="1"><mxGeometry x="1228" y="255" width="30" height="30" as="geometry"/></mxCell>
+        <mxCell id="dep" value="OneDeploy&#xa;Release a App Service" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;" vertex="1" parent="1"><mxGeometry x="1210" y="390" width="170" height="120" as="geometry"/></mxCell>
+        <mxCell id="depi" style="shape=image;html=1;imageAspect=0;aspect=fixed;image=icons-official/azure-app-service.svg;" vertex="1" parent="1"><mxGeometry x="1228" y="415" width="30" height="30" as="geometry"/></mxCell>
+        <mxCell id="e1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;endFill=1;strokeWidth=2;" edge="1" parent="1" source="u1" target="app"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e2" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;endFill=1;strokeWidth=2;" edge="1" parent="1" source="u2" target="app"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e3" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;endFill=1;strokeWidth=2;" edge="1" parent="1" source="app" target="data"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e4" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;endFill=1;strokeWidth=2;" edge="1" parent="1" source="data" target="ops"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e5" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;endFill=1;strokeWidth=2;" edge="1" parent="1" source="gh" target="dep"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e6" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;endFill=1;strokeWidth=2;" edge="1" parent="1" source="dep" target="app"><mxGeometry relative="1" as="geometry"/></mxCell>
       </root>
     </mxGraphModel>
   </diagram>
