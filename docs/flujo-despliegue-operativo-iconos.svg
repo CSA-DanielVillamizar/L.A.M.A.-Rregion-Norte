@@ -7,6 +7,7 @@
       .h { font-size: 16px; font-weight: 700; }
       .s { font-size: 13px; fill: #334155; }
       .tag { font-size: 12px; font-weight: 700; fill: #475569; }
+      .flow { font-size: 12px; font-weight: 700; fill: #1e293b; }
       .zone { rx: 14; ry: 14; stroke-width: 2; }
       .box { rx: 12; ry: 12; stroke-width: 2; }
       .line { stroke-width: 2.2; fill: none; marker-end: url(#arrow); }
@@ -68,4 +69,15 @@
   <line x1="1105" y1="360" x2="1105" y2="410" class="line" stroke="#6d28d9"/>
   <line x1="1105" y1="540" x2="1105" y2="580" class="line" stroke="#4d7c0f"/>
   <line x1="300" y1="390" x2="750" y2="360" class="line" stroke="#475569"/>
+
+  <text x="294" y="272" class="t flow">F1</text>
+  <text x="550" y="272" class="t flow">F2</text>
+  <text x="932" y="282" class="t flow">F3</text>
+  <text x="1262" y="282" class="t flow">F4</text>
+  <text x="1118" y="394" class="t flow">F5</text>
+  <text x="1118" y="572" class="t flow">F6</text>
+  <text x="512" y="386" class="t flow">F7</text>
+
+  <rect x="70" y="760" width="760" height="30" class="box" fill="#f8fafc" stroke="#94a3b8"/>
+  <text x="90" y="780" class="t s">Leyenda: F1 código fuente → F2 build → F3 deploy → F4 runtime → F5 validación → F6 observabilidad → F7 control de release</text>
 </svg>
