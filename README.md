@@ -5,6 +5,7 @@ Web App Full Stack con estilo visual "Hardcore Tropical" para L.A.M.A. Región N
 ## Identidad Visual
 
 ### Paleta de Colores
+
 - **lamaBlack** `#0A0A0A` - Fondo principal (asfalto)
 - **lamaDark** `#1A1A1A` - Contenedores y secciones
 - **lamaGold** `#D4AF37` - Dorado lujo y victoria
@@ -12,17 +13,25 @@ Web App Full Stack con estilo visual "Hardcore Tropical" para L.A.M.A. Región N
 - **lamaBone** `#F5F5DC` - Texto principal
 
 ### Tipografías
+
 - **Bebas Neue** - Títulos (tracking-widest)
 - **Montserrat** - Cuerpo de texto
 - **Rock Salt** - Acentos tropicales
 
 ### Efectos CSS
+
 - `.neon-text` - Text-shadow turquesa multicapa
 - `.gold-text` - Gradiente lineal dorado
 - Navegación sticky con backdrop-blur
 - Shadow-xl en secciones principales
 
 ## Arquitectura
+
+### Diagrama de Solución
+
+![Diagrama de arquitectura de la solución](docs/arquitectura-solucion.svg)
+
+- Fuente editable Draw.io: `docs/arquitectura-solucion.drawio`
 
 ```
 /
@@ -58,7 +67,8 @@ Web App Full Stack con estilo visual "Hardcore Tropical" para L.A.M.A. Región N
 └── .env
 ```
 
-### Principios de Clean Architecture aplicados:
+### Principios de Clean Architecture aplicados
+
 1. **Separación de capas**: Presentación, Aplicación, Dominio, Infraestructura
 2. **Dependencias unidireccionales**: Controllers → Services → Models
 3. **Lógica de negocio aislada** en servicios
@@ -102,17 +112,20 @@ AZURE_SQL_ENCRYPT=true
 ## Rutas Disponibles
 
 ### Rutas Principales
+
 - `GET /` - Landing page
 - `GET /club` - Información del club
 - `GET /contacto` - Formulario de contacto
 - `POST /contacto` - Envío de contacto
 
 ### Rutas de Eventos
+
 - `GET /eventos` - Listado de eventos
 - `GET /eventos/:id` - Detalle de evento
 - `POST /eventos/:id/registro` - Inscripción a evento
 
 ### API REST (Azure SQL)
+
 - `GET /api/health` - Health check y estado de BD
 - `POST /api/register` - Registrar inscripción (validación Joi)
 - `GET /api/inscripciones` - Obtener todas las inscripciones
@@ -133,18 +146,18 @@ AZURE_SQL_ENCRYPT=true
 
 ## Características
 
-Diseño responsivo (mobile-first)  
-Navegación sticky con backdrop-blur  
-Efectos neon y gold-text  
-Sistema de eventos con inscripción  
-Formulario de contacto funcional  
-**API REST con Azure SQL Database**  
-**Validación robusta con Joi**  
-**Conexión segura con variables de entorno**  
-**Modelo de inscripciones completo**  
-**Health checks y estadísticas**  
-Arquitectura escalable (Clean Architecture)  
-Código documentado en español técnico  
+Diseño responsivo (mobile-first)
+Navegación sticky con backdrop-blur
+Efectos neon y gold-text
+Sistema de eventos con inscripción
+Formulario de contacto funcional
+**API REST con Azure SQL Database**
+**Validación robusta con Joi**
+**Conexión segura con variables de entorno**
+**Modelo de inscripciones completo**
+**Health checks y estadísticas**
+Arquitectura escalable (Clean Architecture)
+Código documentado en español técnico
 
 ## Licencia
 

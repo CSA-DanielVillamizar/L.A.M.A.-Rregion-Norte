@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="860" viewBox="0 0 1400 860" role="img" aria-label="Arquitectura de Solución L.A.M.A. Región Norte">
+  <defs>
+    <style>
+      .t { font-family: 'Segoe UI', Arial, sans-serif; fill: #0f172a; }
+      .title { font-size: 30px; font-weight: 700; }
+      .h { font-size: 16px; font-weight: 700; }
+      .s { font-size: 13px; }
+      .box { rx: 12; ry: 12; stroke-width: 2; }
+      .line { stroke-width: 2.2; fill: none; marker-end: url(#arrow); }
+    </style>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="#334155"/>
+    </marker>
+  </defs>
+
+  <text x="700" y="50" class="t title" text-anchor="middle">L.A.M.A. Región Norte - Arquitectura de Solución</text>
+
+  <rect x="50" y="290" width="200" height="80" class="box" fill="#e0f2fe" stroke="#0284c7"/>
+  <text x="150" y="335" class="t h" text-anchor="middle">Usuario / Admin</text>
+
+  <rect x="300" y="275" width="220" height="110" class="box" fill="#dbeafe" stroke="#2563eb"/>
+  <text x="410" y="322" class="t h" text-anchor="middle">Navegador Web</text>
+  <text x="410" y="345" class="t s" text-anchor="middle">Desktop / Mobile</text>
+
+  <rect x="570" y="170" width="500" height="420" class="box" fill="#dcfce7" stroke="#16a34a"/>
+  <text x="820" y="205" class="t h" text-anchor="middle">Azure App Service (Linux)</text>
+  <text x="820" y="226" class="t s" text-anchor="middle">lamaregionnorte.azurewebsites.net</text>
+
+  <rect x="610" y="250" width="180" height="90" class="box" fill="#fef3c7" stroke="#d97706"/>
+  <text x="700" y="292" class="t h" text-anchor="middle">Node.js + Express</text>
+  <text x="700" y="313" class="t s" text-anchor="middle">server.js</text>
+
+  <rect x="820" y="250" width="220" height="90" class="box" fill="#f3e8ff" stroke="#7e22ce"/>
+  <text x="930" y="292" class="t h" text-anchor="middle">Routes</text>
+  <text x="930" y="313" class="t s" text-anchor="middle">main / event / api</text>
+
+  <rect x="610" y="365" width="180" height="80" class="box" fill="#fce7f3" stroke="#be185d"/>
+  <text x="700" y="410" class="t h" text-anchor="middle">Controllers</text>
+
+  <rect x="820" y="365" width="220" height="80" class="box" fill="#ffe4e6" stroke="#e11d48"/>
+  <text x="930" y="410" class="t h" text-anchor="middle">Services</text>
+
+  <rect x="610" y="470" width="180" height="90" class="box" fill="#e0e7ff" stroke="#4338ca"/>
+  <text x="700" y="512" class="t h" text-anchor="middle">Views EJS</text>
+  <text x="700" y="533" class="t s" text-anchor="middle">+ Partials globales</text>
+
+  <rect x="820" y="470" width="220" height="90" class="box" fill="#e0f2fe" stroke="#0369a1"/>
+  <text x="930" y="512" class="t h" text-anchor="middle">public/</text>
+  <text x="930" y="533" class="t s" text-anchor="middle">CSS, JS y Assets</text>
+
+  <rect x="1110" y="305" width="250" height="140" class="box" fill="#fee2e2" stroke="#b91c1c"/>
+  <text x="1235" y="350" class="t h" text-anchor="middle">Azure SQL Database</text>
+  <text x="1235" y="372" class="t s" text-anchor="middle">Pool Global (mssql)</text>
+  <text x="1235" y="392" class="t s" text-anchor="middle">src/config/database.js</text>
+
+  <rect x="570" y="640" width="220" height="90" class="box" fill="#f3f4f6" stroke="#374151"/>
+  <text x="680" y="684" class="t h" text-anchor="middle">GitHub Repository</text>
+  <text x="680" y="705" class="t s" text-anchor="middle">main branch</text>
+
+  <rect x="830" y="640" width="240" height="90" class="box" fill="#ecfccb" stroke="#4d7c0f"/>
+  <text x="950" y="684" class="t h" text-anchor="middle">Zip Deploy / OneDeploy</text>
+  <text x="950" y="705" class="t s" text-anchor="middle">Azure CLI</text>
+
+  <line x1="250" y1="330" x2="300" y2="330" class="line" stroke="#0284c7"/>
+  <line x1="520" y1="330" x2="610" y2="295" class="line" stroke="#2563eb"/>
+  <line x1="790" y1="295" x2="820" y2="295" class="line" stroke="#7e22ce"/>
+  <line x1="930" y1="340" x2="700" y2="365" class="line" stroke="#be185d"/>
+  <line x1="790" y1="405" x2="820" y2="405" class="line" stroke="#e11d48"/>
+  <line x1="700" y1="445" x2="700" y2="470" class="line" stroke="#4338ca"/>
+  <line x1="700" y1="315" x2="930" y2="470" class="line" stroke="#0369a1"/>
+  <line x1="1040" y1="405" x2="1110" y2="375" class="line" stroke="#b91c1c"/>
+  <line x1="790" y1="685" x2="830" y2="685" class="line" stroke="#374151"/>
+  <line x1="950" y1="640" x2="910" y2="590" class="line" stroke="#4d7c0f"/>
+
+  <text x="275" y="318" class="t s">HTTPS</text>
+  <text x="535" y="306" class="t s">request/response</text>
+  <text x="748" y="285" class="t s">routing</text>
+  <text x="815" y="387" class="t s">lógica</text>
+  <text x="1048" y="395" class="t s">queries parametrizadas</text>
+  <text x="760" y="512" class="t s">render</text>
+  <text x="890" y="456" class="t s">assets</text>
+  <text x="804" y="674" class="t s">push</text>
+  <text x="935" y="620" class="t s">deploy</text>
+</svg>
