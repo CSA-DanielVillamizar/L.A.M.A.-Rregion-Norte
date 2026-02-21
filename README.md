@@ -37,6 +37,12 @@ Web App Full Stack con estilo visual "Hardcore Tropical" para L.A.M.A. Región N
 
 - Fuente editable Draw.io (iconos): `docs/arquitectura-solucion-iconos.drawio`
 
+**Versión ejecutiva (presentación):**
+
+![Diagrama de arquitectura ejecutivo](docs/arquitectura-solucion-ejecutivo.svg)
+
+- Fuente editable Draw.io (ejecutivo): `docs/arquitectura-solucion-ejecutivo.drawio`
+
 - Fuente editable Draw.io: `docs/arquitectura-solucion.drawio`
 
 ### Diagrama de Despliegue Operativo
@@ -49,6 +55,12 @@ Web App Full Stack con estilo visual "Hardcore Tropical" para L.A.M.A. Región N
 
 - Fuente editable Draw.io (iconos): `docs/flujo-despliegue-operativo-iconos.drawio`
 
+**Versión ejecutiva (presentación):**
+
+![Diagrama de despliegue ejecutivo](docs/flujo-despliegue-operativo-ejecutivo.svg)
+
+- Fuente editable Draw.io (ejecutivo): `docs/flujo-despliegue-operativo-ejecutivo.drawio`
+
 - Fuente editable Draw.io: `docs/flujo-despliegue-operativo.drawio`
 
 ### Runbook de Incidentes (503 / Startup Timeout)
@@ -60,6 +72,12 @@ Web App Full Stack con estilo visual "Hardcore Tropical" para L.A.M.A. Región N
 ![Runbook de incidentes con iconos oficiales](docs/runbook-incidentes-operativos-iconos.svg)
 
 - Fuente editable Draw.io (iconos): `docs/runbook-incidentes-operativos-iconos.drawio`
+
+**Versión ejecutiva (presentación):**
+
+![Runbook de incidentes ejecutivo](docs/runbook-incidentes-operativos-ejecutivo.svg)
+
+- Fuente editable Draw.io (ejecutivo): `docs/runbook-incidentes-operativos-ejecutivo.drawio`
 
 - Fuente editable Draw.io: `docs/runbook-incidentes-operativos.drawio`
 
