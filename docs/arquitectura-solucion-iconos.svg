@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1450" height="900" viewBox="0 0 1450 900" role="img" aria-label="Arquitectura de solución con iconos oficiales">
+<svg xmlns="http://www.w3.org/2000/svg" width="1450" height="900" viewBox="0 0 1450 900" role="img" aria-label="Arquitectura de solución con iconos oficiales Microsoft Azure y GitHub">
   <defs>
     <style>
       .t { font-family: 'Segoe UI', Arial, sans-serif; fill: #0f172a; }
@@ -23,12 +23,11 @@
   <text x="405" y="355" class="t s" text-anchor="middle">Desktop / Mobile</text>
 
   <rect x="560" y="180" width="520" height="440" class="box" fill="#ecfeff" stroke="#0891b2"/>
-  <image href="icons/microsoft-azure.svg" x="575" y="194" width="26" height="26"/>
+  <image href="icons-official/azure-app-service.svg" x="575" y="194" width="30" height="30"/>
   <text x="825" y="212" class="t h" text-anchor="middle">Azure App Service (Linux)</text>
   <text x="825" y="233" class="t s" text-anchor="middle">lamaregionnorte.azurewebsites.net</text>
 
   <rect x="600" y="255" width="190" height="94" class="box" fill="#fef3c7" stroke="#d97706"/>
-  <image href="icons/nodejs.svg" x="612" y="267" width="24" height="24"/>
   <text x="700" y="298" class="t h" text-anchor="middle">Node.js + Express</text>
   <text x="700" y="319" class="t s" text-anchor="middle">server.js</text>
 
@@ -51,20 +50,18 @@
   <text x="935" y="544" class="t s" text-anchor="middle">CSS + JS + Assets</text>
 
   <rect x="1110" y="318" width="260" height="144" class="box" fill="#fee2e2" stroke="#b91c1c"/>
-  <image href="icons/sqlserver.svg" x="1122" y="332" width="24" height="24"/>
+  <image href="icons-official/azure-sql-database.svg" x="1122" y="332" width="28" height="28"/>
   <text x="1240" y="362" class="t h" text-anchor="middle">Azure SQL Database</text>
   <text x="1240" y="384" class="t s" text-anchor="middle">Pool Global (mssql)</text>
 
   <rect x="560" y="670" width="230" height="90" class="box" fill="#f3f4f6" stroke="#374151"/>
-  <image href="icons/github.svg" x="575" y="684" width="24" height="24"/>
+  <image href="icons-official/github-mark.png" x="575" y="684" width="24" height="24"/>
   <text x="675" y="715" class="t h" text-anchor="middle">GitHub Repository</text>
   <text x="675" y="736" class="t s" text-anchor="middle">main</text>
 
-  <rect x="830" y="670" width="250" height="90" class="box" fill="#ecfccb" stroke="#4d7c0f"/>
-  <image href="icons/docker.svg" x="845" y="684" width="24" height="24"/>
-  <image href="icons/npm.svg" x="876" y="684" width="24" height="24"/>
-  <text x="955" y="715" class="t h" text-anchor="middle">Zip Deploy / OneDeploy</text>
-  <text x="955" y="736" class="t s" text-anchor="middle">Azure CLI</text>
+  <rect x="810" y="670" width="250" height="90" class="box" fill="#ecfccb" stroke="#4d7c0f"/>
+  <text x="935" y="715" class="t h" text-anchor="middle">Zip Deploy / OneDeploy</text>
+  <text x="935" y="736" class="t s" text-anchor="middle">Azure CLI</text>
 
   <line x1="250" y1="341" x2="290" y2="341" class="line" stroke="#0284c7"/>
   <line x1="520" y1="341" x2="600" y2="302" class="line" stroke="#2563eb"/>
@@ -74,6 +71,6 @@
   <line x1="700" y1="456" x2="700" y2="480" class="line" stroke="#4338ca"/>
   <line x1="700" y1="315" x2="935" y2="480" class="line" stroke="#0369a1"/>
   <line x1="1050" y1="414" x2="1110" y2="390" class="line" stroke="#b91c1c"/>
-  <line x1="790" y1="715" x2="830" y2="715" class="line" stroke="#374151"/>
-  <line x1="955" y1="670" x2="905" y2="620" class="line" stroke="#4d7c0f"/>
+  <line x1="790" y1="715" x2="810" y2="715" class="line" stroke="#374151"/>
+  <line x1="935" y1="670" x2="905" y2="620" class="line" stroke="#4d7c0f"/>
 </svg>

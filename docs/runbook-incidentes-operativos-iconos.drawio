@@ -1,49 +1,23 @@
-<mxfile host="app.diagrams.net" modified="2026-02-20T00:00:00.000Z" agent="GitHub Copilot" version="26.0.9" etag="lama-runbook-iconos-2026">
-  <diagram id="lama-runbook-iconos" name="Runbook Iconos">
+<mxfile host="app.diagrams.net" modified="2026-02-20T00:00:00.000Z" agent="GitHub Copilot" version="26.0.9" etag="lama-runbook-iconos-official-2026">
+  <diagram id="run-iconos-official" name="Runbook Iconos Oficiales">
     <mxGraphModel dx="1600" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1800" pageHeight="1200" math="0" shadow="0">
       <root>
-        <mxCell id="0"/>
-        <mxCell id="1" parent="0"/>
-        <mxCell id="title" value="Runbook Operativo - 503 / Startup Timeout (Iconografía Oficial)" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontStyle=1;fontSize=24;" vertex="1" parent="1"><mxGeometry x="390" y="20" width="980" height="40" as="geometry"/></mxCell>
-
-        <mxCell id="start" value="Alerta detectada&#xa;HTTP 503 / Site Disabled" style="ellipse;whiteSpace=wrap;html=1;fillColor=#FEE2E2;strokeColor=#B91C1C;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="100" y="150" width="260" height="110" as="geometry"/></mxCell>
-
-        <mxCell id="diag1" value="1) Estado base&#xa;az webapp show / deployment list" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E0F2FE;strokeColor=#0369A1;" vertex="1" parent="1"><mxGeometry x="430" y="160" width="310" height="100" as="geometry"/></mxCell>
-        <mxCell id="diag1icon" style="shape=image;html=1;imageAspect=0;aspect=fixed;image=icons/microsoft-azure.svg;" vertex="1" parent="1"><mxGeometry x="445" y="174" width="24" height="24" as="geometry"/></mxCell>
-
-        <mxCell id="d1" value="¿deployment status=4?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#FEF3C7;strokeColor=#D97706;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="790" y="145" width="250" height="130" as="geometry"/></mxCell>
-
-        <mxCell id="r1" value="2A) Reintentar&#xa;runtime zip + restart" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;" vertex="1" parent="1"><mxGeometry x="760" y="320" width="230" height="110" as="geometry"/></mxCell>
-        <mxCell id="r1icon" style="shape=image;html=1;imageAspect=0;aspect=fixed;image=icons/docker.svg;" vertex="1" parent="1"><mxGeometry x="774" y="336" width="22" height="22" as="geometry"/></mxCell>
-
-        <mxCell id="diag2" value="2B) Inspeccionar logs&#xa;az webapp log tail / docker logs" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EDE9FE;strokeColor=#6D28D9;" vertex="1" parent="1"><mxGeometry x="1060" y="145" width="330" height="120" as="geometry"/></mxCell>
-        <mxCell id="diag2icon" style="shape=image;html=1;imageAspect=0;aspect=fixed;image=icons/microsoft-azure.svg;" vertex="1" parent="1"><mxGeometry x="1076" y="161" width="24" height="24" as="geometry"/></mxCell>
-
-        <mxCell id="d2" value="¿MODULE_NOT_FOUND?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#FFE4E6;strokeColor=#E11D48;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="1080" y="315" width="300" height="130" as="geometry"/></mxCell>
-
-        <mxCell id="fixA" value="3A) Corregir artefacto&#xa;package.json + lock&#xa;rebuild + redeploy" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ECFCCB;strokeColor=#4D7C0F;" vertex="1" parent="1"><mxGeometry x="1420" y="320" width="280" height="120" as="geometry"/></mxCell>
-        <mxCell id="fixAicon" style="shape=image;html=1;imageAspect=0;aspect=fixed;image=icons/npm.svg;" vertex="1" parent="1"><mxGeometry x="1436" y="336" width="22" height="22" as="geometry"/></mxCell>
-
-        <mxCell id="d3" value="¿Timeout persiste?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#F3F4F6;strokeColor=#374151;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="1080" y="495" width="300" height="130" as="geometry"/></mxCell>
-
-        <mxCell id="fixB" value="3B) Recuperación&#xa;restart / stop-start&#xa;startup command / puerto / warmup" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFEDD5;strokeColor=#EA580C;" vertex="1" parent="1"><mxGeometry x="760" y="500" width="280" height="140" as="geometry"/></mxCell>
-        <mxCell id="fixBicon" style="shape=image;html=1;imageAspect=0;aspect=fixed;image=icons/microsoft-azure.svg;" vertex="1" parent="1"><mxGeometry x="776" y="516" width="22" height="22" as="geometry"/></mxCell>
-
-        <mxCell id="verify" value="4) Validación funcional&#xa;200 en /, /capitulos, /itinerario" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#1D4ED8;" vertex="1" parent="1"><mxGeometry x="1080" y="690" width="320" height="120" as="geometry"/></mxCell>
-        <mxCell id="close" value="Incidente resuelto&#xa;documentar causa raíz" style="ellipse;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="1440" y="700" width="250" height="100" as="geometry"/></mxCell>
-        <mxCell id="closeicon" style="shape=image;html=1;imageAspect=0;aspect=fixed;image=icons/github.svg;" vertex="1" parent="1"><mxGeometry x="1454" y="715" width="20" height="20" as="geometry"/></mxCell>
-
-        <mxCell id="e1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#0369A1;endArrow=block;endFill=1;" edge="1" parent="1" source="start" target="diag1"><mxGeometry relative="1" as="geometry"/></mxCell>
-        <mxCell id="e2" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#D97706;endArrow=block;endFill=1;" edge="1" parent="1" source="diag1" target="d1"><mxGeometry relative="1" as="geometry"/></mxCell>
-        <mxCell id="e3" value="NO" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#B91C1C;endArrow=block;endFill=1;" edge="1" parent="1" source="d1" target="r1"><mxGeometry relative="1" as="geometry"/></mxCell>
-        <mxCell id="e4" value="SÍ" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#16A34A;endArrow=block;endFill=1;" edge="1" parent="1" source="d1" target="diag2"><mxGeometry relative="1" as="geometry"/></mxCell>
-        <mxCell id="e5" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#6D28D9;endArrow=block;endFill=1;" edge="1" parent="1" source="diag2" target="d2"><mxGeometry relative="1" as="geometry"/></mxCell>
-        <mxCell id="e6" value="SÍ" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#4D7C0F;endArrow=block;endFill=1;" edge="1" parent="1" source="d2" target="fixA"><mxGeometry relative="1" as="geometry"/></mxCell>
-        <mxCell id="e7" value="NO" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#374151;endArrow=block;endFill=1;" edge="1" parent="1" source="d2" target="d3"><mxGeometry relative="1" as="geometry"/></mxCell>
-        <mxCell id="e8" value="SÍ" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#EA580C;endArrow=block;endFill=1;" edge="1" parent="1" source="d3" target="fixB"><mxGeometry relative="1" as="geometry"/></mxCell>
-        <mxCell id="e9" value="NO" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#1D4ED8;endArrow=block;endFill=1;" edge="1" parent="1" source="d3" target="verify"><mxGeometry relative="1" as="geometry"/></mxCell>
-        <mxCell id="e10" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#1D4ED8;endArrow=block;endFill=1;" edge="1" parent="1" source="fixB" target="verify"><mxGeometry relative="1" as="geometry"/></mxCell>
-        <mxCell id="e11" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#16A34A;endArrow=block;endFill=1;" edge="1" parent="1" source="verify" target="close"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="0"/><mxCell id="1" parent="0"/>
+        <mxCell id="t" value="Runbook Operativo - 503 / Startup Timeout (Iconografía Oficial)" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontStyle=1;fontSize=24;" vertex="1" parent="1"><mxGeometry x="390" y="20" width="980" height="40" as="geometry"/></mxCell>
+        <mxCell id="a" value="Alerta detectada" style="ellipse;whiteSpace=wrap;html=1;fillColor=#FEE2E2;strokeColor=#B91C1C;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="100" y="150" width="260" height="110" as="geometry"/></mxCell>
+        <mxCell id="b" value="1) Estado base" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E0F2FE;strokeColor=#0369A1;" vertex="1" parent="1"><mxGeometry x="430" y="155" width="300" height="106" as="geometry"/></mxCell>
+        <mxCell id="bicon" style="shape=image;html=1;imageAspect=0;aspect=fixed;image=icons-official/azure-app-service.svg;" vertex="1" parent="1"><mxGeometry x="446" y="170" width="24" height="24" as="geometry"/></mxCell>
+        <mxCell id="c" value="¿deployment status=4?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#FEF3C7;strokeColor=#D97706;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="790" y="145" width="250" height="130" as="geometry"/></mxCell>
+        <mxCell id="d" value="2A) Reintentar" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;" vertex="1" parent="1"><mxGeometry x="760" y="320" width="230" height="110" as="geometry"/></mxCell>
+        <mxCell id="e" value="2B) Inspeccionar logs" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EDE9FE;strokeColor=#6D28D9;" vertex="1" parent="1"><mxGeometry x="1060" y="145" width="330" height="120" as="geometry"/></mxCell>
+        <mxCell id="eicon" style="shape=image;html=1;imageAspect=0;aspect=fixed;image=icons-official/azure-app-service.svg;" vertex="1" parent="1"><mxGeometry x="1076" y="161" width="24" height="24" as="geometry"/></mxCell>
+        <mxCell id="f" value="¿MODULE_NOT_FOUND?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#FFE4E6;strokeColor=#E11D48;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="1080" y="315" width="300" height="130" as="geometry"/></mxCell>
+        <mxCell id="g" value="3A) Corregir artefacto" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ECFCCB;strokeColor=#4D7C0F;" vertex="1" parent="1"><mxGeometry x="1420" y="320" width="280" height="120" as="geometry"/></mxCell>
+        <mxCell id="h" value="¿Timeout persiste?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#F3F4F6;strokeColor=#374151;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="1080" y="495" width="300" height="130" as="geometry"/></mxCell>
+        <mxCell id="i" value="3B) Recuperación" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFEDD5;strokeColor=#EA580C;" vertex="1" parent="1"><mxGeometry x="760" y="505" width="280" height="136" as="geometry"/></mxCell>
+        <mxCell id="j" value="4) Validación funcional" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#1D4ED8;" vertex="1" parent="1"><mxGeometry x="1080" y="690" width="320" height="120" as="geometry"/></mxCell>
+        <mxCell id="k" value="Incidente resuelto" style="ellipse;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="1420" y="700" width="280" height="100" as="geometry"/></mxCell>
+        <mxCell id="kicon" style="shape=image;html=1;imageAspect=0;aspect=fixed;image=icons-official/github-mark.png;" vertex="1" parent="1"><mxGeometry x="1436" y="715" width="20" height="20" as="geometry"/></mxCell>
       </root>
     </mxGraphModel>
   </diagram>
