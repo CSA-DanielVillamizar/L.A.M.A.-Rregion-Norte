@@ -3,22 +3,28 @@
 Estos assets se usan en las variantes `*-iconos.*` de los diagramas.
 
 ## Microsoft Azure (oficial)
-- Paquete: **Azure Public Service Icons v23**
-- Fuente oficial: https://learn.microsoft.com/en-us/azure/architecture/icons/
-- Descarga directa usada: https://arch-center.azureedge.net/icons/Azure_Public_Service_Icons_V23.zip
+
+- Repositorio solicitado: **azure-architecture-icons-for-drawio**
+- Fuente usada: <https://github.com/dwarfered/azure-architecture-icons-for-drawio>
+- Librerías draw.io usadas:
+  - <https://raw.githubusercontent.com/dwarfered/azure-architecture-icons-for-drawio/main/azure-public-service-icons/003%20app%20services.xml>
+  - <https://raw.githubusercontent.com/dwarfered/azure-architecture-icons-for-drawio/main/azure-public-service-icons/009%20databases.xml>
 
 ### Archivos utilizados
-- `azure-app-service.svg`  
-  Origen dentro del zip: `Azure_Public_Service_Icons/Icons/app services/10035-icon-service-App-Services.svg`
-- `azure-sql-database.svg`  
-  Origen dentro del zip: `Azure_Public_Service_Icons/Icons/databases/10130-icon-service-SQL-Database.svg`
+
+- `azure-app-service.svg`
+  Entrada extraída: `10035-icon-service-App-Services`
+- `azure-sql-database.svg`
+  Entrada extraída: `10130-icon-service-SQL-Database`
 
 ## GitHub (oficial)
+
 - Asset oficial de marca: **GitHub Mark**
-- Fuente usada: https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png
+- Fuente usada: <https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png>
 - Archivo local: `github-mark.png`
 
 ## Diagramas que consumen estos iconos
+
 - `docs/arquitectura-solucion-iconos.svg`
 - `docs/flujo-despliegue-operativo-iconos.svg`
 - `docs/runbook-incidentes-operativos-iconos.svg`
