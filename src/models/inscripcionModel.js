@@ -106,6 +106,49 @@ GO
 `;
 
 class InscripcionModel {
+    static async asegurarTablaBase() {
+        const pool = await getPool();
+
+        await pool.request().query(`
+            IF OBJECT_ID('dbo.InscripcionesCampeonato', 'U') IS NULL
+            BEGIN
+                CREATE TABLE dbo.InscripcionesCampeonato (
+                    id_inscripcion INT IDENTITY(1,1) PRIMARY KEY,
+                    fecha_registro DATETIME DEFAULT GETDATE(),
+                    tipo_participante VARCHAR(50) NOT NULL,
+                    nombre_completo VARCHAR(200) NOT NULL,
+                    documento_numero VARCHAR(30) NOT NULL UNIQUE,
+                    eps VARCHAR(100) NOT NULL,
+                    emergencia_nombre VARCHAR(200) NOT NULL,
+                    emergencia_telefono VARCHAR(50) NOT NULL,
+                    capitulo VARCHAR(50) NOT NULL,
+                    capitulo_otro VARCHAR(100) NULL,
+                    cargo_directivo VARCHAR(150) NULL,
+                    fecha_llegada_isla DATE NOT NULL,
+                    condicion_medica NVARCHAR(MAX) NULL,
+                    adquiere_jersey BIT DEFAULT 0,
+                    talla_jersey VARCHAR(10) NULL,
+                    asiste_con_acompanante BIT DEFAULT 0,
+                    nombre_acompanante VARCHAR(200) NULL,
+                    valor_base INT DEFAULT 150000,
+                    valor_jersey INT DEFAULT 70000,
+                    valor_total_pagar AS (150000 + (CASE WHEN adquiere_jersey = 1 THEN 70000 ELSE 0 END)),
+                    estado_validacion VARCHAR(20) DEFAULT 'Pendiente'
+                );
+            END;
+
+            IF NOT EXISTS (
+                SELECT 1
+                FROM sys.indexes
+                WHERE name = 'IX_Participante_Cedula'
+                  AND object_id = OBJECT_ID('dbo.InscripcionesCampeonato')
+            )
+            BEGIN
+                CREATE INDEX IX_Participante_Cedula ON dbo.InscripcionesCampeonato(documento_numero);
+            END;
+        `);
+    }
+
     static normalizarTipoParticipante(valor) {
         const tipo = String(valor || '').trim();
         if (TIPOS_PARTICIPANTE_PERMITIDOS.includes(tipo)) {
@@ -151,6 +194,7 @@ class InscripcionModel {
     }
 
     static async asegurarColumnasExtendidas() {
+        await this.asegurarTablaBase();
         const pool = await getPool();
 
         await pool.request().query(`

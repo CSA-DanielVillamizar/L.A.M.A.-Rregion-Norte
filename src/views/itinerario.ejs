@@ -1,11 +1,5 @@
-<!DOCTYPE html>
-<html lang="es">
+<%- include('partials/header', { title: 'Itinerario' }) %>
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mapa Interactivo del Evento - V Campeonato Regional</title>
-    <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
@@ -64,244 +58,250 @@
         .leaflet-control-attribution {
             display: none;
         }
-    </style>
-</head>
 
-<body class="h-screen w-screen flex flex-col">
-    <!-- Header -->
-    <header class="h-20 glass-panel border-b border-amber-500/20 flex items-center justify-between px-8 z-50">
-        <div class="flex items-center gap-4">
-            <div
-                class="w-12 h-12 bg-gradient-to-br from-amber-400 to-amber-600 rounded-lg flex items-center justify-center">
-                <span class="material-icons text-black font-bold">map</span>
-            </div>
-            <div>
-                <h1 class="text-xl font-bold tracking-tighter uppercase leading-none lamaGold">V Campeonato Regional de
-                    Mototurismo</h1>
-                <p class="text-xs lamaNeon uppercase tracking-widest">Mapa Interactivo del Evento</p>
-            </div>
-        </div>
-        <a href="/"
-            class="px-6 py-2 bg-amber-500/20 border border-amber-500/40 rounded-lg lamaBone hover:bg-amber-500/30 transition-all text-sm uppercase font-semibold">
-            ← Volver
-        </a>
-    </header>
+        .itinerario-layout {
+            min-height: 75vh;
+        }
+
+        @media (max-width: 1279px) {
+            .itinerario-layout {
+                min-height: auto;
+            }
+        }
+    </style>
 
     <!-- Main Content -->
-    <main class="flex-1 flex overflow-hidden gap-6 p-6">
-        <!-- Left Sidebar -->
-        <aside class="w-96 flex flex-col gap-6">
-            <!-- Route Selection -->
-            <div class="glass-panel rounded-xl p-6 glow-neon">
-                <h2 class="lamaGold font-bold uppercase tracking-widest text-sm mb-4 flex items-center gap-2">
-                    <span class="material-icons text-sm">route</span>
-                    Seleccionar Ruta
-                </h2>
-                <div class="space-y-3">
-                    <button onclick="filterRoute('all')"
-                        class="w-full flex items-center justify-between p-3 rounded-lg bg-amber-500/30 border border-amber-500 text-white font-bold transition-all hover:bg-amber-500/40">
-                        <div class="flex items-center gap-2">
-                            <span class="material-icons">public</span>
-                            <span class="text-sm">VER TODO</span>
-                        </div>
-                        <span class="material-icons text-sm">check_circle</span>
-                    </button>
-                    <button onclick="filterRoute('agenda')"
-                        class="w-full flex items-center justify-between p-3 rounded-lg bg-amber-500/20 border border-amber-500/40 text-white hover:bg-amber-500/30 transition-all font-semibold">
-                        <div class="flex items-center gap-2 lamaGold">
-                            <span class="material-icons">event</span>
-                            <span class="text-sm">AGENDA EVENTO</span>
-                        </div>
-                    </button>
-                    <button onclick="filterRoute('hospedaje')"
-                        class="w-full flex items-center justify-between p-3 rounded-lg bg-white/10 border border-white/30 text-white hover:bg-white/20 transition-all font-semibold">
-                        <div class="flex items-center gap-2 lamaBone">
-                            <span class="material-icons">hotel</span>
-                            <span class="text-sm">HOSPEDAJE</span>
-                        </div>
-                    </button>
-                    <button onclick="filterRoute('atraccion')"
-                        class="w-full flex items-center justify-between p-3 rounded-lg bg-orange-500/20 border border-orange-500/40 text-white hover:bg-orange-500/30 transition-all font-semibold">
-                        <div class="flex items-center gap-2 text-orange-300">
-                            <span class="material-icons">attractions</span>
-                            <span class="text-sm">ATRACCIONES</span>
-                        </div>
-                    </button>
-                    <button onclick="filterRoute('interes')"
-                        class="w-full flex items-center justify-between p-3 rounded-lg bg-fuchsia-500/20 border border-fuchsia-500/40 text-white hover:bg-fuchsia-500/30 transition-all font-semibold">
-                        <div class="flex items-center gap-2 text-fuchsia-300">
-                            <span class="material-icons">place</span>
-                            <span class="text-sm">PUNTOS DE INTERÉS</span>
-                        </div>
-                    </button>
-                    <button onclick="filterRoute('playa')"
-                        class="w-full flex items-center justify-between p-3 rounded-lg bg-sky-500/20 border border-sky-500/40 text-white hover:bg-sky-500/30 transition-all font-semibold">
-                        <div class="flex items-center gap-2 text-sky-300">
-                            <span class="material-icons">beach_access</span>
-                            <span class="text-sm">PLAYAS</span>
-                        </div>
-                    </button>
-                    <button onclick="filterRoute('barrio')"
-                        class="w-full flex items-center justify-between p-3 rounded-lg bg-violet-500/20 border border-violet-500/40 text-white hover:bg-violet-500/30 transition-all font-semibold">
-                        <div class="flex items-center gap-2 text-violet-300">
-                            <span class="material-icons">apartment</span>
-                            <span class="text-sm">BARRIOS</span>
-                        </div>
-                    </button>
-                    <button onclick="filterRoute('comercio')"
-                        class="w-full flex items-center justify-between p-3 rounded-lg bg-emerald-500/20 border border-emerald-500/40 text-white hover:bg-emerald-500/30 transition-all font-semibold">
-                        <div class="flex items-center gap-2 text-emerald-300">
-                            <span class="material-icons">storefront</span>
-                            <span class="text-sm">COMERCIO</span>
-                        </div>
-                    </button>
-                    <button onclick="filterRoute('salud')"
-                        class="w-full flex items-center justify-between p-3 rounded-lg bg-red-500/20 border border-red-500/40 text-white hover:bg-red-500/30 transition-all font-semibold">
-                        <div class="flex items-center gap-2 text-red-300">
-                            <span class="material-icons">local_hospital</span>
-                            <span class="text-sm">SALUD</span>
-                        </div>
-                    </button>
-                    <button onclick="filterRoute('hotel')"
-                        class="w-full flex items-center justify-between p-3 rounded-lg bg-slate-500/20 border border-slate-500/40 text-white hover:bg-slate-500/30 transition-all font-semibold">
-                        <div class="flex items-center gap-2 text-slate-200">
-                            <span class="material-icons">hotel</span>
-                            <span class="text-sm">HOTELES</span>
-                        </div>
-                    </button>
-                    <button onclick="filterRoute('hostal')"
-                        class="w-full flex items-center justify-between p-3 rounded-lg bg-yellow-500/20 border border-yellow-500/40 text-white hover:bg-yellow-500/30 transition-all font-semibold">
-                        <div class="flex items-center gap-2 text-yellow-300">
-                            <span class="material-icons">night_shelter</span>
-                            <span class="text-sm">HOSTALES</span>
-                        </div>
-                    </button>
-                    <button onclick="filterRoute('nautica')"
-                        class="w-full flex items-center justify-between p-3 rounded-lg bg-cyan-500/20 border border-cyan-500/40 text-white hover:bg-cyan-500/30 transition-all font-semibold">
-                        <div class="flex items-center gap-2 lamaNeon">
-                            <span class="material-icons">directions_boat</span>
-                            <span class="text-sm">RUTA NÁUTICA</span>
-                        </div>
-                    </button>
-                    <button onclick="filterRoute('terrestre')"
-                        class="w-full flex items-center justify-between p-3 rounded-lg bg-amber-500/20 border border-amber-500/40 text-white hover:bg-amber-500/30 transition-all font-semibold">
-                        <div class="flex items-center gap-2 lamaGold">
-                            <span class="material-icons">directions_car</span>
-                            <span class="text-sm">RUTA TERRESTRE</span>
-                        </div>
-                    </button>
-                </div>
-            </div>
-
-            <!-- Points of Interest -->
-            <div class="glass-panel rounded-xl p-6 glow-gold flex-1 overflow-y-auto">
-                <h2 class="lamaGold font-bold uppercase tracking-widest text-sm mb-4 flex items-center gap-2">
-                    <span class="material-icons text-sm">place</span>
-                    Puntos de Interés
-                </h2>
-                <div class="space-y-4" id="pointsList">
-                    <!-- Dinamicamente poblado -->
-                </div>
-            </div>
-
-            <!-- Info Box -->
-            <div class="glass-panel rounded-xl p-4">
-                <div class="flex items-center gap-2 text-xs lamaBone mb-2 uppercase font-bold tracking-widest">
-                    <span class="material-icons text-sm">info</span>
-                    Información Logística
-                </div>
-                <p class="text-xs text-gray-300 leading-relaxed">
-                    <span class="material-icons text-xs align-middle mr-1">two_wheeler</span><strong>Todos los
-                        participantes</strong> deben llevar ID y documentos.
-                    <br><br><span class="material-icons text-xs align-middle mr-1">apartment</span><strong>Hotel
-                        Sede:</strong> Mangrove Bay Hotel, San Andres Islas.
-                    <br><br><span
-                        class="material-icons text-xs align-middle mr-1">warning_amber</span><strong>Clima:</strong>
-                    Consultar pronóstico antes de salida.
-                </p>
-            </div>
-        </aside>
-
-        <!-- Map Area -->
-        <div class="flex-1 relative map-grid rounded-xl overflow-hidden">
-            <div id="map" class="w-full h-full"></div>
-
-            <!-- Weather Widget -->
-            <div class="absolute top-6 right-6 z-40">
-                <div class="glass-panel p-4 rounded-xl flex items-center gap-5 glow-neon border-l-4 border-l-cyan-400">
-                    <div class="flex items-center gap-3">
-                        <span class="material-icons text-3xl lamaNeon">wb_sunny</span>
-                        <div>
-                            <p class="text-2xl font-bold leading-none text-white">28°C</p>
-                            <p class="text-xs lamaBone uppercase tracking-widest">Despejado</p>
-                        </div>
-                    </div>
-                    <div class="h-8 w-px bg-white/10"></div>
-                    <div class="space-y-1">
-                        <div class="flex items-center gap-2 text-xs uppercase font-bold lamaNeon">
-                            <span class="material-icons text-sm">air</span>
-                            12 KTS E
-                        </div>
-                        <div class="flex items-center gap-2 text-xs uppercase font-bold lamaGold">
-                            <span class="material-icons text-sm">water_drop</span>
-                            HUM 75%
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- SOS Button -->
-            <div class="absolute bottom-6 right-6 z-40">
-                <button onclick="alert('Contactando logística del evento...')"
-                    class="bg-red-500 text-white font-black px-6 py-3 rounded-xl flex items-center gap-2 glow-gold hover:scale-105 active:scale-95 transition-all uppercase tracking-tighter text-sm italic shadow-xl border-2 border-red-600">
-                    <span class="material-icons">contact_support</span>
-                    SOS
-                </button>
-            </div>
-
-            <!-- Legend -->
-            <div class="absolute bottom-6 left-6 z-40">
+    <main class="container mx-auto px-4 pt-24 pb-12">
+        <div
+            class="glass-panel border border-amber-500/20 rounded-xl p-4 md:p-6 mb-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <div class="flex items-center gap-4">
                 <div
-                    class="glass-panel px-4 py-2 rounded-lg flex items-center gap-6 text-xs font-bold uppercase tracking-widest">
-                    <div class="flex items-center gap-2">
-                        <div class="w-4 h-1 bg-cyan-400"></div>
-                        <span class="lamaNeon">Agenda Náutica</span>
+                    class="w-12 h-12 bg-gradient-to-br from-amber-400 to-amber-600 rounded-lg flex items-center justify-center">
+                    <span class="material-icons text-black font-bold">map</span>
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold tracking-tighter uppercase leading-none lamaGold">V Campeonato Regional
+                        de Mototurismo</h1>
+                    <p class="text-xs lamaNeon uppercase tracking-widest">Mapa Interactivo del Evento</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="itinerario-layout flex flex-col xl:flex-row overflow-hidden gap-6">
+            <!-- Left Sidebar -->
+            <aside class="xl:w-96 flex flex-col gap-6">
+                <!-- Route Selection -->
+                <div class="glass-panel rounded-xl p-6 glow-neon">
+                    <h2 class="lamaGold font-bold uppercase tracking-widest text-sm mb-4 flex items-center gap-2">
+                        <span class="material-icons text-sm">route</span>
+                        Seleccionar Ruta
+                    </h2>
+                    <div class="space-y-3">
+                        <button onclick="filterRoute('all')"
+                            class="w-full flex items-center justify-between p-3 rounded-lg bg-amber-500/30 border border-amber-500 text-white font-bold transition-all hover:bg-amber-500/40">
+                            <div class="flex items-center gap-2">
+                                <span class="material-icons">public</span>
+                                <span class="text-sm">VER TODO</span>
+                            </div>
+                            <span class="material-icons text-sm">check_circle</span>
+                        </button>
+                        <button onclick="filterRoute('agenda')"
+                            class="w-full flex items-center justify-between p-3 rounded-lg bg-amber-500/20 border border-amber-500/40 text-white hover:bg-amber-500/30 transition-all font-semibold">
+                            <div class="flex items-center gap-2 lamaGold">
+                                <span class="material-icons">event</span>
+                                <span class="text-sm">AGENDA EVENTO</span>
+                            </div>
+                        </button>
+                        <button onclick="filterRoute('hospedaje')"
+                            class="w-full flex items-center justify-between p-3 rounded-lg bg-white/10 border border-white/30 text-white hover:bg-white/20 transition-all font-semibold">
+                            <div class="flex items-center gap-2 lamaBone">
+                                <span class="material-icons">hotel</span>
+                                <span class="text-sm">HOSPEDAJE</span>
+                            </div>
+                        </button>
+                        <button onclick="filterRoute('atraccion')"
+                            class="w-full flex items-center justify-between p-3 rounded-lg bg-orange-500/20 border border-orange-500/40 text-white hover:bg-orange-500/30 transition-all font-semibold">
+                            <div class="flex items-center gap-2 text-orange-300">
+                                <span class="material-icons">attractions</span>
+                                <span class="text-sm">ATRACCIONES</span>
+                            </div>
+                        </button>
+                        <button onclick="filterRoute('interes')"
+                            class="w-full flex items-center justify-between p-3 rounded-lg bg-fuchsia-500/20 border border-fuchsia-500/40 text-white hover:bg-fuchsia-500/30 transition-all font-semibold">
+                            <div class="flex items-center gap-2 text-fuchsia-300">
+                                <span class="material-icons">place</span>
+                                <span class="text-sm">PUNTOS DE INTERÉS</span>
+                            </div>
+                        </button>
+                        <button onclick="filterRoute('playa')"
+                            class="w-full flex items-center justify-between p-3 rounded-lg bg-sky-500/20 border border-sky-500/40 text-white hover:bg-sky-500/30 transition-all font-semibold">
+                            <div class="flex items-center gap-2 text-sky-300">
+                                <span class="material-icons">beach_access</span>
+                                <span class="text-sm">PLAYAS</span>
+                            </div>
+                        </button>
+                        <button onclick="filterRoute('barrio')"
+                            class="w-full flex items-center justify-between p-3 rounded-lg bg-violet-500/20 border border-violet-500/40 text-white hover:bg-violet-500/30 transition-all font-semibold">
+                            <div class="flex items-center gap-2 text-violet-300">
+                                <span class="material-icons">apartment</span>
+                                <span class="text-sm">BARRIOS</span>
+                            </div>
+                        </button>
+                        <button onclick="filterRoute('comercio')"
+                            class="w-full flex items-center justify-between p-3 rounded-lg bg-emerald-500/20 border border-emerald-500/40 text-white hover:bg-emerald-500/30 transition-all font-semibold">
+                            <div class="flex items-center gap-2 text-emerald-300">
+                                <span class="material-icons">storefront</span>
+                                <span class="text-sm">COMERCIO</span>
+                            </div>
+                        </button>
+                        <button onclick="filterRoute('salud')"
+                            class="w-full flex items-center justify-between p-3 rounded-lg bg-red-500/20 border border-red-500/40 text-white hover:bg-red-500/30 transition-all font-semibold">
+                            <div class="flex items-center gap-2 text-red-300">
+                                <span class="material-icons">local_hospital</span>
+                                <span class="text-sm">SALUD</span>
+                            </div>
+                        </button>
+                        <button onclick="filterRoute('hotel')"
+                            class="w-full flex items-center justify-between p-3 rounded-lg bg-slate-500/20 border border-slate-500/40 text-white hover:bg-slate-500/30 transition-all font-semibold">
+                            <div class="flex items-center gap-2 text-slate-200">
+                                <span class="material-icons">hotel</span>
+                                <span class="text-sm">HOTELES</span>
+                            </div>
+                        </button>
+                        <button onclick="filterRoute('hostal')"
+                            class="w-full flex items-center justify-between p-3 rounded-lg bg-yellow-500/20 border border-yellow-500/40 text-white hover:bg-yellow-500/30 transition-all font-semibold">
+                            <div class="flex items-center gap-2 text-yellow-300">
+                                <span class="material-icons">night_shelter</span>
+                                <span class="text-sm">HOSTALES</span>
+                            </div>
+                        </button>
+                        <button onclick="filterRoute('nautica')"
+                            class="w-full flex items-center justify-between p-3 rounded-lg bg-cyan-500/20 border border-cyan-500/40 text-white hover:bg-cyan-500/30 transition-all font-semibold">
+                            <div class="flex items-center gap-2 lamaNeon">
+                                <span class="material-icons">directions_boat</span>
+                                <span class="text-sm">RUTA NÁUTICA</span>
+                            </div>
+                        </button>
+                        <button onclick="filterRoute('terrestre')"
+                            class="w-full flex items-center justify-between p-3 rounded-lg bg-amber-500/20 border border-amber-500/40 text-white hover:bg-amber-500/30 transition-all font-semibold">
+                            <div class="flex items-center gap-2 lamaGold">
+                                <span class="material-icons">directions_car</span>
+                                <span class="text-sm">RUTA TERRESTRE</span>
+                            </div>
+                        </button>
                     </div>
-                    <div class="flex items-center gap-2">
-                        <div class="w-4 h-1 bg-amber-400"></div>
-                        <span class="lamaGold">Agenda Terrestre</span>
+                </div>
+
+                <!-- Points of Interest -->
+                <div class="glass-panel rounded-xl p-6 glow-gold flex-1 overflow-y-auto">
+                    <h2 class="lamaGold font-bold uppercase tracking-widest text-sm mb-4 flex items-center gap-2">
+                        <span class="material-icons text-sm">place</span>
+                        Puntos de Interés
+                    </h2>
+                    <div class="space-y-4" id="pointsList">
+                        <!-- Dinamicamente poblado -->
                     </div>
-                    <div class="flex items-center gap-2">
-                        <div class="w-4 h-1 bg-white"></div>
-                        <span class="lamaBone">Hospedaje</span>
+                </div>
+
+                <!-- Info Box -->
+                <div class="glass-panel rounded-xl p-4">
+                    <div class="flex items-center gap-2 text-xs lamaBone mb-2 uppercase font-bold tracking-widest">
+                        <span class="material-icons text-sm">info</span>
+                        Información Logística
                     </div>
-                    <div class="flex items-center gap-2">
-                        <div class="w-4 h-1 bg-orange-400"></div>
-                        <span class="text-orange-300">Atracción</span>
+                    <p class="text-xs text-gray-300 leading-relaxed">
+                        <span class="material-icons text-xs align-middle mr-1">two_wheeler</span><strong>Todos los
+                            participantes</strong> deben llevar ID y documentos.
+                        <br><br><span class="material-icons text-xs align-middle mr-1">apartment</span><strong>Hotel
+                            Sede:</strong> Mangrove Bay Hotel, San Andres Islas.
+                        <br><br><span
+                            class="material-icons text-xs align-middle mr-1">warning_amber</span><strong>Clima:</strong>
+                        Consultar pronóstico antes de salida.
+                    </p>
+                </div>
+            </aside>
+
+            <!-- Map Area -->
+            <div class="flex-1 relative map-grid rounded-xl overflow-hidden">
+                <div id="map" class="w-full h-full"></div>
+
+                <!-- Weather Widget -->
+                <div class="absolute top-6 right-6 z-40">
+                    <div
+                        class="glass-panel p-4 rounded-xl flex items-center gap-5 glow-neon border-l-4 border-l-cyan-400">
+                        <div class="flex items-center gap-3">
+                            <span class="material-icons text-3xl lamaNeon">wb_sunny</span>
+                            <div>
+                                <p class="text-2xl font-bold leading-none text-white">28°C</p>
+                                <p class="text-xs lamaBone uppercase tracking-widest">Despejado</p>
+                            </div>
+                        </div>
+                        <div class="h-8 w-px bg-white/10"></div>
+                        <div class="space-y-1">
+                            <div class="flex items-center gap-2 text-xs uppercase font-bold lamaNeon">
+                                <span class="material-icons text-sm">air</span>
+                                12 KTS E
+                            </div>
+                            <div class="flex items-center gap-2 text-xs uppercase font-bold lamaGold">
+                                <span class="material-icons text-sm">water_drop</span>
+                                HUM 75%
+                            </div>
+                        </div>
                     </div>
-                    <div class="flex items-center gap-2">
-                        <div class="w-4 h-1 bg-fuchsia-400"></div>
-                        <span class="text-fuchsia-300">Punto de interés</span>
-                    </div>
-                    <div class="flex items-center gap-2">
-                        <div class="w-4 h-1 bg-sky-400"></div>
-                        <span class="text-sky-300">Playa</span>
-                    </div>
-                    <div class="flex items-center gap-2">
-                        <div class="w-4 h-1 bg-violet-400"></div>
-                        <span class="text-violet-300">Barrio</span>
-                    </div>
-                    <div class="flex items-center gap-2">
-                        <div class="w-4 h-1 bg-emerald-400"></div>
-                        <span class="text-emerald-300">Comercio</span>
-                    </div>
-                    <div class="flex items-center gap-2">
-                        <div class="w-4 h-1 bg-red-400"></div>
-                        <span class="text-red-300">Salud</span>
+                </div>
+
+                <!-- SOS Button -->
+                <div class="absolute bottom-6 right-6 z-40">
+                    <button onclick="alert('Contactando logística del evento...')"
+                        class="bg-red-500 text-white font-black px-6 py-3 rounded-xl flex items-center gap-2 glow-gold hover:scale-105 active:scale-95 transition-all uppercase tracking-tighter text-sm italic shadow-xl border-2 border-red-600">
+                        <span class="material-icons">contact_support</span>
+                        SOS
+                    </button>
+                </div>
+
+                <!-- Legend -->
+                <div class="absolute bottom-6 left-6 z-40">
+                    <div
+                        class="glass-panel px-4 py-2 rounded-lg flex items-center gap-6 text-xs font-bold uppercase tracking-widest">
+                        <div class="flex items-center gap-2">
+                            <div class="w-4 h-1 bg-cyan-400"></div>
+                            <span class="lamaNeon">Agenda Náutica</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <div class="w-4 h-1 bg-amber-400"></div>
+                            <span class="lamaGold">Agenda Terrestre</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <div class="w-4 h-1 bg-white"></div>
+                            <span class="lamaBone">Hospedaje</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <div class="w-4 h-1 bg-orange-400"></div>
+                            <span class="text-orange-300">Atracción</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <div class="w-4 h-1 bg-fuchsia-400"></div>
+                            <span class="text-fuchsia-300">Punto de interés</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <div class="w-4 h-1 bg-sky-400"></div>
+                            <span class="text-sky-300">Playa</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <div class="w-4 h-1 bg-violet-400"></div>
+                            <span class="text-violet-300">Barrio</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <div class="w-4 h-1 bg-emerald-400"></div>
+                            <span class="text-emerald-300">Comercio</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <div class="w-4 h-1 bg-red-400"></div>
+                            <span class="text-red-300">Salud</span>
+                        </div>
                     </div>
                 </div>
             </div>
-    </main>
     </main>
 
     <script>
@@ -835,6 +835,4 @@
             map.invalidateSize();
         }, 100);
     </script>
-</body>
-
-</html>
+    <%- include('partials/footer') %>
