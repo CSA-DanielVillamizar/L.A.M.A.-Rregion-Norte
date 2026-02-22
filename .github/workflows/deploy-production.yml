@@ -1,0 +1,79 @@
+name: Deploy Production
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirmDeploy:
+        description: "Type DEPLOY_PROD to continue"
+        required: true
+        default: ""
+      runDbBootstrap:
+        description: "Run DB bootstrap before deploy"
+        required: false
+        default: "false"
+      ref:
+        description: "Git ref to deploy (branch/tag/SHA)"
+        required: false
+        default: "main"
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.confirmDeploy == 'DEPLOY_PROD' }}
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.ref || 'main' }}
+
+      - name: Setup Node 24
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci --omit=dev
+
+      - name: Optional DB bootstrap
+        if: ${{ github.event.inputs.runDbBootstrap == 'true' }}
+        env:
+          AZURE_SQL_SERVER: ${{ secrets.AZURE_SQL_SERVER }}
+          AZURE_SQL_DATABASE: ${{ secrets.AZURE_SQL_DATABASE }}
+          AZURE_SQL_USER: ${{ secrets.AZURE_SQL_USER }}
+          AZURE_SQL_PASSWORD: ${{ secrets.AZURE_SQL_PASSWORD }}
+          AZURE_SQL_PORT: "1433"
+          AZURE_SQL_ENCRYPT: "true"
+          AZURE_SQL_TRUST_CERT: "false"
+        run: npm run db:bootstrap
+
+      - name: Prepare deploy package
+        run: |
+          mkdir -p artifact
+          cp -r server.js package.json package-lock.json web.config src public artifact/
+
+      - name: Deploy to Azure Web App
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: ${{ secrets.AZURE_WEBAPP_NAME }}
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+          package: artifact
+
+      - name: Smoke test /health
+        env:
+          APP_BASE_URL: ${{ secrets.APP_BASE_URL }}
+        run: |
+          curl -fsSL "$APP_BASE_URL/health"
+
+      - name: Smoke test key routes
+        env:
+          APP_BASE_URL: ${{ secrets.APP_BASE_URL }}
+        run: |
+          curl -fsSI "$APP_BASE_URL/" | head -n 1
+          curl -fsSI "$APP_BASE_URL/capitulos" | head -n 1
+          curl -fsSI "$APP_BASE_URL/itinerario" | head -n 1

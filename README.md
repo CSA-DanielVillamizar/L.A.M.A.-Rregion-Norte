@@ -86,6 +86,15 @@ Web App Full Stack con estilo visual "Hardcore Tropical" para L.A.M.A. Región N
 
 - Fuente editable Draw.io: `docs/runbook-incidentes-operativos.drawio`
 
+### Reinstalación completa (Infra + DB + App)
+
+- Runbook operativo end-to-end: `docs/runbooks/REINSTALACION_100_FUNCIONAL.md`
+- CI/CD oficial (GitHub Actions): `docs/runbooks/GITHUB_ACTIONS_CICD.md`
+- Provisionamiento Azure: `scripts/ops/provision-azure-node24.ps1`
+- Bootstrap BD idempotente: `database/bootstrap/001_inscripciones_campeonato.sql`
+- Deploy release: `scripts/ops/deploy-release-node24.ps1`
+- Orquestador todo-en-uno: `scripts/ops/reinstall-full-stack.ps1`
+
 ```
 /
 ├── src/
