@@ -80,7 +80,59 @@ const apiKeyAuth = (req, res, next) => {
     next();
 };
 
+/**
+ * Middleware de autenticación básica para el punto de control MTO (check-in por QR)
+ * Usa credenciales propias (MTO_USERNAME/MTO_PASSWORD), separadas de las del
+ * panel administrativo, para no exponer la clave del tesorero en el dispositivo
+ * de recepción del evento.
+ */
+const mtoAuth = (req, res, next) => {
+    const authHeader = req.headers.authorization;
+
+    if (!authHeader || !authHeader.startsWith('Basic ')) {
+        res.setHeader('WWW-Authenticate', 'Basic realm="MTO Check-in"');
+        return res.status(401).json({
+            success: false,
+            message: 'Autenticación requerida'
+        });
+    }
+
+    try {
+        const base64Credentials = authHeader.split(' ')[1];
+        const credentials = Buffer.from(base64Credentials, 'base64').toString('utf-8');
+        const [username, password] = credentials.split(':');
+
+        const mtoUser = process.env.MTO_USERNAME;
+        const mtoPass = process.env.MTO_PASSWORD;
+
+        if (!mtoUser || !mtoPass) {
+            return res.status(500).json({
+                success: false,
+                message: 'Configuración insegura: faltan MTO_USERNAME y/o MTO_PASSWORD en variables de entorno'
+            });
+        }
+
+        if (username === mtoUser && password === mtoPass) {
+            req.user = { username, role: 'mto' };
+            next();
+        } else {
+            res.setHeader('WWW-Authenticate', 'Basic realm="MTO Check-in"');
+            return res.status(401).json({
+                success: false,
+                message: 'Credenciales inválidas'
+            });
+        }
+    } catch (error) {
+        console.error('Error en autenticación MTO:', error);
+        return res.status(500).json({
+            success: false,
+            message: 'Error en el proceso de autenticación'
+        });
+    }
+};
+
 module.exports = {
     basicAuth,
-    apiKeyAuth
+    apiKeyAuth,
+    mtoAuth
 };

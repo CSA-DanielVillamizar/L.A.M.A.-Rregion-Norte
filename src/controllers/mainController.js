@@ -5,6 +5,7 @@
 
 const mainService = require('../services/mainService');
 const capitulosService = require('../services/capitulosService');
+const { PAISES_CAPITULOS } = require('../data/paisesCapitulos');
 
 /**
  * Renderiza la página principal (Home)
@@ -102,7 +103,8 @@ exports.getRegistro = (req, res) => {
  */
 exports.getRegistroCampeonato = (req, res) => {
     res.render('registro-campeonato', {
-        title: 'Inscripción V Campeonato Regional'
+        title: 'Inscripción V Campeonato Regional',
+        paisesCapitulos: PAISES_CAPITULOS
     });
 };
 

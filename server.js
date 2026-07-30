@@ -48,11 +48,13 @@ const mainRoutes = require('./src/routes/mainRoutes');
 const eventRoutes = require('./src/routes/eventRoutes');
 const apiRoutes = require('./src/routes/apiRoutes');
 const adminRoutes = require('./src/routes/adminRoutes');
+const checkinRoutes = require('./src/routes/checkinRoutes');
 
 app.use('/', mainRoutes);
 app.use('/eventos', eventRoutes);
 app.use('/api', apiRoutes);
 app.use('/admin', adminRoutes);
+app.use('/checkin', checkinRoutes);
 
 // Manejo de rutas no encontradas
 app.use((req, res) => {

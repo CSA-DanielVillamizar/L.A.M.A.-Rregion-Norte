@@ -13,7 +13,17 @@ router.get('/', eventController.getAllEvents);
 // Detalle de evento específico
 router.get('/:id', eventController.getEventById);
 
-// Registro a evento
-router.post('/:id/registro', eventController.registerToEvent);
+// Registro a evento (multipart/form-data: incluye el comprobante de pago obligatorio)
+router.post('/:id/registro', (req, res, next) => {
+    eventController.uploadComprobanteMiddleware(req, res, (error) => {
+        if (error) {
+            return res.status(400).json({
+                success: false,
+                message: error.message || 'Error al procesar el comprobante de pago'
+            });
+        }
+        next();
+    });
+}, eventController.registerToEvent);
 
 module.exports = router;

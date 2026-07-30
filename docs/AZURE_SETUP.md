@@ -31,19 +31,27 @@ Esta guía detalla los pasos para configurar Azure SQL Database para la aplicaci
      - **Password**: Genera una contraseña segura
    - **Compute + storage**: Selecciona el tier apropiado
      - Para desarrollo: Basic (5 DTU)
-     - Para producción: Basic (5 DTU) o Standard S1 
+     - Para producción: Basic (5 DTU) o Standard S1
 5. Click "Review + create" y luego "Create"
 
 ### Opción B: Con Azure CLI
 
 ```bash
 # Variables
+SUBSCRIPTIONID= "a90e8a4a-74dd-4f34-bd61-24e59885a3ac"
 RESOURCE_GROUP="rg-lamaregionnorte-prod"
 LOCATION="centralus"
 SERVER_NAME="lamaregionnorte-sql-server"
 DB_NAME="lamaregionnorte_db"
 ADMIN_USER="lamaadmin"
 ADMIN_PASSWORD="LamaRegionNorte2026**"
+APPSERVICE= "lamaregionnorte.azurewebsites.net"
+RUNTINE= "Linux Node 24 LTS"
+
+
+
+az webapp config set --name "lamaregionnorte" --resource-group "rg-lamaregionnorte-prod" --always-on true --min-tls-version 1.2 --http20-enabled true --ftps-state Disabled --output table; az webapp config appsettings set --name "lamaregionnorte" --resource-group "rg-lamaregionnorte-prod" --settings NODE_ENV=production PORT=8080 AZURE_SQL_SERVER=lamaregionnorte-sql-a90e.database.windows.net AZURE_SQL_DATABASE=lamaregionnorte_db AZURE_SQL_USER=lamaadmin AZURE_SQL_PASSWORD="LamaRegionNorte2026**" AZURE_SQL_PORT=1433 AZURE_SQL_ENCRYPT=true AZURE_SQL_TRUST_CERT=false ADMIN_USERNAME=admin ADMIN_PASSWORD=lama2026 API_KEY=lama-api-key-2026 --output table
+
 
 # Crear Resource Group
 az group create --name $RESOURCE_GROUP --location $LOCATION
@@ -133,15 +141,15 @@ CREATE TABLE Inscripciones (
     asiste_acompanante BIT NOT NULL DEFAULT 0,
     nombre_acompanante NVARCHAR(200),
     fecha_registro DATETIME2 DEFAULT GETDATE(),
-    
+
     INDEX IX_Inscripciones_Documento (documento),
     INDEX IX_Inscripciones_Capitulo (capitulo),
     INDEX IX_Inscripciones_FechaRegistro (fecha_registro)
 );
 
 -- Verificar creación
-SELECT TABLE_NAME 
-FROM INFORMATION_SCHEMA.TABLES 
+SELECT TABLE_NAME
+FROM INFORMATION_SCHEMA.TABLES
 WHERE TABLE_NAME = 'Inscripciones';
 ```
 

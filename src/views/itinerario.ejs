@@ -213,10 +213,10 @@
                         <span class="material-icons text-xs align-middle mr-1">two_wheeler</span><strong>Todos los
                             participantes</strong> deben llevar ID y documentos.
                         <br><br><span class="material-icons text-xs align-middle mr-1">apartment</span><strong>Hotel
-                            Sede:</strong> Mangrove Bay Hotel, San Andres Islas.
+                            Sede:</strong> Zona hotelera de Covenas y San Antero.
                         <br><br><span
                             class="material-icons text-xs align-middle mr-1">warning_amber</span><strong>Clima:</strong>
-                        Consultar pronóstico antes de salida.
+                        Consultar pronostico marino y estado vial antes de salida.
                     </p>
                 </div>
             </aside>
@@ -304,8 +304,66 @@
             </div>
     </main>
 
+    <!-- Cronograma Detallado -->
+    <section class="container mx-auto px-4 pb-24">
+        <div class="glass-panel rounded-xl p-6 md:p-8">
+            <h2 class="lamaGold font-bold uppercase tracking-widest text-2xl mb-2 text-center">Plan Maestro de Ruta</h2>
+            <p class="lamaBone text-center text-sm mb-10">Agenda oficial · Horarios sujetos a la disciplina táctica
+                de la caravana</p>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-black/20 rounded-lg p-5 border border-amber-500/20">
+                    <h3 class="lamaGold font-bold uppercase tracking-widest text-sm mb-4 flex items-center gap-2">
+                        <span class="material-icons text-sm">flight_land</span>
+                        Viernes 11 · Despliegue
+                    </h3>
+                    <ul class="space-y-3 text-sm text-gray-300">
+                        <li><span class="lamaNeon font-bold">14:00 - 18:00</span><br>Arribo al Cispata Marina Hotel,
+                            check-in logístico, inspección de parqueo y entrega de kits.</li>
+                        <li><span class="lamaNeon font-bold">20:00 - 22:00</span><br>Apertura institucional y briefing
+                            de seguridad (MTO). Designación de capitanes de ruta y barredoras.</li>
+                    </ul>
+                </div>
+
+                <div class="bg-black/20 rounded-lg p-5 border border-amber-500/20">
+                    <h3 class="lamaGold font-bold uppercase tracking-widest text-sm mb-4 flex items-center gap-2">
+                        <span class="material-icons text-sm">two_wheeler</span>
+                        Sábado 12 · La Conquista
+                    </h3>
+                    <ul class="space-y-3 text-sm text-gray-300">
+                        <li><span class="lamaNeon font-bold">08:30</span><br>Encendido de motores y alineación en
+                            bloque.</li>
+                        <li><span class="lamaNeon font-bold">09:40</span><br>Visita y fotografía oficial en el Parque
+                            Museo de Infantería de Marina.</li>
+                        <li><span class="lamaNeon font-bold">11:00</span><br>Descompresión en la Ciénaga de la
+                            Caimanera.</li>
+                        <li><span class="lamaNeon font-bold">12:00</span><br>Almuerzo de integración en Restaurante
+                            Pesecar.</li>
+                        <li><span class="lamaNeon font-bold">14:00</span><br>Rodada táctica hacia Rincón del Mar
+                            (variante pavimentada).</li>
+                        <li><span class="lamaNeon font-bold">20:00</span><br>Ceremonia Magna, entrega de trofeos y
+                            Gala de Hermandad.</li>
+                    </ul>
+                </div>
+
+                <div class="bg-black/20 rounded-lg p-5 border border-amber-500/20">
+                    <h3 class="lamaGold font-bold uppercase tracking-widest text-sm mb-4 flex items-center gap-2">
+                        <span class="material-icons text-sm">flight_takeoff</span>
+                        Domingo 13 · Éxodo
+                    </h3>
+                    <ul class="space-y-3 text-sm text-gray-300">
+                        <li><span class="lamaNeon font-bold">09:30</span><br>Asamblea General de Presidentes Región
+                            Norte.</li>
+                        <li><span class="lamaNeon font-bold">11:30</span><br>Check-out y éxodo coordinado con luz
+                            diurna.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <script>
-        let map = L.map('map').setView([12.5847, -81.7006], 13);
+        let map = L.map('map').setView([9.43, -75.71], 11);
 
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             maxZoom: 19,
@@ -315,163 +373,75 @@
         const puntos = [
             {
                 id: 1,
-                nombre: "Aeropuerto Internacional Gustavo Rojas Pinilla",
-                descripcion: "Aterrizaje y recepción isleña",
-                coords: [12.5836, -81.7110],
+                nombre: "Concentracion Oficial - Zona Costera de Covenas",
+                descripcion: "Check-in, entrega de kits y apertura de agenda",
+                coords: [9.4028, -75.6868],
                 categoria: "agenda",
                 tipoRuta: "terrestre",
-                hora: "Sáb 08:00 AM",
-                icono: "flight_land",
+                hora: "Sab 08:00 AM",
+                icono: "flag",
                 color: "#f2d00d"
             },
             {
                 id: 2,
-                nombre: "Mangrove Bay Hotel, San Andres Islas",
-                descripcion: "Hotel sede - Check-in y entrega de kits",
-                coords: [12.5760, -81.7002],
+                nombre: "Briefing de Seguridad Vial",
+                descripcion: "Formacion por capitulos y salida controlada",
+                coords: [9.4084, -75.6895],
                 categoria: "agenda",
                 tipoRuta: "terrestre",
-                hora: "Sáb 09:00 AM",
-                icono: "apartment",
+                hora: "Sab 09:00 AM",
+                icono: "security",
                 color: "#f2d00d"
             },
             {
                 id: 3,
-                nombre: "Muelle Portofino / Marina Tonino",
-                descripcion: "Formación escuadra naval - obligatorio",
-                coords: [12.5833, -81.6902],
+                nombre: "Ruta Costera Covenas - Punta Piedra",
+                descripcion: "Tramo de calentamiento para caravana",
+                coords: [9.4301, -75.7064],
                 categoria: "agenda",
-                tipoRuta: "nautica",
-                hora: "Sáb 01:30 PM",
-                icono: "sailing",
-                color: "#00f5d4"
+                tipoRuta: "terrestre",
+                hora: "Sab 10:30 AM",
+                icono: "two_wheeler",
+                color: "#f2d00d"
             },
             {
                 id: 4,
-                nombre: "Bahía de San Andrés",
-                descripcion: "Inicio del campeonato náutico",
-                coords: [12.5823, -81.6909],
+                nombre: "Punto Nautico Golfo de Morrosquillo",
+                descripcion: "Actividad marina opcional para delegaciones",
+                coords: [9.3915, -75.6998],
                 categoria: "agenda",
                 tipoRuta: "nautica",
-                hora: "Sáb 02:00 PM",
+                hora: "Sab 02:00 PM",
                 icono: "directions_boat",
                 color: "#00f5d4"
             },
             {
                 id: 5,
-                nombre: "Manglares Old Point",
-                descripcion: "Ruta náutica oficial",
-                coords: [12.5548, -81.7152],
-                categoria: "agenda",
-                tipoRuta: "nautica",
-                hora: "Sáb 02:30 PM",
-                icono: "water",
-                color: "#00f5d4"
-            },
-            {
-                id: 6,
-                nombre: "El Acuario",
-                descripcion: "Parada técnica ruta náutica",
-                coords: [12.5576, -81.6897],
-                categoria: "agenda",
-                tipoRuta: "nautica",
-                hora: "Sáb 03:30 PM",
-                icono: "waves",
-                color: "#00f5d4"
-            },
-            {
-                id: 7,
-                nombre: "Johnny Cay",
-                descripcion: "Desembarco y juegos playeros",
-                coords: [12.6228, -81.6918],
-                categoria: "agenda",
-                tipoRuta: "nautica",
-                hora: "Sáb 04:30 PM",
-                icono: "beach_access",
-                color: "#00f5d4"
-            },
-            {
-                id: 8,
-                nombre: "Chamey's Nautica - Kayak & Wind Surf",
-                descripcion: "Vista de amanecer y salida temprana",
-                coords: [12.5206, -81.7164],
-                categoria: "agenda",
-                tipoRuta: "nautica",
-                hora: "Dom 05:00 AM",
-                icono: "wb_sunny",
-                color: "#00f5d4"
-            },
-            {
-                id: 9,
-                nombre: "Cueva de Morgan",
-                descripcion: "Inicio caravana terrestre",
-                coords: [12.5574, -81.7099],
-                categoria: "agenda",
-                tipoRuta: "terrestre",
-                hora: "Dom 10:00 AM",
-                icono: "route",
-                color: "#f2d00d"
-            },
-            {
-                id: 10,
-                nombre: "La Piscinita",
-                descripcion: "Ruta turística terrestre",
-                coords: [12.5318, -81.7248],
+                nombre: "Llegada a San Antero",
+                descripcion: "Ingreso de caravana y foto oficial",
+                coords: [9.3726, -75.7589],
                 categoria: "agenda",
                 tipoRuta: "terrestre",
                 hora: "Dom 10:30 AM",
-                icono: "pool",
+                icono: "camera_alt",
                 color: "#f2d00d"
             },
             {
-                id: 11,
-                nombre: "Hoyo Soplador",
-                descripcion: "Ruta turística terrestre",
-                coords: [12.5155, -81.7301],
+                id: 6,
+                nombre: "Cierre y Premiacion",
+                descripcion: "Almuerzo de clausura con protocolo oficial",
+                coords: [9.3774, -75.7608],
                 categoria: "agenda",
                 tipoRuta: "terrestre",
-                hora: "Dom 11:00 AM",
-                icono: "air",
+                hora: "Dom 01:00 PM",
+                icono: "emoji_events",
                 color: "#f2d00d"
             },
             {
-                id: 12,
-                nombre: "West View",
-                descripcion: "Ruta turística terrestre",
-                coords: [12.5350, -81.7270],
-                categoria: "agenda",
-                tipoRuta: "terrestre",
-                hora: "Dom 11:20 AM",
-                icono: "visibility",
-                color: "#f2d00d"
-            },
-            {
-                id: 13,
-                nombre: "Letrero I LOVE SAI",
-                descripcion: "Foto oficial del evento",
-                coords: [12.5852, -81.7005],
-                categoria: "agenda",
-                tipoRuta: "terrestre",
-                hora: "Dom 12:00 PM",
-                icono: "photo_camera",
-                color: "#f2d00d"
-            },
-            {
-                id: 14,
-                nombre: "Restaurante de Playa (San Luis / Sound Bay)",
-                descripcion: "Almuerzo de clausura y premiación",
-                coords: [12.5238, -81.7049],
-                categoria: "agenda",
-                tipoRuta: "terrestre",
-                hora: "Dom 12:30 PM",
-                icono: "restaurant",
-                color: "#f2d00d"
-            },
-            {
-                id: 15,
-                nombre: "Mangrove Bay Hotel",
-                descripcion: "Hospedaje recomendado / hotel sede",
-                coords: [12.5760, -81.7002],
+                id: 7,
+                nombre: "Zona Hotelera Covenas",
+                descripcion: "Bloque principal de hospedaje para capitulos",
+                coords: [9.4064, -75.6849],
                 categoria: "hotel",
                 tipoRuta: "",
                 hora: "Hospedaje",
@@ -479,21 +449,10 @@
                 color: "#e1e4dc"
             },
             {
-                id: 16,
-                nombre: "Apartamento Chamey Nautica",
-                descripcion: "Hospedaje cercano a actividades náuticas",
-                coords: [12.5212, -81.7162],
-                categoria: "hostal",
-                tipoRuta: "",
-                hora: "Hospedaje",
-                icono: "home",
-                color: "#fde047"
-            },
-            {
-                id: 17,
-                nombre: "Decameron Isleño",
-                descripcion: "Hotel y hospedaje en zona céntrica",
-                coords: [12.5863, -81.6992],
+                id: 8,
+                nombre: "Corredor Hotelero San Antero",
+                descripcion: "Hospedaje alterno para grupos familiares",
+                coords: [9.3668, -75.7565],
                 categoria: "hotel",
                 tipoRuta: "",
                 hora: "Hospedaje",
@@ -501,208 +460,10 @@
                 color: "#e1e4dc"
             },
             {
-                id: 18,
-                nombre: "GHL Relax Hotel Sunrise",
-                descripcion: "Hospedaje con acceso a zona comercial",
-                coords: [12.5818, -81.6892],
-                categoria: "hotel",
-                tipoRuta: "",
-                hora: "Hospedaje",
-                icono: "hotel",
-                color: "#e1e4dc"
-            },
-            {
-                id: 19,
-                nombre: "Playa Spratt Bight",
-                descripcion: "Atracción turística principal",
-                coords: [12.5862, -81.6943],
-                categoria: "atraccion",
-                tipoRuta: "",
-                hora: "Atracción",
-                icono: "beach_access",
-                color: "#f59e0b"
-            },
-            {
-                id: 20,
-                nombre: "Rocky Cay",
-                descripcion: "Atracción natural y paseo turístico",
-                coords: [12.5483, -81.7093],
-                categoria: "atraccion",
-                tipoRuta: "",
-                hora: "Atracción",
-                icono: "landscape",
-                color: "#f59e0b"
-            },
-            {
-                id: 21,
-                nombre: "Primera Iglesia Bautista de La Loma",
-                descripcion: "Mirador y punto cultural recomendado",
-                coords: [12.5577, -81.7108],
-                categoria: "interes",
-                tipoRuta: "",
-                hora: "Punto de interés",
-                icono: "church",
-                color: "#d946ef"
-            },
-            {
-                id: 22,
-                nombre: "Casa Museo Isleña",
-                descripcion: "Patrimonio cultural y arquitectónico",
-                coords: [12.5448, -81.7148],
-                categoria: "interes",
-                tipoRuta: "",
-                hora: "Punto de interés",
-                icono: "museum",
-                color: "#d946ef"
-            },
-            {
-                id: 23,
-                nombre: "Malecón de Spratt Bight",
-                descripcion: "Zona peatonal y punto de encuentro",
-                coords: [12.5854, -81.6948],
-                categoria: "interes",
-                tipoRuta: "",
-                hora: "Punto de interés",
-                icono: "map",
-                color: "#d946ef"
-            },
-            {
-                id: 24,
-                nombre: "Playa de San Luis",
-                descripcion: "Playa tranquila ideal para descanso y fotos",
-                coords: [12.5232, -81.7046],
-                categoria: "playa",
-                tipoRuta: "",
-                hora: "Playa",
-                icono: "beach_access",
-                color: "#38bdf8"
-            },
-            {
-                id: 25,
-                nombre: "Sound Bay",
-                descripcion: "Zona de playa amplia para paseo en grupo",
-                coords: [12.5196, -81.7068],
-                categoria: "playa",
-                tipoRuta: "",
-                hora: "Playa",
-                icono: "surfing",
-                color: "#38bdf8"
-            },
-            {
-                id: 26,
-                nombre: "Cocoplum Beach",
-                descripcion: "Playa recomendada para baño y atardecer",
-                coords: [12.5440, -81.7098],
-                categoria: "playa",
-                tipoRuta: "",
-                hora: "Playa",
-                icono: "waves",
-                color: "#38bdf8"
-            },
-            {
-                id: 27,
-                nombre: "Barrio La Loma",
-                descripcion: "Sector tradicional con miradores naturales",
-                coords: [12.5589, -81.7118],
-                categoria: "barrio",
-                tipoRuta: "",
-                hora: "Barrio",
-                icono: "apartment",
-                color: "#a78bfa"
-            },
-            {
-                id: 28,
-                nombre: "Barrio San Luis",
-                descripcion: "Zona residencial costera con ambiente local",
-                coords: [12.5230, -81.7044],
-                categoria: "barrio",
-                tipoRuta: "",
-                hora: "Barrio",
-                icono: "holiday_village",
-                color: "#a78bfa"
-            },
-            {
-                id: 29,
-                nombre: "North End",
-                descripcion: "Centro urbano principal de San Andrés",
-                coords: [12.5867, -81.6955],
-                categoria: "barrio",
-                tipoRuta: "",
-                hora: "Barrio",
-                icono: "location_city",
-                color: "#a78bfa"
-            },
-            {
-                id: 30,
-                nombre: "Zona Comercial Peatonal",
-                descripcion: "Tiendas, souvenirs y puntos duty free",
-                coords: [12.5848, -81.6944],
-                categoria: "comercio",
-                tipoRuta: "",
-                hora: "Comercio",
-                icono: "storefront",
-                color: "#22c55e"
-            },
-            {
-                id: 31,
-                nombre: "New Point Plaza",
-                descripcion: "Centro comercial para compras y descanso",
-                coords: [12.5856, -81.6940],
-                categoria: "comercio",
-                tipoRuta: "",
-                hora: "Comercio",
-                icono: "shopping_bag",
-                color: "#22c55e"
-            },
-            {
-                id: 32,
-                nombre: "Hospital Departamental Clarence Lynd Newball",
-                descripcion: "Punto principal de atención médica",
-                coords: [12.5775, -81.7024],
-                categoria: "salud",
-                tipoRuta: "",
-                hora: "Salud",
-                icono: "local_hospital",
-                color: "#ef4444"
-            },
-            {
-                id: 33,
-                nombre: "Cruz Roja Colombiana - Seccional San Andrés",
-                descripcion: "Atención de apoyo y primeros auxilios",
-                coords: [12.5799, -81.6988],
-                categoria: "salud",
-                tipoRuta: "",
-                hora: "Salud",
-                icono: "health_and_safety",
-                color: "#ef4444"
-            },
-            {
-                id: 34,
-                nombre: "Decameron Marazul",
-                descripcion: "Hotel recomendado con acceso al mar",
-                coords: [12.5598, -81.7310],
-                categoria: "hotel",
-                tipoRuta: "",
-                hora: "Hospedaje",
-                icono: "hotel_class",
-                color: "#e1e4dc"
-            },
-            {
-                id: 35,
-                nombre: "Hotel Nattivo Collection",
-                descripcion: "Hotel en zona céntrica para grupos",
-                coords: [12.5843, -81.6928],
-                categoria: "hotel",
-                tipoRuta: "",
-                hora: "Hospedaje",
-                icono: "hotel",
-                color: "#e1e4dc"
-            },
-            {
-                id: 36,
-                nombre: "Viajero Hostel San Andrés",
-                descripcion: "Hostal para viajeros en zona central",
-                coords: [12.5835, -81.6941],
+                id: 9,
+                nombre: "Hostales del Malecon de Covenas",
+                descripcion: "Opciones de alojamiento para riders",
+                coords: [9.3991, -75.6825],
                 categoria: "hostal",
                 tipoRuta: "",
                 hora: "Hospedaje",
@@ -710,48 +471,85 @@
                 color: "#fde047"
             },
             {
-                id: 37,
-                nombre: "Posada Nativa Miss Trinie",
-                descripcion: "Hostal/posada tradicional isleña",
-                coords: [12.5531, -81.7144],
-                categoria: "hostal",
+                id: 10,
+                nombre: "Playas de Covenas",
+                descripcion: "Zona de descanso y contenido de marca",
+                coords: [9.4049, -75.6924],
+                categoria: "playa",
                 tipoRuta: "",
-                hora: "Hospedaje",
-                icono: "home_work",
-                color: "#fde047"
+                hora: "Playa",
+                icono: "beach_access",
+                color: "#38bdf8"
+            },
+            {
+                id: 11,
+                nombre: "Playa Blanca - San Antero",
+                descripcion: "Parada turistica recomendada",
+                coords: [9.3553, -75.7637],
+                categoria: "playa",
+                tipoRuta: "",
+                hora: "Playa",
+                icono: "waves",
+                color: "#38bdf8"
+            },
+            {
+                id: 12,
+                nombre: "Cienaga La Caimanera",
+                descripcion: "Atractivo ecoturistico del corredor",
+                coords: [9.4275, -75.6786],
+                categoria: "atraccion",
+                tipoRuta: "",
+                hora: "Atraccion",
+                icono: "forest",
+                color: "#f59e0b"
+            },
+            {
+                id: 13,
+                nombre: "Mirador Costero Punta Bolivar",
+                descripcion: "Punto visual para fotografia de caravana",
+                coords: [9.4381, -75.7091],
+                categoria: "interes",
+                tipoRuta: "",
+                hora: "Punto de interes",
+                icono: "visibility",
+                color: "#d946ef"
+            },
+            {
+                id: 14,
+                nombre: "Parque Principal de San Antero",
+                descripcion: "Referencia urbana y punto de encuentro",
+                coords: [9.3779, -75.7595],
+                categoria: "barrio",
+                tipoRuta: "",
+                hora: "Barrio",
+                icono: "location_city",
+                color: "#a78bfa"
+            },
+            {
+                id: 15,
+                nombre: "Corredor Gastronomico de San Antero",
+                descripcion: "Mariscos, cocina local y parada de almuerzo",
+                coords: [9.3748, -75.7619],
+                categoria: "comercio",
+                tipoRuta: "",
+                hora: "Comercio",
+                icono: "restaurant",
+                color: "#22c55e"
+            },
+            {
+                id: 16,
+                nombre: "Centro de Salud San Antero",
+                descripcion: "Atencion prioritaria y primeros auxilios",
+                coords: [9.3788, -75.7579],
+                categoria: "salud",
+                tipoRuta: "",
+                hora: "Salud",
+                icono: "local_hospital",
+                color: "#ef4444"
             }
         ];
 
-        const mediaPorPunto = {
-            1: { tipo: 'foto', src: '/img/san-andres/Fotos/Aeropuerto.jpeg', alt: 'Aeropuerto Internacional Gustavo Rojas Pinilla' },
-            2: { tipo: 'video', src: '/img/san-andres/Videos/mangrovebayhotel.mp4', poster: '/img/san-andres/Fotos/Mangrove.jpg' },
-            3: { tipo: 'foto', src: '/img/san-andres/Fotos/chalupa.jpg', alt: 'Muelle Portofino / Marina Tonino' },
-            4: { tipo: 'video', src: '/img/san-andres/Videos/Mar7Colores1.mp4', poster: '/img/san-andres/Fotos/Mar_de_los_7_Colores.png' },
-            5: { tipo: 'foto', src: '/img/san-andres/Fotos/Manglares_Old_Point.jpg', alt: 'Manglares Old Point' },
-            6: { tipo: 'foto', src: '/img/san-andres/Fotos/Acuario.jpg', alt: 'El Acuario' },
-            7: { tipo: 'foto', src: '/img/san-andres/Fotos/Johnny_Cay.jpg', alt: 'Johnny Cay' },
-            8: { tipo: 'foto', src: '/img/san-andres/Fotos/ChameyNautica.jpg', alt: "Chamey's Nautica - Kayak & Wind Surf" },
-            9: { tipo: 'foto', src: '/img/san-andres/Fotos/Cueva_de_Morgan.jpg', alt: 'Cueva de Morgan' },
-            10: { tipo: 'video', src: '/img/san-andres/Videos/LaPiscinita.mp4', poster: '/img/san-andres/Fotos/Playa.jpg' },
-            11: { tipo: 'video', src: '/img/san-andres/Videos/san_andres_drone_hoyo_soplador.mp4', poster: '/img/san-andres/Fotos/Hoyo_Soplador.jpg' },
-            12: { tipo: 'foto', src: '/img/san-andres/Fotos/Parque_West_View.jpg', alt: 'West View' },
-            13: { tipo: 'foto', src: '/img/san-andres/Fotos/I_Love_S_A_I.jpg', alt: 'Letrero I LOVE SAI' },
-            14: { tipo: 'foto', src: '/img/san-andres/Fotos/RestauranteSoundBay.jpg', alt: 'Restaurante de Playa (San Luis / Sound Bay)' },
-            16: { tipo: 'foto', src: '/img/san-andres/Fotos/ApartamentoChamey.jpg', alt: 'Apartamento Chamey Nautica' },
-            17: { tipo: 'foto', src: '/img/san-andres/Fotos/DecameronIsleno.jpg', alt: 'Decameron Isleño' },
-            18: { tipo: 'foto', src: '/img/san-andres/Fotos/GHL.jpg', alt: 'GHL Relax Hotel Sunrise' },
-            19: { tipo: 'foto', src: '/img/san-andres/Fotos/Playa.jpg', alt: 'Playa Spratt Bight' },
-            20: { tipo: 'video', src: '/img/san-andres/Videos/RockyCay.mp4', poster: '/img/san-andres/Fotos/rose_cay.jpg' },
-            21: { tipo: 'foto', src: '/img/san-andres/Fotos/Iglesia.jpg', alt: 'Primera Iglesia Bautista de La Loma' },
-            22: { tipo: 'foto', src: '/img/san-andres/Fotos/CasaMuseo.jpg', alt: 'Casa Museo Isleña' },
-            23: { tipo: 'video', src: '/img/san-andres/Videos/san_andres_drone_city.mp4', poster: '/img/san-andres/Fotos/Malecon.jpg' },
-            24: { tipo: 'foto', src: '/img/san-andres/Fotos/Playa.jpg', alt: 'Playa de San Luis' },
-            26: { tipo: 'foto', src: '/img/san-andres/Fotos/Cayo_Acuario.jpg', alt: 'Cocoplum Beach' },
-            30: { tipo: 'foto', src: '/img/san-andres/Fotos/Malecon.jpg', alt: 'Zona Comercial Peatonal' },
-            34: { tipo: 'foto', src: '/img/san-andres/Fotos/DecameronMarazul.jpg', alt: 'Decameron Marazul' },
-            36: { tipo: 'foto', src: '/img/san-andres/Fotos/ViajeroHostel.jpg', alt: 'Viajero Hostel San Andrés' },
-            37: { tipo: 'foto', src: '/img/san-andres/Fotos/PosadaNativaMissTrinie.jpg', alt: 'Posada Nativa Miss Trinie' }
-        };
+        const mediaPorPunto = {};
 
         const marcadores = {};
         puntos.forEach(punto => {

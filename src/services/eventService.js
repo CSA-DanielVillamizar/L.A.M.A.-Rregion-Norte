@@ -12,9 +12,9 @@ const eventsDB = [
         nombre: 'V Campeonato Región Norte',
         fecha: '2026-09-12',
         fechaFin: '2026-09-13',
-        ubicacion: 'San Andrés Islas, Colombia',
-        hotel: 'Mangrove Bay Hotel, San Andres Islas',
-        descripcion: 'La Gran Regata L.A.M.A. - Evento cumbre de la Región Norte con competencia de Jet Ski, rodadas náuticas y terrestres, gala de integración y premiación regional.',
+        ubicacion: 'Costa Caribe Continental (Coveñas - San Antero), Colombia',
+        hotel: 'Zona hotelera Coveñas - San Antero',
+        descripcion: 'Evento cumbre de la Región Norte en el Golfo de Morrosquillo: mototurismo de carretera, agenda costera, integración regional y premiación oficial.',
         capacidad: 150,
         registrados: 0,
         precio: 150000,
@@ -31,23 +31,23 @@ const eventsDB = [
         },
         costos_adicionales: [
             {
-                categoria: 'Traslados Aeropuerto',
+                categoria: 'Logistica Terrestre',
                 items: [
-                    { descripcion: 'Traslado Aeropuerto - Hotel - Aeropuerto en taxi', valor: 40000, moneda: 'COP' }
+                    { descripcion: 'Traslado terrestre terminal/hotel/punto de concentracion', valor: 40000, moneda: 'COP' }
                 ]
             },
             {
-                categoria: 'Vehículos Náuticos',
+                categoria: 'Vehiculos Nauticos',
                 items: [
                     { descripcion: 'Cupo en Jet Ski (2 personas)', valor: 400000, moneda: 'COP', unidad: 'por hora' },
                     { descripcion: 'Lancha de lujo y/o Pontón (9 am a 5 pm)', valor: 80000, moneda: 'COP', unidad: 'por persona' },
-                    { descripcion: 'Regata de Veleros por el mar de 7 Colores', valor: 100000, moneda: 'COP', unidad: 'por persona' }
+                    { descripcion: 'Regata de Veleros en el Golfo de Morrosquillo', valor: 100000, moneda: 'COP', unidad: 'por persona' }
                 ]
             },
             {
-                categoria: 'Vehículos Terrestres',
+                categoria: 'Vehiculos Terrestres',
                 items: [
-                    { descripcion: 'Cupo en Mula (Golf Cart) para vuelta a la isla (9 am a 6 pm)', valor: 250000, moneda: 'COP', unidad: 'por 5 personas' },
+                    { descripcion: 'Cupo en Mula (Golf Cart) para vuelta costera (9 am a 6 pm)', valor: 250000, moneda: 'COP', unidad: 'por 5 personas' },
                     { descripcion: 'Cupo en Chiva', valor: 50000, moneda: 'COP', unidad: 'por persona (3 horas)' },
                     { descripcion: 'Burro Tour', valor: 140000, moneda: 'COP', unidad: 'por persona (2 horas)' }
                 ]
@@ -59,10 +59,10 @@ const eventsDB = [
             { tipo: 'Correo Electrónico', valor: 'Comiteregionnortelamacolombia@gmail.com' }
         ],
         recomendaciones: [
-            'Llevar careta para Snorkel',
-            'Llevar Zapatos de playa',
-            'Llevar bolsa para proteger celular',
-            'Llevar Toalla',
+            'Llevar careta para actividades acuaticas',
+            'Llevar zapatos de playa y ruta',
+            'Llevar bolsa para proteger celular y documentos',
+            'Llevar toalla',
             'Llevar protector solar',
             'Llevar gorra',
             'Llevar lentes de sol',
@@ -72,59 +72,59 @@ const eventsDB = [
             {
                 dia: 1,
                 fecha: '2026-09-12',
-                titulo: 'SÁBADO 12 DE SEPTIEMBRE - LA GRAN REGATA L.A.M.A.',
+                titulo: 'SABADO 12 DE SEPTIEMBRE - APERTURA RUTA COSTERA L.A.M.A.',
                 actividades: [
                     {
                         hora: '08:00 AM',
-                        titulo: 'Aterrizaje y Recepción Isleña',
-                        lugar: 'Aeropuerto Internacional Gustavo Rojas Pinilla',
-                        detalles: 'Bienvenida oficial a las delegaciones nacionales e internacionales. Traslado en "Servicio de Taxi" hacia el Hotel Sede.',
+                        titulo: 'Recepcion de Delegaciones y Registro',
+                        lugar: 'Punto de concentracion oficial en Coveñas',
+                        detalles: 'Bienvenida oficial a las delegaciones nacionales e internacionales. Registro logistico y alistamiento de caravanas por capitulo.',
                         costo: 40000,
                         nota: 'Por cuenta de participante'
                     },
                     {
                         hora: '09:00 AM',
                         titulo: 'Check-in y Entrega de Kits',
-                        lugar: 'Hotel Sede (Zona Rosa / Acceso a Playa)',
+                        lugar: 'Zona hotelera Coveñas - San Antero',
                         detalles: 'Entrega de credenciales, camiseta oficial "V Campeonato", gorra náutica y brazalete All Access.',
                         incluido: true
                     },
                     {
                         hora: '12:00 PM',
-                        titulo: 'Almuerzo Típico: "Sazón Raizal"',
-                        detalles: 'Auténtico Rondón o Pescado Frito para cargar energías antes de la acción.',
+                        titulo: 'Almuerzo Tipico Caribe',
+                        detalles: 'Cocina regional de mar para cargar energias antes de la caravana costera.',
                         nota: 'Por cuenta de cada miembro'
                     },
                     {
                         hora: '01:30 PM',
-                        titulo: 'FORMACIÓN DE LA ESCUADRA NAVAL (Evento Central)',
-                        lugar: 'Muelle Portofino / Marina Tonino',
-                        detalles: 'Briefing de Seguridad: Charla técnica obligatoria por parte de la Capitanía de Puerto (equivalente a la charla de seguridad vial).',
+                        titulo: 'FORMACION DE CARAVANA PRINCIPAL (Evento Central)',
+                        lugar: 'Corredor costero Coveñas',
+                        detalles: 'Briefing de seguridad vial y protocolo de avance por bloques para todo el peloton.',
                         obligatorio: true
                     },
                     {
                         hora: '02:00 PM',
-                        titulo: 'INICIO DEL CAMPEONATO NÁUTICO',
-                        detalles: 'Pilotos y Copilotos: Abordaje de Jet Skis (Motos de Agua) organizados en formación Delta sobre el mar. Acompañantes y Familiares: Abordaje de Fragatas y Pontones de Lujo con música y bandera L.A.M.A. Ruta: Bahía de San Andrés → Manglares Old Point → Avistamiento de Mantarrayas → Parada técnica en "El Acuario".',
+                        titulo: 'INICIO DEL CAMPEONATO REGIONAL',
+                        detalles: 'Pilotos y copilotos: ruta terrestre de integracion por el eje Coveñas - San Antero. Acompanantes y familiares: agenda costera y actividades nauticas opcionales en el Golfo de Morrosquillo.',
                         nota: 'IMPORTANTE: Si deseas participar en Lancha de Lujo/Pontón o Velero, debes seleccionarlas en el formulario de inscripción. Estas experiencias están disponibles tanto para miembros como para acompañantes.',
                         subruta: [
-                            'Bahía de San Andrés',
-                            'Manglares Old Point',
-                            'Avistamiento de Mantarrayas',
-                            'El Acuario'
+                            'Concentracion en Coveñas',
+                            'Tramo costero Punta Piedra',
+                            'Ingreso a San Antero',
+                            'Parada tecnica y foto oficial'
                         ]
                     },
                     {
                         hora: '04:30 PM',
-                        titulo: 'Desembarco en Playa Privada / Johnny Cay',
-                        detalles: 'Juegos de Campeonato (Puntos para los Capítulos): Competencia de relevos en agua, Fuerza de cuerdas en la arena, Voleibol L.A.M.A. Hidratación y Coco Loko incluidos.',
+                        titulo: 'Juegos Playeros y Actividades de Integracion',
+                        detalles: 'Juegos de campeonato por capitulos: relevos en arena, desafios de equipo y actividades de hermandad frente al mar.',
                         incluido: true
                     },
                     {
                         hora: '08:00 PM',
                         titulo: 'CENA DE GALA: "NOCHE BLANCA"',
                         codigoVestuario: 'Ropa blanca',
-                        detalles: 'Cena buffet caribeña, show de bailes típicos (Reggae, Calypso, Soca) y fiesta de integración.',
+                        detalles: 'Cena buffet caribena, show cultural regional y fiesta de integracion.',
                         nota: 'Por cuenta de cada miembro'
                     }
                 ]
@@ -132,54 +132,54 @@ const eventsDB = [
             {
                 dia: 2,
                 fecha: '2026-09-13',
-                titulo: 'DOMINGO 13 DE SEPTIEMBRE - VUELTA A LA ISLA',
+                titulo: 'DOMINGO 13 DE SEPTIEMBRE - RUTA COVEÑAS SAN ANTERO',
                 actividades: [
                     {
                         hora: '05:00 AM',
                         titulo: 'Vista de Amanecer',
-                        lugar: 'Chamey Nautica'
+                        lugar: 'Playa principal de Coveñas'
                     },
                     {
                         hora: '05:30 AM',
-                        titulo: 'Regata de Veleros por el mar de 7 Colores',
+                        titulo: 'Regata de Veleros en el Golfo de Morrosquillo',
                         costo: 100000,
                         unidad: 'por persona',
-                        nota: 'IMPORTANTE: Selecciona "Velero Mar 7 Colores" en el formulario de inscripción para participar. Disponible para miembros y acompañantes.'
+                        nota: 'IMPORTANTE: Selecciona "Velero Golfo de Morrosquillo" en el formulario de inscripcion para participar. Disponible para miembros y acompanantes.'
                     },
                     {
                         hora: '06:30 AM',
-                        titulo: 'Snorkel',
-                        detalles: 'Vista de tiburones, mantarrayas, etc.'
+                        titulo: 'Actividad Acuatica Opcional',
+                        detalles: 'Espacio libre para experiencias nauticas guiadas.'
                     },
                     {
                         hora: '09:00 AM',
-                        titulo: 'Desayuno Costeño',
+                        titulo: 'Desayuno Costeno',
                         nota: 'Por cuenta de cada miembro'
                     },
                     {
                         hora: '10:00 AM',
                         titulo: 'Caravana Terrestre en "Mulas" o Chiva',
-                        detalles: 'Reemplazamos nuestras motos por una caravana de Carritos de Golf (Mulas) decorados con las banderas de cada capítulo. Ruta Turística: Cueva de Morgan → La Piscinita → Hoyo Soplador → West View. Entrada con valor adicional. Foto Oficial: Letrero "I LOVE SAI" con todos los asistentes.',
+                        detalles: 'Caravana tematica en vehiculos de apoyo decorados por capitulo. Ruta turistica: Malecon de Coveñas -> corredor costero -> San Antero -> retorno por playa.',
                         nota: 'IMPORTANTE: Si deseas participar, selecciona "Cupo en Chiva" o "Mula (Golf Cart)" en el formulario de inscripción. Estas experiencias están disponibles tanto para miembros como para acompañantes.',
                         subruta: [
-                            'Cueva de Morgan',
-                            'La Piscinita',
-                            'Hoyo Soplador',
-                            'West View',
-                            'Foto Oficial "I LOVE SAI"'
+                            'Malecon de Coveñas',
+                            'Corredor costero',
+                            'Parque principal de San Antero',
+                            'Zona gastronomica',
+                            'Foto oficial de clausura'
                         ]
                     },
                     {
                         hora: '12:30 PM',
                         titulo: 'ALMUERZO DE CLAUSURA Y PREMIACIÓN',
-                        lugar: 'Restaurante de Playa (San Luis / Sound Bay)',
-                        detalles: 'Entrega de trofeos y reconocimientos: Campeón de los Juegos Playeros, Capítulo con mayor asistencia, Mención Honorífica al "Motero de Ultramar" (Asistente más lejano).',
+                        lugar: 'Restaurante de Playa en San Antero',
+                        detalles: 'Entrega de trofeos y reconocimientos: campeon de juegos playeros, capitulo con mayor asistencia y mencion honorifica al rider de mayor kilometraje.',
                         nota: 'Por cuenta de cada miembro'
                     },
                     {
                         hora: '03:00 PM',
                         titulo: 'Tarde Libre - Retorno y Despedida',
-                        detalles: 'Traslado final al aeropuerto y cierre del evento.',
+                        detalles: 'Retorno por carretera y cierre oficial del evento.',
                         nota: 'Por cuenta de cada miembro'
                     }
                 ]
@@ -385,6 +385,7 @@ const eventsDB = [
 ];
 
 let tablaEventosAsegurada = false;
+let usarModoMemoria = false;
 
 const parsearJSONSeguro = (texto, valorDefecto) => {
     try {
@@ -422,13 +423,28 @@ const mapearFilaEvento = (fila) => ({
     lleno: fila.registrados >= fila.capacidad
 });
 
+const mapearEventoMemoria = (evento) => ({
+    ...evento,
+    moneda: evento.moneda || 'COP',
+    ordenVisual: evento.ordenVisual || 1,
+    agenda: Array.isArray(evento.agenda) ? evento.agenda : [],
+    paqueteOficial: evento.paqueteOficial || null,
+    costos_adicionales: Array.isArray(evento.costos_adicionales) ? evento.costos_adicionales : [],
+    contactos: Array.isArray(evento.contactos) ? evento.contactos : [],
+    recomendaciones: Array.isArray(evento.recomendaciones) ? evento.recomendaciones : [],
+    disponibilidad: evento.capacidad - evento.registrados,
+    porcentajeOcupacion: evento.capacidad > 0 ? Math.round((evento.registrados / evento.capacidad) * 100) : 0,
+    lleno: evento.registrados >= evento.capacidad
+});
+
 const asegurarTablaEventos = async () => {
-    if (tablaEventosAsegurada) {
+    if (tablaEventosAsegurada || usarModoMemoria) {
         return;
     }
 
-    const pool = await getPool();
-    await pool.request().query(`
+    try {
+        const pool = await getPool();
+        await pool.request().query(`
         IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'EventosLama')
         BEGIN
             CREATE TABLE EventosLama (
@@ -458,37 +474,37 @@ const asegurarTablaEventos = async () => {
         END
     `);
 
-    const totalActivos = await pool.request().query(`
+        const totalActivos = await pool.request().query(`
         SELECT COUNT(1) AS total
         FROM EventosLama
         WHERE activo = 1
     `);
 
-    if ((totalActivos.recordset[0]?.total || 0) === 0) {
-        for (let index = 0; index < eventsDB.length; index += 1) {
-            const evento = eventsDB[index];
-            const request = pool.request();
-            request.input('id_evento', sql.VarChar(120), evento.id);
-            request.input('nombre', sql.NVarChar(200), evento.nombre);
-            request.input('fecha_inicio', sql.Date, evento.fecha);
-            request.input('fecha_fin', sql.Date, evento.fechaFin || evento.fecha);
-            request.input('ubicacion', sql.NVarChar(250), evento.ubicacion);
-            request.input('hotel', sql.NVarChar(250), evento.hotel || null);
-            request.input('descripcion', sql.NVarChar(sql.MAX), evento.descripcion || null);
-            request.input('capacidad', sql.Int, Number.isFinite(evento.capacidad) ? evento.capacidad : 0);
-            request.input('registrados', sql.Int, Number.isFinite(evento.registrados) ? evento.registrados : 0);
-            request.input('precio', sql.Int, Number.isFinite(evento.precio) ? evento.precio : null);
-            request.input('moneda', sql.VarChar(10), evento.moneda || 'COP');
-            request.input('imagen', sql.NVarChar(300), evento.imagen || '/images/events/default.jpg');
-            request.input('destacado', sql.Bit, evento.destacado ? 1 : 0);
-            request.input('orden_visual', sql.Int, index + 1);
-            request.input('agenda_json', sql.NVarChar(sql.MAX), JSON.stringify(evento.agenda || []));
-            request.input('paquete_json', sql.NVarChar(sql.MAX), evento.paqueteOficial ? JSON.stringify(evento.paqueteOficial) : null);
-            request.input('costos_json', sql.NVarChar(sql.MAX), JSON.stringify(evento.costos_adicionales || []));
-            request.input('contactos_json', sql.NVarChar(sql.MAX), JSON.stringify(evento.contactos || []));
-            request.input('recomendaciones_json', sql.NVarChar(sql.MAX), JSON.stringify(evento.recomendaciones || []));
+        if ((totalActivos.recordset[0]?.total || 0) === 0) {
+            for (let index = 0; index < eventsDB.length; index += 1) {
+                const evento = eventsDB[index];
+                const request = pool.request();
+                request.input('id_evento', sql.VarChar(120), evento.id);
+                request.input('nombre', sql.NVarChar(200), evento.nombre);
+                request.input('fecha_inicio', sql.Date, evento.fecha);
+                request.input('fecha_fin', sql.Date, evento.fechaFin || evento.fecha);
+                request.input('ubicacion', sql.NVarChar(250), evento.ubicacion);
+                request.input('hotel', sql.NVarChar(250), evento.hotel || null);
+                request.input('descripcion', sql.NVarChar(sql.MAX), evento.descripcion || null);
+                request.input('capacidad', sql.Int, Number.isFinite(evento.capacidad) ? evento.capacidad : 0);
+                request.input('registrados', sql.Int, Number.isFinite(evento.registrados) ? evento.registrados : 0);
+                request.input('precio', sql.Int, Number.isFinite(evento.precio) ? evento.precio : null);
+                request.input('moneda', sql.VarChar(10), evento.moneda || 'COP');
+                request.input('imagen', sql.NVarChar(300), evento.imagen || '/images/events/default.jpg');
+                request.input('destacado', sql.Bit, evento.destacado ? 1 : 0);
+                request.input('orden_visual', sql.Int, index + 1);
+                request.input('agenda_json', sql.NVarChar(sql.MAX), JSON.stringify(evento.agenda || []));
+                request.input('paquete_json', sql.NVarChar(sql.MAX), evento.paqueteOficial ? JSON.stringify(evento.paqueteOficial) : null);
+                request.input('costos_json', sql.NVarChar(sql.MAX), JSON.stringify(evento.costos_adicionales || []));
+                request.input('contactos_json', sql.NVarChar(sql.MAX), JSON.stringify(evento.contactos || []));
+                request.input('recomendaciones_json', sql.NVarChar(sql.MAX), JSON.stringify(evento.recomendaciones || []));
 
-            await request.query(`
+                await request.query(`
                 INSERT INTO EventosLama (
                     id_evento, nombre, fecha_inicio, fecha_fin, ubicacion, hotel, descripcion,
                     capacidad, registrados, precio, moneda, imagen, destacado, orden_visual,
@@ -500,10 +516,14 @@ const asegurarTablaEventos = async () => {
                     @agenda_json, @paquete_json, @costos_json, @contactos_json, @recomendaciones_json, 1
                 )
             `);
+            }
         }
-    }
 
-    tablaEventosAsegurada = true;
+        tablaEventosAsegurada = true;
+    } catch (error) {
+        usarModoMemoria = true;
+        console.warn('EventService en modo memoria por falla de SQL:', error.message);
+    }
 };
 
 /**
@@ -512,6 +532,18 @@ const asegurarTablaEventos = async () => {
  */
 exports.getAllEvents = async () => {
     await asegurarTablaEventos();
+
+    if (usarModoMemoria) {
+        return eventsDB
+            .map((evento, idx) => mapearEventoMemoria({ ...evento, ordenVisual: idx + 1 }))
+            .sort((a, b) => {
+                const destacadoA = a.destacado ? 0 : 1;
+                const destacadoB = b.destacado ? 0 : 1;
+                if (destacadoA !== destacadoB) return destacadoA - destacadoB;
+                if (a.ordenVisual !== b.ordenVisual) return a.ordenVisual - b.ordenVisual;
+                return String(a.fecha).localeCompare(String(b.fecha));
+            });
+    }
 
     const pool = await getPool();
     const result = await pool.request().query(`
@@ -554,6 +586,11 @@ exports.getAllEvents = async () => {
  */
 exports.getEventById = async (eventId) => {
     await asegurarTablaEventos();
+
+    if (usarModoMemoria) {
+        const evento = eventsDB.find((item) => item.id === eventId);
+        return evento ? mapearEventoMemoria(evento) : null;
+    }
 
     const pool = await getPool();
     const request = pool.request();
@@ -599,6 +636,35 @@ exports.getEventById = async (eventId) => {
  */
 exports.registerParticipant = async (eventId, participantData) => {
     await asegurarTablaEventos();
+
+    if (usarModoMemoria) {
+        const evento = eventsDB.find((item) => item.id === eventId);
+        if (!evento) {
+            return {
+                success: false,
+                message: 'Evento no encontrado'
+            };
+        }
+
+        if (evento.registrados >= evento.capacidad) {
+            return {
+                success: false,
+                message: 'Evento lleno. No hay cupos disponibles'
+            };
+        }
+
+        evento.registrados += 1;
+        console.log('Nuevo registro (modo memoria):', {
+            evento: eventId,
+            participante: participantData
+        });
+
+        return {
+            success: true,
+            message: 'Registro exitoso',
+            confirmationCode: `LAMA-${eventId.toUpperCase()}-${Date.now()}`
+        };
+    }
 
     const pool = await getPool();
     const request = pool.request();

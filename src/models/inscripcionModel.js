@@ -3,6 +3,7 @@
  * Define la estructura y operaciones de la tabla Inscripciones en Azure SQL
  */
 
+const crypto = require('crypto');
 const { getPool, sql } = require('../config/database');
 
 const TIPOS_PARTICIPANTE_PERMITIDOS = [
@@ -15,11 +16,6 @@ const TIPOS_PARTICIPANTE_PERMITIDOS = [
     'PAREJA',
     'HIJA (o)',
     'INVITADA (O)'
-];
-
-const CAPITULOS_PERMITIDOS = [
-    'Barranquilla', 'Bucaramanga', 'Cartagena', 'Cúcuta', 'Floridablanca',
-    'Medellín', 'Puerto Colombia', 'Valle Aburrá', 'Zenu', 'Otros'
 ];
 
 /**
@@ -167,30 +163,14 @@ class InscripcionModel {
         return 'INVITADA (O)';
     }
 
+    /**
+     * El capítulo ya no está restringido a los 9 capítulos de Colombia: se valida
+     * contra el diccionario global País -> Capítulo en la capa de controlador
+     * (ver src/data/paisesCapitulos.js). Aquí solo se normaliza el texto recibido.
+     */
     static normalizarCapitulo(valor) {
         const capitulo = String(valor || '').trim();
-        if (CAPITULOS_PERMITIDOS.includes(capitulo)) {
-            return { capitulo, capitulo_otro: null };
-        }
-
-        const mapa = {
-            'Barranquilla (Atlántico)': 'Barranquilla',
-            'Bucaramanga (Santander)': 'Bucaramanga',
-            'Cartagena (Bolívar)': 'Cartagena',
-            'Cúcuta (Norte de Santander)': 'Cúcuta',
-            'Floridablanca (Santander)': 'Floridablanca',
-            'Medellín (Antioquia)': 'Medellín',
-            'Puerto Colombia (Atlántico)': 'Puerto Colombia',
-            'Valle de Aburrá (Antioquia)': 'Valle Aburrá',
-            'Zenú (Sucre - Córdoba)': 'Zenu'
-        };
-
-        const normalizado = mapa[capitulo];
-        if (normalizado && CAPITULOS_PERMITIDOS.includes(normalizado)) {
-            return { capitulo: normalizado, capitulo_otro: null };
-        }
-
-        return { capitulo: 'Otros', capitulo_otro: capitulo ? capitulo.slice(0, 100) : null };
+        return { capitulo: capitulo.slice(0, 100), capitulo_otro: null };
     }
 
     static async asegurarColumnasExtendidas() {
@@ -215,9 +195,119 @@ class InscripcionModel {
 
             IF COL_LENGTH('InscripcionesCampeonato', 'total_servicios') IS NULL
                 ALTER TABLE InscripcionesCampeonato ADD total_servicios INT NULL;
+
+            IF COL_LENGTH('InscripcionesCampeonato', 'pais') IS NULL
+                ALTER TABLE InscripcionesCampeonato ADD pais VARCHAR(100) NULL;
+
+            IF COL_LENGTH('InscripcionesCampeonato', 'comprobante_nombre_archivo') IS NULL
+                ALTER TABLE InscripcionesCampeonato ADD comprobante_nombre_archivo NVARCHAR(260) NULL;
+
+            IF COL_LENGTH('InscripcionesCampeonato', 'comprobante_mime') IS NULL
+                ALTER TABLE InscripcionesCampeonato ADD comprobante_mime NVARCHAR(120) NULL;
+
+            IF COL_LENGTH('InscripcionesCampeonato', 'comprobante_tamano_bytes') IS NULL
+                ALTER TABLE InscripcionesCampeonato ADD comprobante_tamano_bytes INT NULL;
+
+            IF COL_LENGTH('InscripcionesCampeonato', 'comprobante_contenido') IS NULL
+                ALTER TABLE InscripcionesCampeonato ADD comprobante_contenido VARBINARY(MAX) NULL;
+
+            IF COL_LENGTH('InscripcionesCampeonato', 'merchandising_json') IS NULL
+                ALTER TABLE InscripcionesCampeonato ADD merchandising_json NVARCHAR(MAX) NULL;
+
+            IF COL_LENGTH('InscripcionesCampeonato', 'total_merchandising') IS NULL
+                ALTER TABLE InscripcionesCampeonato ADD total_merchandising INT NULL;
+
+            IF COL_LENGTH('InscripcionesCampeonato', 'qr_token') IS NULL
+                ALTER TABLE InscripcionesCampeonato ADD qr_token VARCHAR(64) NULL;
+
+            IF COL_LENGTH('InscripcionesCampeonato', 'checkin_realizado') IS NULL
+                ALTER TABLE InscripcionesCampeonato ADD checkin_realizado BIT NOT NULL DEFAULT 0;
+
+            IF COL_LENGTH('InscripcionesCampeonato', 'checkin_fecha') IS NULL
+                ALTER TABLE InscripcionesCampeonato ADD checkin_fecha DATETIME NULL;
         `);
 
         await this.asegurarConstraintTiposParticipante(pool);
+        await this.asegurarColumnaCapituloGlobal(pool);
+        await this.asegurarColumnaEstadoValidacionAmpliada(pool);
+        await this.asegurarIndiceQrToken(pool);
+    }
+
+    /**
+     * Índice único filtrado: garantiza unicidad del token QR sin bloquear
+     * los registros que todavía no tienen QR asignado (qr_token NULL).
+     */
+    static async asegurarIndiceQrToken(poolParam = null) {
+        const pool = poolParam || await getPool();
+
+        await pool.request().query(`
+            IF NOT EXISTS (
+                SELECT 1 FROM sys.indexes
+                WHERE name = 'UX_Inscripciones_QrToken'
+                  AND object_id = OBJECT_ID('dbo.InscripcionesCampeonato')
+            )
+            BEGIN
+                CREATE UNIQUE INDEX UX_Inscripciones_QrToken
+                    ON dbo.InscripcionesCampeonato(qr_token)
+                    WHERE qr_token IS NOT NULL;
+            END
+        `);
+    }
+
+    /**
+     * El capítulo dejó de estar restringido a los 9 capítulos de Colombia:
+     * ahora acepta cualquier capítulo del diccionario global País -> Capítulo.
+     * Se elimina el CHECK constraint heredado y se amplía la longitud de la columna.
+     */
+    static async asegurarColumnaCapituloGlobal(poolParam = null) {
+        const pool = poolParam || await getPool();
+
+        await pool.request().query(`
+            DECLARE @constraintNameCapitulo SYSNAME;
+
+            SELECT TOP 1 @constraintNameCapitulo = cc.name
+            FROM sys.check_constraints cc
+            INNER JOIN sys.columns c
+                ON c.object_id = cc.parent_object_id
+               AND c.column_id = cc.parent_column_id
+            WHERE cc.parent_object_id = OBJECT_ID('dbo.InscripcionesCampeonato')
+              AND c.name = 'capitulo';
+
+            IF @constraintNameCapitulo IS NOT NULL
+            BEGIN
+                EXEC('ALTER TABLE dbo.InscripcionesCampeonato DROP CONSTRAINT [' + @constraintNameCapitulo + ']');
+            END
+
+            IF EXISTS (
+                SELECT 1 FROM sys.columns
+                WHERE object_id = OBJECT_ID('dbo.InscripcionesCampeonato')
+                  AND name = 'capitulo'
+                  AND max_length < 100
+            )
+            BEGIN
+                ALTER TABLE dbo.InscripcionesCampeonato ALTER COLUMN capitulo VARCHAR(100) NOT NULL;
+            END
+        `);
+    }
+
+    /**
+     * Amplía estado_validacion para admitir el estado por defecto
+     * 'Pendiente_Validacion_Tesoreria' (flujo de pago manual con comprobante).
+     */
+    static async asegurarColumnaEstadoValidacionAmpliada(poolParam = null) {
+        const pool = poolParam || await getPool();
+
+        await pool.request().query(`
+            IF EXISTS (
+                SELECT 1 FROM sys.columns
+                WHERE object_id = OBJECT_ID('dbo.InscripcionesCampeonato')
+                  AND name = 'estado_validacion'
+                  AND max_length < 40
+            )
+            BEGIN
+                ALTER TABLE dbo.InscripcionesCampeonato ALTER COLUMN estado_validacion VARCHAR(40) NOT NULL;
+            END
+        `);
     }
 
     static async asegurarConstraintTiposParticipante(poolParam = null) {
@@ -294,8 +384,9 @@ class InscripcionModel {
         const cantidadAcompanantes = this.calcularCantidadAcompanantes(inscripcion);
         const valorAcompanantes = cantidadAcompanantes * 150000;
         const valorServicios = Number(inscripcion.total_servicios || 0);
+        const valorMerchandising = Number(inscripcion.total_merchandising || 0);
 
-        return valorBase + valorJersey + valorAcompanantes + valorServicios;
+        return valorBase + valorJersey + valorAcompanantes + valorServicios + valorMerchandising;
     }
 
     static normalizarInscripcionSalida(inscripcion) {
@@ -349,6 +440,46 @@ class InscripcionModel {
     }
 
     /**
+     * Construye el conteo de unidades de boutique/merchandising a preparar
+     * (kit de bienvenida): útil para el empaque físico previo al evento.
+     */
+    static construirResumenMerchandising(inscripciones) {
+        const resumen = {};
+
+        for (const inscripcion of inscripciones) {
+            if (!inscripcion.merchandising_json) continue;
+
+            let items = [];
+            try {
+                items = JSON.parse(inscripcion.merchandising_json);
+            } catch (error) {
+                continue;
+            }
+
+            if (!Array.isArray(items)) continue;
+
+            for (const item of items) {
+                const clave = String(item?.item || item?.nombre || '').trim();
+                if (!clave) continue;
+
+                const talla = item?.talla ? String(item.talla).trim() : null;
+                const llaveResumen = talla ? `${clave} (${talla})` : clave;
+                const cantidad = Number(item?.cantidad) > 0 ? Number(item.cantidad) : 1;
+                const total = Number(item?.precio_total ?? (item?.precio || 0) * cantidad);
+
+                if (!resumen[llaveResumen]) {
+                    resumen[llaveResumen] = { cantidad: 0, total: 0 };
+                }
+
+                resumen[llaveResumen].cantidad += cantidad;
+                resumen[llaveResumen].total += total;
+            }
+        }
+
+        return resumen;
+    }
+
+    /**
      * Crea una nueva inscripción en la base de datos
      * @param {Inscripcion} inscripcionData - Datos de la inscripción
      * @returns {Promise<Object>} Resultado con el ID generado
@@ -384,6 +515,14 @@ class InscripcionModel {
             request.input('servicios_principal_json', sql.NVarChar(sql.MAX), JSON.stringify(inscripcionData.servicios_principal || []));
             request.input('servicios_acompanantes_json', sql.NVarChar(sql.MAX), JSON.stringify(inscripcionData.servicios_acompanantes || []));
             request.input('total_servicios', sql.Int, Number.isFinite(inscripcionData.total_servicios) ? inscripcionData.total_servicios : null);
+            request.input('merchandising_json', sql.NVarChar(sql.MAX), JSON.stringify(inscripcionData.merchandising || []));
+            request.input('total_merchandising', sql.Int, Number.isFinite(inscripcionData.total_merchandising) ? inscripcionData.total_merchandising : 0);
+            request.input('pais', sql.VarChar(100), inscripcionData.pais || null);
+            request.input('estado_validacion', sql.VarChar(40), inscripcionData.estado_validacion || 'Pendiente_Validacion_Tesoreria');
+            request.input('comprobante_nombre_archivo', sql.NVarChar(260), inscripcionData.comprobante_nombre_archivo || null);
+            request.input('comprobante_mime', sql.NVarChar(120), inscripcionData.comprobante_mime || null);
+            request.input('comprobante_tamano_bytes', sql.Int, Number.isFinite(inscripcionData.comprobante_tamano_bytes) ? inscripcionData.comprobante_tamano_bytes : null);
+            request.input('comprobante_contenido', sql.VarBinary(sql.MAX), inscripcionData.comprobante_contenido || null);
 
             const query = `
                 INSERT INTO InscripcionesCampeonato (
@@ -392,7 +531,10 @@ class InscripcionModel {
                     cargo_directivo, fecha_llegada_isla, condicion_medica,
                     adquiere_jersey, talla_jersey, asiste_con_acompanante, nombre_acompanante,
                     evento_id, origen_registro, acompanantes_json, servicios_principal_json,
-                    servicios_acompanantes_json, total_servicios
+                    servicios_acompanantes_json, total_servicios, merchandising_json, total_merchandising,
+                    pais, estado_validacion,
+                    comprobante_nombre_archivo, comprobante_mime, comprobante_tamano_bytes,
+                    comprobante_contenido
                 )
                 OUTPUT INSERTED.id_inscripcion, INSERTED.fecha_registro
                 VALUES (
@@ -401,7 +543,10 @@ class InscripcionModel {
                     @cargo_directivo, @fecha_llegada_isla, @condicion_medica,
                     @adquiere_jersey, @talla_jersey, @asiste_con_acompanante, @nombre_acompanante,
                     @evento_id, @origen_registro, @acompanantes_json, @servicios_principal_json,
-                    @servicios_acompanantes_json, @total_servicios
+                    @servicios_acompanantes_json, @total_servicios, @merchandising_json, @total_merchandising,
+                    @pais, @estado_validacion,
+                    @comprobante_nombre_archivo, @comprobante_mime, @comprobante_tamano_bytes,
+                    @comprobante_contenido
                 )
             `;
 
@@ -513,10 +658,134 @@ class InscripcionModel {
                 pagos_confirmados: pagosConfirmados,
                 pagos_pendientes: pagosPendientes,
                 pagos_rechazados: pagosRechazados,
-                servicios_premium: this.construirResumenServiciosPremium(inscripciones)
+                servicios_premium: this.construirResumenServiciosPremium(inscripciones),
+                merchandising: this.construirResumenMerchandising(inscripciones)
             };
         } catch (error) {
             console.error('Error en InscripcionModel.getStats:', error);
+            throw error;
+        }
+    }
+
+    /**
+     * Obtiene una inscripción por su ID
+     * @param {number} id - ID de la inscripción
+     * @returns {Promise<Object|null>} Inscripción encontrada o null
+     */
+    static async getById(id) {
+        try {
+            await this.asegurarColumnasExtendidas();
+            const pool = await getPool();
+            const request = pool.request();
+            request.input('id', sql.Int, id);
+
+            const result = await request.query(`
+                SELECT * FROM InscripcionesCampeonato WHERE id_inscripcion = @id
+            `);
+
+            return result.recordset.length > 0
+                ? this.normalizarInscripcionSalida(result.recordset[0])
+                : null;
+        } catch (error) {
+            console.error('Error en InscripcionModel.getById:', error);
+            throw error;
+        }
+    }
+
+    /**
+     * Genera un token opaco de alta entropía para el QR de check-in
+     * @returns {string}
+     */
+    static generarTokenQr() {
+        return crypto.randomBytes(24).toString('hex');
+    }
+
+    /**
+     * Asegura que una inscripción tenga un token QR asignado (idempotente).
+     * Se invoca al aprobar el pago de una inscripción.
+     * @param {number} id - ID de la inscripción
+     * @returns {Promise<string|null>} Token QR (existente o recién generado)
+     */
+    static async asignarQrToken(id) {
+        await this.asegurarColumnasExtendidas();
+        const pool = await getPool();
+
+        const actual = await pool.request()
+            .input('id', sql.Int, id)
+            .query('SELECT qr_token FROM InscripcionesCampeonato WHERE id_inscripcion = @id');
+
+        if (actual.recordset.length === 0) {
+            return null;
+        }
+
+        if (actual.recordset[0].qr_token) {
+            return actual.recordset[0].qr_token;
+        }
+
+        for (let intento = 0; intento < 5; intento += 1) {
+            const token = this.generarTokenQr();
+            try {
+                await pool.request()
+                    .input('id', sql.Int, id)
+                    .input('token', sql.VarChar(64), token)
+                    .query('UPDATE InscripcionesCampeonato SET qr_token = @token WHERE id_inscripcion = @id');
+                return token;
+            } catch (error) {
+                if (intento === 4) throw error;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Busca una inscripción por su token QR (punto de control MTO)
+     * @param {string} token
+     * @returns {Promise<Object|null>}
+     */
+    static async obtenerPorQrToken(token) {
+        try {
+            const pool = await getPool();
+            const request = pool.request();
+            request.input('token', sql.VarChar(64), token);
+
+            const result = await request.query(`
+                SELECT * FROM InscripcionesCampeonato WHERE qr_token = @token
+            `);
+
+            return result.recordset.length > 0
+                ? this.normalizarInscripcionSalida(result.recordset[0])
+                : null;
+        } catch (error) {
+            console.error('Error en InscripcionModel.obtenerPorQrToken:', error);
+            throw error;
+        }
+    }
+
+    /**
+     * Marca el check-in de un participante en el punto de control (idempotente:
+     * solo aplica si el pago está Aprobado y aún no se había marcado check-in).
+     * @param {string} token
+     * @returns {Promise<Object|null>} Datos del check-in confirmado o null si no aplicó
+     */
+    static async confirmarCheckin(token) {
+        try {
+            const pool = await getPool();
+            const request = pool.request();
+            request.input('token', sql.VarChar(64), token);
+
+            const result = await request.query(`
+                UPDATE InscripcionesCampeonato
+                SET checkin_realizado = 1, checkin_fecha = GETDATE()
+                OUTPUT INSERTED.id_inscripcion, INSERTED.nombre_completo, INSERTED.checkin_fecha
+                WHERE qr_token = @token
+                  AND estado_validacion = 'Aprobado'
+                  AND checkin_realizado = 0
+            `);
+
+            return result.recordset.length > 0 ? result.recordset[0] : null;
+        } catch (error) {
+            console.error('Error en InscripcionModel.confirmarCheckin:', error);
             throw error;
         }
     }

@@ -1,6 +1,7 @@
 # Draw.io en VS Code: uso de stencils oficiales (Azure + GitHub)
 
 Este proyecto ya incluye diagramas listos en:
+
 - `docs/arquitectura-solucion-iconos.drawio`
 - `docs/flujo-despliegue-operativo-iconos.drawio`
 - `docs/runbook-incidentes-operativos-iconos.drawio`

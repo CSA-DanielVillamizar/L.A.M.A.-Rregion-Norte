@@ -12,12 +12,12 @@ const formularioService = require('./formularioService');
 exports.getHomeData = () => {
     return {
         hero: {
-            title: 'HARDCORE',
-            subtitle: 'Tropical',
-            tagline: 'DEL ASFALTO AL ARRECIFE',
-            description: 'Una fusión agresiva donde la rudeza del cuero se encuentra con el lujo del Caribe.',
+            title: 'V CAMPEONATO REGION NORTE',
+            subtitle: 'Costa Caribe Continental',
+            tagline: 'EJE COVEÑAS - SAN ANTERO',
+            description: 'Rodada oficial de hermandad con turismo de carretera, agenda costera y logistica optimizada para los socios.',
             eventDate: 'SEPT 12-13, 2026',
-            location: 'SAN ANDRÉS ISLAS'
+            location: 'COSTA CARIBE CONTINENTAL (COVEÑAS - SAN ANTERO)'
         },
         features: [
             {

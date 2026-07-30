@@ -21,6 +21,7 @@ router.get('/dashboard', basicAuth, AdminController.showDashboard);
 router.get('/inscripciones', apiKeyAuth, AdminController.getAllInscripciones);
 router.get('/estadisticas', apiKeyAuth, AdminController.getEstadisticas);
 router.put('/inscripciones/:id/estado', apiKeyAuth, AdminController.actualizarEstado);
+router.get('/inscripciones/:id/qr', apiKeyAuth, AdminController.obtenerQrInscripcion);
 router.delete('/inscripciones/:id', apiKeyAuth, AdminController.eliminarInscripcion);
 
 /**

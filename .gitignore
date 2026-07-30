@@ -52,6 +52,11 @@ tmp-*.pdf
 tmp-*.bin
 tmp-*.txt
 
+# Any other local scratch/debug artifact (tokens, exported settings, etc.)
+tmp-*
+tmp_*
+.publishsrc2/
+
 # Local runtime/storage artifacts
 storage/
 stitch/

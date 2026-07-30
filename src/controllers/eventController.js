@@ -5,18 +5,43 @@
 
 const eventService = require('../services/eventService');
 const { InscripcionModel } = require('../models/inscripcionModel');
+const multer = require('multer');
+const { esParPaisCapituloValido } = require('../data/paisesCapitulos');
 
-const MAPA_CAPITULOS = {
-    'Barranquilla (Atlántico)': 'Barranquilla',
-    'Bucaramanga (Santander)': 'Bucaramanga',
-    'Cartagena (Bolívar)': 'Cartagena',
-    'Cúcuta (Norte de Santander)': 'Cúcuta',
-    'Floridablanca (Santander)': 'Floridablanca',
-    'Medellín (Antioquia)': 'Medellín',
-    'Puerto Colombia (Atlántico)': 'Puerto Colombia',
-    'Valle de Aburrá (Antioquia)': 'Valle Aburrá',
-    'Zenú (Sucre - Córdoba)': 'Zenu'
-};
+const COMPROBANTE_MIME_PERMITIDOS = ['application/pdf', 'image/jpeg', 'image/png'];
+
+const comprobanteUpload = multer({
+    storage: multer.memoryStorage(),
+    limits: { fileSize: 5 * 1024 * 1024 },
+    fileFilter: (req, file, cb) => {
+        if (COMPROBANTE_MIME_PERMITIDOS.includes(file.mimetype)) {
+            return cb(null, true);
+        }
+        cb(new Error('Formato de comprobante no permitido. Usa PDF, JPG o PNG.'));
+    }
+});
+
+// Middleware de subida del comprobante de pago (almacenado en memoria y persistido en Azure SQL)
+exports.uploadComprobanteMiddleware = comprobanteUpload.single('comprobante');
+
+/**
+ * Parsea de forma segura un campo JSON recibido como texto (multipart/form-data
+ * serializa todos los campos como string, incluyendo arreglos/objetos).
+ */
+function parsearArregloJsonSeguro(valor) {
+    if (Array.isArray(valor)) return valor;
+    if (!valor) return [];
+    try {
+        const parsed = JSON.parse(valor);
+        return Array.isArray(parsed) ? parsed : [];
+    } catch (error) {
+        return [];
+    }
+}
+
+function parsearBooleanoFormData(valor) {
+    return String(valor).trim().toLowerCase() === 'true';
+}
 
 const TIPOS_PARTICIPANTE_VALIDOS = [
     'DAMA L.A.M.A.',
@@ -29,11 +54,6 @@ const TIPOS_PARTICIPANTE_VALIDOS = [
     'HIJA (o)',
     'INVITADA (O)'
 ];
-
-function normalizarCapitulo(capitulo) {
-    if (!capitulo) return 'Otros';
-    return MAPA_CAPITULOS[capitulo] || capitulo;
-}
 
 function normalizarTipoParticipante(categoria) {
     const categoriaNormalizada = String(categoria || '').trim();
@@ -124,8 +144,7 @@ exports.registerToEvent = async (req, res) => {
             nombre,
             documento,
             eps,
-            emergencia_nombre,
-            emergencia_telefono,
+            pais,
             capitulo,
             directivo,
             ambito,
@@ -135,16 +154,31 @@ exports.registerToEvent = async (req, res) => {
             jersey,
             talla,
             acompanante,
-            acompanantes,
-            servicios_principal,
-            servicios_acompanantes,
-            total_servicios
+            emergencia_nombre,
+            emergencia_telefono
         } = req.body;
 
         if (!nombre || !documento) {
             return res.status(400).json({
                 success: false,
                 message: 'Faltan campos obligatorios (nombre y documento)'
+            });
+        }
+
+        const paisNormalizado = String(pais || '').trim();
+        const capituloNormalizado = String(capitulo || '').trim();
+
+        if (!esParPaisCapituloValido(paisNormalizado, capituloNormalizado)) {
+            return res.status(400).json({
+                success: false,
+                message: 'El país y/o capítulo L.A.M.A. seleccionado no es válido'
+            });
+        }
+
+        if (!req.file) {
+            return res.status(400).json({
+                success: false,
+                message: 'El comprobante de pago es obligatorio'
             });
         }
 
@@ -156,8 +190,12 @@ exports.registerToEvent = async (req, res) => {
             });
         }
 
-        const capituloNormalizado = normalizarCapitulo(capitulo);
-        const capituloValido = ['Barranquilla', 'Bucaramanga', 'Cartagena', 'Cúcuta', 'Floridablanca', 'Medellín', 'Puerto Colombia', 'Valle Aburrá', 'Zenu'].includes(capituloNormalizado);
+        const acompanantes = parsearArregloJsonSeguro(req.body.acompanantes);
+        const serviciosPrincipal = parsearArregloJsonSeguro(req.body.servicios_principal);
+        const serviciosAcompanantes = parsearArregloJsonSeguro(req.body.servicios_acompanantes);
+        const totalServicios = Number(req.body.total_servicios || 0);
+        const merchandising = parsearArregloJsonSeguro(req.body.merchandising);
+        const totalMerchandising = Number(req.body.total_merchandising || 0);
 
         const inscripcionPayload = {
             tipo_participante: normalizarTipoParticipante(req.body.categoria),
@@ -166,25 +204,30 @@ exports.registerToEvent = async (req, res) => {
             eps: eps || 'No especificada',
             emergencia_nombre: emergencia_nombre || 'No especificado',
             emergencia_telefono: emergencia_telefono || 'No especificado',
-            capitulo: capituloValido ? capituloNormalizado : 'Otros',
-            capitulo_otro: capituloValido ? null : String(capitulo || '').slice(0, 100),
+            pais: paisNormalizado,
+            capitulo: capituloNormalizado,
             cargo_directivo: String(directivo || '').toLowerCase() === 'sí' || String(directivo || '').toLowerCase() === 'si'
                 ? [cargo, ambito].filter(Boolean).join(' - ').slice(0, 150) || 'Directivo'
                 : null,
             fecha_llegada_isla: fecha_llegada || new Date().toISOString().split('T')[0],
             condicion_medica: condicion_medica || null,
-            adquiere_jersey: Boolean(jersey),
+            adquiere_jersey: parsearBooleanoFormData(jersey),
             talla_jersey: talla || null,
-            asiste_con_acompanante: Boolean(acompanante),
-            nombre_acompanante: Array.isArray(acompanantes) && acompanantes.length > 0
-                ? (acompanantes[0].nombre || 'Acompañante')
-                : null,
+            asiste_con_acompanante: parsearBooleanoFormData(acompanante),
+            nombre_acompanante: acompanantes.length > 0 ? (acompanantes[0].nombre || 'Acompañante') : null,
             evento_id: eventId,
             origen_registro: 'registro-campeonato',
-            acompanantes: Array.isArray(acompanantes) ? acompanantes : [],
-            servicios_principal: Array.isArray(servicios_principal) ? servicios_principal : [],
-            servicios_acompanantes: Array.isArray(servicios_acompanantes) ? servicios_acompanantes : [],
-            total_servicios: Number.isFinite(total_servicios) ? total_servicios : Number(total_servicios || 0)
+            acompanantes,
+            servicios_principal: serviciosPrincipal,
+            servicios_acompanantes: serviciosAcompanantes,
+            total_servicios: Number.isFinite(totalServicios) ? totalServicios : 0,
+            merchandising,
+            total_merchandising: Number.isFinite(totalMerchandising) ? totalMerchandising : 0,
+            estado_validacion: 'Pendiente_Validacion_Tesoreria',
+            comprobante_nombre_archivo: req.file.originalname,
+            comprobante_mime: req.file.mimetype,
+            comprobante_tamano_bytes: req.file.size,
+            comprobante_contenido: req.file.buffer
         };
 
         const result = await InscripcionModel.create(inscripcionPayload);

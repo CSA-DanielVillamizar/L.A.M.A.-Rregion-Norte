@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        <%= title %>
+    </title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@400;700;800&display=swap"
+        rel="stylesheet">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        lamaBlack: '#0A0A0A',
+                        lamaDark: '#1A1A1A',
+                        lamaGold: '#D4AF37',
+                        lamaNeon: '#00F5FF',
+                        lamaBone: '#F5F5DC'
+                    },
+                    fontFamily: {
+                        headings: ['"Bebas Neue"', 'sans-serif'],
+                        body: ['"Montserrat"', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+
+    <style>
+        body {
+            background-color: #0A0A0A;
+            color: #F5F5DC;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        #reader {
+            border: 2px solid #D4AF37;
+            border-radius: 0.5rem;
+            overflow: hidden;
+        }
+
+        #reader video {
+            border-radius: 0.5rem;
+        }
+
+        .estado-verde {
+            border-color: #22c55e;
+            background: rgba(34, 197, 94, 0.12);
+        }
+
+        .estado-amarillo {
+            border-color: #eab308;
+            background: rgba(234, 179, 8, 0.12);
+        }
+
+        .estado-rojo {
+            border-color: #ef4444;
+            background: rgba(239, 68, 68, 0.12);
+        }
+    </style>
+</head>
+
+<body class="min-h-screen antialiased">
+    <div class="max-w-xl mx-auto px-4 py-8">
+        <header class="text-center mb-6">
+            <h1 class="text-3xl font-headings tracking-widest text-lamaGold">CHECK-IN MTO</h1>
+            <p class="text-sm text-gray-400">V Campeonato L.A.M.A. Región Norte · Punto de Control</p>
+        </header>
+
+        <div id="reader" class="mb-6"></div>
+
+        <div id="panelResultado" class="hidden border-2 rounded-lg p-5 mb-6 transition-colors">
+            <p id="resultadoMensaje" class="text-lg font-bold mb-3"></p>
+            <div id="resultadoParticipante" class="text-sm space-y-1 mb-4"></div>
+            <div class="flex gap-3">
+                <button id="btnConfirmar"
+                    class="hidden flex-1 bg-green-600 hover:bg-green-700 text-white font-bold py-2 rounded">
+                    ✔ Confirmar Check-in
+                </button>
+                <button id="btnEscanearOtro"
+                    class="flex-1 bg-lamaGold hover:bg-lamaNeon text-lamaBlack font-bold py-2 rounded">
+                    Escanear siguiente
+                </button>
+            </div>
+        </div>
+
+        <p class="text-xs text-gray-500 text-center">
+            Apunta la cámara al código QR del piloto. No requiere instalar ninguna aplicación.
+        </p>
+    </div>
+
+    <script>
+        const API_KEY = '<%= apiKey || "" %>';
+
+        const panelResultado = document.getElementById('panelResultado');
+        const resultadoMensaje = document.getElementById('resultadoMensaje');
+        const resultadoParticipante = document.getElementById('resultadoParticipante');
+        const btnConfirmar = document.getElementById('btnConfirmar');
+        const btnEscanearOtro = document.getElementById('btnEscanearOtro');
+
+        let tokenActual = null;
+
+        function extraerToken(textoDecodificado) {
+            try {
+                const url = new URL(textoDecodificado);
+                const partes = url.pathname.split('/').filter(Boolean);
+                return partes[partes.length - 1];
+            } catch (error) {
+                // El QR no era una URL completa: se asume que es el token crudo
+                return textoDecodificado.trim();
+            }
+        }
+
+        function pintarEstado(estado) {
+            panelResultado.classList.remove('estado-verde', 'estado-amarillo', 'estado-rojo');
+            panelResultado.classList.add(`estado-${estado}`);
+        }
+
+        async function consultarToken(token) {
+            tokenActual = token;
+            try {
+                const response = await fetch(`/checkin/validar/${token}`, {
+                    headers: { 'x-api-key': API_KEY }
+                });
+                const data = await response.json();
+
+                panelResultado.classList.remove('hidden');
+                pintarEstado(data.estado || 'rojo');
+                resultadoMensaje.textContent = data.mensaje || 'No fue posible interpretar el resultado';
+
+                if (data.participante) {
+                    resultadoParticipante.innerHTML = `
+                        <p><strong class="text-lamaGold">Nombre:</strong> ${data.participante.nombre_completo}</p>
+                        <p><strong class="text-lamaGold">Documento:</strong> ${data.participante.documento_numero}</p>
+                        <p><strong class="text-lamaGold">Tipo:</strong> ${data.participante.tipo_participante}</p>
+                        <p><strong class="text-lamaGold">Capítulo:</strong> ${data.participante.capitulo}</p>
+                    `;
+                } else {
+                    resultadoParticipante.innerHTML = '';
+                }
+
+                btnConfirmar.classList.toggle('hidden', !data.puedeConfirmar);
+            } catch (error) {
+                panelResultado.classList.remove('hidden');
+                pintarEstado('rojo');
+                resultadoMensaje.textContent = 'Error de conexión al validar el QR';
+                resultadoParticipante.innerHTML = '';
+                btnConfirmar.classList.add('hidden');
+                console.error(error);
+            }
+        }
+
+        btnConfirmar.addEventListener('click', async () => {
+            if (!tokenActual) return;
+            try {
+                const response = await fetch(`/checkin/validar/${tokenActual}/confirmar`, {
+                    method: 'POST',
+                    headers: { 'x-api-key': API_KEY }
+                });
+                const data = await response.json();
+
+                if (data.success) {
+                    pintarEstado('amarillo');
+                    resultadoMensaje.textContent = 'Check-in confirmado correctamente.';
+                    btnConfirmar.classList.add('hidden');
+                } else {
+                    resultadoMensaje.textContent = data.message || 'No se pudo confirmar el check-in';
+                }
+            } catch (error) {
+                resultadoMensaje.textContent = 'Error de conexión al confirmar el check-in';
+                console.error(error);
+            }
+        });
+
+        const html5QrcodeScanner = new Html5QrcodeScanner(
+            'reader',
+            { fps: 10, qrbox: 260, rememberLastUsedCamera: true },
+            false
+        );
+
+        function onScanSuccess(decodedText) {
+            html5QrcodeScanner.pause(true);
+            consultarToken(extraerToken(decodedText));
+        }
+
+        function onScanFailure() {
+            // Se ignoran los frames sin QR detectado (esperado en cada frame sin código)
+        }
+
+        html5QrcodeScanner.render(onScanSuccess, onScanFailure);
+
+        btnEscanearOtro.addEventListener('click', () => {
+            panelResultado.classList.add('hidden');
+            tokenActual = null;
+            html5QrcodeScanner.resume();
+        });
+    </script>
+</body>
+
+</html>

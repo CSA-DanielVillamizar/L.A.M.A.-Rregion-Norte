@@ -8,6 +8,7 @@ const capitulosService = require('../services/capitulosService');
 const eventService = require('../services/eventService');
 const serviciosPremiumService = require('../services/serviciosPremiumService');
 const RegistroCampeonatoSyncService = require('../services/registroCampeonatoSyncService');
+const QrService = require('../services/qrService');
 const multer = require('multer');
 const path = require('path');
 
@@ -90,12 +91,19 @@ class AdminController {
                 });
             }
 
+            // Al aprobar el pago se emite (o se reutiliza) el QR de check-in
+            let qrToken = null;
+            if (estado_validacion === 'Aprobado') {
+                qrToken = await InscripcionModel.asignarQrToken(id);
+            }
+
             res.json({
                 success: true,
                 message: `Estado actualizado a: ${estado_validacion}`,
                 data: {
                     id: parseInt(id),
-                    estado_validacion
+                    estado_validacion,
+                    qr_token: qrToken
                 }
             });
         } catch (error) {
@@ -104,6 +112,54 @@ class AdminController {
                 success: false,
                 message: 'Error al actualizar el estado',
                 error: error.message
+            });
+        }
+    }
+
+    /**
+     * Genera (o recupera) el QR de check-in de una inscripción aprobada
+     * GET /admin/inscripciones/:id/qr
+     */
+    static async obtenerQrInscripcion(req, res) {
+        try {
+            const { id } = req.params;
+            const inscripcion = await InscripcionModel.getById(id);
+
+            if (!inscripcion) {
+                return res.status(404).json({
+                    success: false,
+                    message: 'Inscripción no encontrada'
+                });
+            }
+
+            if (inscripcion.estado_validacion !== 'Aprobado') {
+                return res.status(400).json({
+                    success: false,
+                    message: 'Solo se emite QR para inscripciones con pago Aprobado'
+                });
+            }
+
+            const token = await InscripcionModel.asignarQrToken(id);
+            const urlValidacion = QrService.construirUrlValidacion(req, token);
+            const qrDataUrl = await QrService.generarImagenQrDataUrl(urlValidacion);
+
+            res.json({
+                success: true,
+                data: {
+                    id_inscripcion: Number(id),
+                    nombre_completo: inscripcion.nombre_completo,
+                    token,
+                    url_validacion: urlValidacion,
+                    qr_data_url: qrDataUrl,
+                    checkin_realizado: Boolean(inscripcion.checkin_realizado),
+                    checkin_fecha: inscripcion.checkin_fecha || null
+                }
+            });
+        } catch (error) {
+            console.error('Error en AdminController.obtenerQrInscripcion:', error);
+            res.status(500).json({
+                success: false,
+                message: 'Error al generar el QR de check-in'
             });
         }
     }

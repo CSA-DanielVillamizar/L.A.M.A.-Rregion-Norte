@@ -50,6 +50,40 @@ IF COL_LENGTH('dbo.InscripcionesCampeonato', 'total_servicios') IS NULL
     ALTER TABLE dbo.InscripcionesCampeonato ADD total_servicios INT NULL;
 GO
 
+-- Boutique / Merchandising (kit oficial: gorra, camiseta, buff, parches)
+IF COL_LENGTH('dbo.InscripcionesCampeonato', 'merchandising_json') IS NULL
+    ALTER TABLE dbo.InscripcionesCampeonato ADD merchandising_json NVARCHAR(MAX) NULL;
+GO
+
+IF COL_LENGTH('dbo.InscripcionesCampeonato', 'total_merchandising') IS NULL
+    ALTER TABLE dbo.InscripcionesCampeonato ADD total_merchandising INT NULL;
+GO
+
+-- Check-in por QR (punto de control MTO)
+IF COL_LENGTH('dbo.InscripcionesCampeonato', 'qr_token') IS NULL
+    ALTER TABLE dbo.InscripcionesCampeonato ADD qr_token VARCHAR(64) NULL;
+GO
+
+IF COL_LENGTH('dbo.InscripcionesCampeonato', 'checkin_realizado') IS NULL
+    ALTER TABLE dbo.InscripcionesCampeonato ADD checkin_realizado BIT NOT NULL DEFAULT 0;
+GO
+
+IF COL_LENGTH('dbo.InscripcionesCampeonato', 'checkin_fecha') IS NULL
+    ALTER TABLE dbo.InscripcionesCampeonato ADD checkin_fecha DATETIME NULL;
+GO
+
+IF NOT EXISTS (
+    SELECT 1 FROM sys.indexes
+    WHERE name = 'UX_Inscripciones_QrToken'
+      AND object_id = OBJECT_ID('dbo.InscripcionesCampeonato')
+)
+BEGIN
+    CREATE UNIQUE INDEX UX_Inscripciones_QrToken
+        ON dbo.InscripcionesCampeonato(qr_token)
+        WHERE qr_token IS NOT NULL;
+END;
+GO
+
 IF NOT EXISTS (
     SELECT 1
     FROM sys.indexes
