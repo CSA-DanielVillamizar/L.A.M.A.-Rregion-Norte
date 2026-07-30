@@ -114,14 +114,50 @@
                 </div>
                 <% } %>
 
-                    <% if (event.hotel) { %>
+                    <% if (event.hospedajeOficial) { %>
                         <div class="bg-lamaDark rounded-lg p-4 md:p-8 border border-gray-800 shadow-xl mb-8">
-                            <h2 class="text-2xl font-headings text-lamaGold mb-4">HOTEL SEDE</h2>
-                            <p class="text-lamaBone text-lg font-bold">
-                                <%= event.hotel %>
+                            <h2 class="text-2xl font-headings text-lamaGold mb-2">HOTEL SEDE</h2>
+                            <p class="text-lamaBone text-lg font-bold mb-1">
+                                <%= event.hospedajeOficial.nombre %>
                             </p>
+                            <p class="text-gray-400 text-sm mb-4">
+                                <%= event.hospedajeOficial.ubicacion %>
+                                <% if (event.hospedajeOficial.mapsUrl) { %>
+                                    · <a href="<%= event.hospedajeOficial.mapsUrl %>" target="_blank" rel="noopener"
+                                        class="text-lamaNeon hover:text-lamaGold underline">Ver en Google Maps</a>
+                                    <% } %>
+                            </p>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                                <% event.hospedajeOficial.tarifas.forEach(function(tarifa) { %>
+                                    <div class="bg-lamaBlack p-5 rounded border border-gray-700">
+                                        <p class="text-lamaNeon font-bold uppercase tracking-wide text-sm mb-1">
+                                            <%= tarifa.nombre %>
+                                        </p>
+                                        <p class="text-2xl font-bold text-lamaGold mb-1">
+                                            $<%= tarifa.valor.toLocaleString('es-CO') %>
+                                        </p>
+                                        <p class="text-xs text-gray-400 mb-3"><%= tarifa.unidad %></p>
+                                        <ul class="space-y-1">
+                                            <% tarifa.incluye.forEach(function(item) { %>
+                                                <li class="text-lamaBone text-xs">✓ <%= item %></li>
+                                                <% }); %>
+                                        </ul>
+                                    </div>
+                                    <% }); %>
+                            </div>
+                            <% if (event.hospedajeOficial.nota) { %>
+                                <p class="text-gray-500 text-xs mt-4"><%= event.hospedajeOficial.nota %></p>
+                                <% } %>
                         </div>
-                        <% } %>
+                        <% } else if (event.hotel) { %>
+                            <div class="bg-lamaDark rounded-lg p-4 md:p-8 border border-gray-800 shadow-xl mb-8">
+                                <h2 class="text-2xl font-headings text-lamaGold mb-4">HOTEL SEDE</h2>
+                                <p class="text-lamaBone text-lg font-bold">
+                                    <%= event.hotel %>
+                                </p>
+                            </div>
+                            <% } %>
 
                             <% if (event.paqueteOficial) { %>
                                 <div

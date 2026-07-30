@@ -13,8 +13,40 @@ const eventsDB = [
         fecha: '2026-09-12',
         fechaFin: '2026-09-13',
         ubicacion: 'Costa Caribe Continental (Coveñas - San Antero), Colombia',
-        hotel: 'Zona hotelera Coveñas - San Antero',
+        hotel: 'Hotel Playa Coveñas (Segunda Ensenada de Coveñas, frente a la playa)',
         descripcion: 'Evento cumbre de la Región Norte en el Golfo de Morrosquillo: mototurismo de carretera, agenda costera, integración regional y premiación oficial.',
+        hospedajeOficial: {
+            nombre: 'Hotel Playa Coveñas',
+            ubicacion: 'Segunda Ensenada de Coveñas, frente a la playa, a 300 m del nuevo Malecón',
+            mapsUrl: 'https://maps.google.com/maps/search/Hotel%20Playa%20Cove%C3%B1as/@9.42020034790039,-75.64330291748047,17z?hl=es',
+            tarifas: [
+                {
+                    nombre: 'Tarifa Doble',
+                    valor: 280000,
+                    unidad: 'por pareja/noche',
+                    incluye: [
+                        'Habitación con cama doble y baño privado',
+                        'Desayuno y almuerzo por noche de estadía',
+                        'Piscina (9:30 AM a 7:00 PM)',
+                        'Quioscos frente al mar (según disponibilidad)',
+                        'Parqueadero interno gratuito'
+                    ]
+                },
+                {
+                    nombre: 'Tarifa Familiar',
+                    valor: 130000,
+                    unidad: 'por persona/noche',
+                    incluye: [
+                        'Habitación con cama doble, camarotes y baño privado',
+                        'Desayuno y almuerzo por noche de estadía',
+                        'Piscina (9:30 AM a 7:00 PM)',
+                        'Quioscos frente al mar (según disponibilidad)',
+                        'Parqueadero interno gratuito'
+                    ]
+                }
+            ],
+            nota: 'Tienda y coctelería disponibles con cargo adicional a la habitación.'
+        },
         capacidad: 150,
         registrados: 0,
         precio: 150000,
@@ -418,6 +450,7 @@ const mapearFilaEvento = (fila) => ({
     costos_adicionales: parsearJSONSeguro(fila.costosJson, []),
     contactos: parsearJSONSeguro(fila.contactosJson, []),
     recomendaciones: parsearJSONSeguro(fila.recomendacionesJson, []),
+    hospedajeOficial: parsearJSONSeguro(fila.hospedajeJson, null),
     disponibilidad: fila.capacidad - fila.registrados,
     porcentajeOcupacion: fila.capacidad > 0 ? Math.round((fila.registrados / fila.capacidad) * 100) : 0,
     lleno: fila.registrados >= fila.capacidad
@@ -432,6 +465,7 @@ const mapearEventoMemoria = (evento) => ({
     costos_adicionales: Array.isArray(evento.costos_adicionales) ? evento.costos_adicionales : [],
     contactos: Array.isArray(evento.contactos) ? evento.contactos : [],
     recomendaciones: Array.isArray(evento.recomendaciones) ? evento.recomendaciones : [],
+    hospedajeOficial: evento.hospedajeOficial || null,
     disponibilidad: evento.capacidad - evento.registrados,
     porcentajeOcupacion: evento.capacidad > 0 ? Math.round((evento.registrados / evento.capacidad) * 100) : 0,
     lleno: evento.registrados >= evento.capacidad
@@ -467,11 +501,15 @@ const asegurarTablaEventos = async () => {
                 costos_json NVARCHAR(MAX) NULL,
                 contactos_json NVARCHAR(MAX) NULL,
                 recomendaciones_json NVARCHAR(MAX) NULL,
+                hospedaje_json NVARCHAR(MAX) NULL,
                 activo BIT NOT NULL DEFAULT 1,
                 fecha_creacion DATETIME2 NOT NULL DEFAULT GETDATE(),
                 fecha_actualizacion DATETIME2 NOT NULL DEFAULT GETDATE()
             );
         END
+
+        IF COL_LENGTH('EventosLama', 'hospedaje_json') IS NULL
+            ALTER TABLE EventosLama ADD hospedaje_json NVARCHAR(MAX) NULL;
     `);
 
         const totalActivos = await pool.request().query(`
@@ -503,26 +541,72 @@ const asegurarTablaEventos = async () => {
                 request.input('costos_json', sql.NVarChar(sql.MAX), JSON.stringify(evento.costos_adicionales || []));
                 request.input('contactos_json', sql.NVarChar(sql.MAX), JSON.stringify(evento.contactos || []));
                 request.input('recomendaciones_json', sql.NVarChar(sql.MAX), JSON.stringify(evento.recomendaciones || []));
+                request.input('hospedaje_json', sql.NVarChar(sql.MAX), evento.hospedajeOficial ? JSON.stringify(evento.hospedajeOficial) : null);
 
                 await request.query(`
                 INSERT INTO EventosLama (
                     id_evento, nombre, fecha_inicio, fecha_fin, ubicacion, hotel, descripcion,
                     capacidad, registrados, precio, moneda, imagen, destacado, orden_visual,
-                    agenda_json, paquete_json, costos_json, contactos_json, recomendaciones_json, activo
+                    agenda_json, paquete_json, costos_json, contactos_json, recomendaciones_json,
+                    hospedaje_json, activo
                 )
                 VALUES (
                     @id_evento, @nombre, @fecha_inicio, @fecha_fin, @ubicacion, @hotel, @descripcion,
                     @capacidad, @registrados, @precio, @moneda, @imagen, @destacado, @orden_visual,
-                    @agenda_json, @paquete_json, @costos_json, @contactos_json, @recomendaciones_json, 1
+                    @agenda_json, @paquete_json, @costos_json, @contactos_json, @recomendaciones_json,
+                    @hospedaje_json, 1
                 )
             `);
             }
         }
 
+        await sincronizarContenidoEventosSeed(pool);
+
         tablaEventosAsegurada = true;
     } catch (error) {
         usarModoMemoria = true;
         console.warn('EventService en modo memoria por falla de SQL:', error.message);
+    }
+};
+
+/**
+ * Los eventos "semilla" (eventsDB) solo se insertan cuando la tabla está
+ * vacía. Si el contenido de un evento cambia en el código (ej. la agenda del
+ * V Campeonato) despues de que la tabla ya fue sembrada, ese cambio nunca
+ * llegaba a producción. Esta función re-sincroniza los campos de contenido
+ * de los eventos semilla en cada arranque, preservando `registrados`
+ * (inscripciones reales) y `capacidad` para no pisar datos operativos.
+ */
+const sincronizarContenidoEventosSeed = async (pool) => {
+    for (const evento of eventsDB) {
+        const request = pool.request();
+        request.input('id_evento', sql.VarChar(120), evento.id);
+        request.input('nombre', sql.NVarChar(200), evento.nombre);
+        request.input('ubicacion', sql.NVarChar(250), evento.ubicacion);
+        request.input('hotel', sql.NVarChar(250), evento.hotel || null);
+        request.input('descripcion', sql.NVarChar(sql.MAX), evento.descripcion || null);
+        request.input('agenda_json', sql.NVarChar(sql.MAX), JSON.stringify(evento.agenda || []));
+        request.input('paquete_json', sql.NVarChar(sql.MAX), evento.paqueteOficial ? JSON.stringify(evento.paqueteOficial) : null);
+        request.input('costos_json', sql.NVarChar(sql.MAX), JSON.stringify(evento.costos_adicionales || []));
+        request.input('contactos_json', sql.NVarChar(sql.MAX), JSON.stringify(evento.contactos || []));
+        request.input('recomendaciones_json', sql.NVarChar(sql.MAX), JSON.stringify(evento.recomendaciones || []));
+        request.input('hospedaje_json', sql.NVarChar(sql.MAX), evento.hospedajeOficial ? JSON.stringify(evento.hospedajeOficial) : null);
+
+        await request.query(`
+            UPDATE EventosLama
+            SET nombre = @nombre,
+                ubicacion = @ubicacion,
+                hotel = @hotel,
+                descripcion = @descripcion,
+                agenda_json = @agenda_json,
+                paquete_json = @paquete_json,
+                costos_json = @costos_json,
+                contactos_json = @contactos_json,
+                recomendaciones_json = @recomendaciones_json,
+                hospedaje_json = @hospedaje_json,
+                fecha_actualizacion = GETDATE()
+            WHERE id_evento = @id_evento AND activo = 1
+        `);
     }
 };
 
@@ -566,7 +650,8 @@ exports.getAllEvents = async () => {
             paquete_json AS paqueteJson,
             costos_json AS costosJson,
             contactos_json AS contactosJson,
-            recomendaciones_json AS recomendacionesJson
+            recomendaciones_json AS recomendacionesJson,
+            hospedaje_json AS hospedajeJson
         FROM EventosLama
         WHERE activo = 1
         ORDER BY
@@ -616,7 +701,8 @@ exports.getEventById = async (eventId) => {
             paquete_json AS paqueteJson,
             costos_json AS costosJson,
             contactos_json AS contactosJson,
-            recomendaciones_json AS recomendacionesJson
+            recomendaciones_json AS recomendacionesJson,
+            hospedaje_json AS hospedajeJson
         FROM EventosLama
         WHERE activo = 1 AND id_evento = @id_evento
     `);
@@ -736,12 +822,14 @@ exports.createEvent = async (data) => {
     request.input('costos_json', sql.NVarChar(sql.MAX), JSON.stringify(data.costos_adicionales || []));
     request.input('contactos_json', sql.NVarChar(sql.MAX), JSON.stringify(data.contactos || []));
     request.input('recomendaciones_json', sql.NVarChar(sql.MAX), JSON.stringify(data.recomendaciones || []));
+    request.input('hospedaje_json', sql.NVarChar(sql.MAX), data.hospedajeOficial ? JSON.stringify(data.hospedajeOficial) : null);
 
     const result = await request.query(`
         INSERT INTO EventosLama (
             id_evento, nombre, fecha_inicio, fecha_fin, ubicacion, hotel, descripcion,
             capacidad, registrados, precio, moneda, imagen, destacado, orden_visual,
-            agenda_json, paquete_json, costos_json, contactos_json, recomendaciones_json, activo
+            agenda_json, paquete_json, costos_json, contactos_json, recomendaciones_json,
+            hospedaje_json, activo
         )
         OUTPUT
             INSERTED.id_evento AS id,
@@ -762,12 +850,14 @@ exports.createEvent = async (data) => {
             INSERTED.paquete_json AS paqueteJson,
             INSERTED.costos_json AS costosJson,
             INSERTED.contactos_json AS contactosJson,
-            INSERTED.recomendaciones_json AS recomendacionesJson
+            INSERTED.recomendaciones_json AS recomendacionesJson,
+            INSERTED.hospedaje_json AS hospedajeJson
         VALUES (
             @id_evento, @nombre, @fecha_inicio, @fecha_fin, @ubicacion, @hotel, @descripcion,
             @capacidad, @registrados, @precio, @moneda, @imagen, @destacado,
             ISNULL((SELECT MAX(orden_visual) + 1 FROM EventosLama WHERE activo = 1), 1),
-            @agenda_json, @paquete_json, @costos_json, @contactos_json, @recomendaciones_json, 1
+            @agenda_json, @paquete_json, @costos_json, @contactos_json, @recomendaciones_json,
+            @hospedaje_json, 1
         )
     `);
 
@@ -808,6 +898,7 @@ exports.updateEvent = async (eventId, data) => {
     request.input('costos_json', sql.NVarChar(sql.MAX), JSON.stringify(data.costos_adicionales || actual.costos_adicionales || []));
     request.input('contactos_json', sql.NVarChar(sql.MAX), JSON.stringify(data.contactos || actual.contactos || []));
     request.input('recomendaciones_json', sql.NVarChar(sql.MAX), JSON.stringify(data.recomendaciones || actual.recomendaciones || []));
+    request.input('hospedaje_json', sql.NVarChar(sql.MAX), data.hospedajeOficial ? JSON.stringify(data.hospedajeOficial) : (actual.hospedajeOficial ? JSON.stringify(actual.hospedajeOficial) : null));
 
     const result = await request.query(`
         UPDATE EventosLama
@@ -829,6 +920,7 @@ exports.updateEvent = async (eventId, data) => {
             costos_json = @costos_json,
             contactos_json = @contactos_json,
             recomendaciones_json = @recomendaciones_json,
+            hospedaje_json = @hospedaje_json,
             fecha_actualizacion = GETDATE()
         OUTPUT
             INSERTED.id_evento AS id,
@@ -849,7 +941,8 @@ exports.updateEvent = async (eventId, data) => {
             INSERTED.paquete_json AS paqueteJson,
             INSERTED.costos_json AS costosJson,
             INSERTED.contactos_json AS contactosJson,
-            INSERTED.recomendaciones_json AS recomendacionesJson
+            INSERTED.recomendaciones_json AS recomendacionesJson,
+            INSERTED.hospedaje_json AS hospedajeJson
         WHERE id_evento = @id_evento AND activo = 1
     `);
 
