@@ -18,9 +18,9 @@ BEGIN
         talla_jersey VARCHAR(10) NULL,
         asiste_con_acompanante BIT DEFAULT 0,
         nombre_acompanante VARCHAR(200) NULL,
-        valor_base INT DEFAULT 150000,
+        valor_base INT DEFAULT 100000,
         valor_jersey INT DEFAULT 70000,
-        valor_total_pagar AS (150000 + (CASE WHEN adquiere_jersey = 1 THEN 70000 ELSE 0 END)),
+        valor_total_pagar AS (100000 + (CASE WHEN adquiere_jersey = 1 THEN 70000 ELSE 0 END)),
         estado_validacion VARCHAR(20) DEFAULT 'Pendiente'
     );
 END;

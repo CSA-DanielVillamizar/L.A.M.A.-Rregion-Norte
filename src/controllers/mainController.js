@@ -93,7 +93,7 @@ exports.postContact = async (req, res) => {
 exports.getRegistro = (req, res) => {
     res.render('registro', {
         title: 'Registro V Campeonato',
-        precioBase: 150000,
+        precioBase: 100000,
         precioJersey: 70000
     });
 };

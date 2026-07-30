@@ -1563,7 +1563,7 @@
                         <div class="space-y-3 text-lamaBone text-sm">
                             <div class="flex justify-between">
                                 <span>Inscripción</span>
-                                <span id="resInscripcion">$150.000</span>
+                                <span id="resInscripcion">$100.000</span>
                             </div>
                             <div class="flex justify-between" id="resAcompanantesRow" style="display: none;">
                                 <span id="resAcompanantesLabel">Acompañantes</span>
@@ -1583,7 +1583,7 @@
                             </div>
                             <div class="border-t border-gray-700 pt-3 flex justify-between font-bold text-lamaGold">
                                 <span>Total a transferir</span>
-                                <span id="resTotal">$150.000</span>
+                                <span id="resTotal">$100.000</span>
                             </div>
                         </div>
                     </div>
@@ -1758,7 +1758,7 @@
                                 <div class="service-item">
                                     <span class="service-name">Inscripción Base<span
                                             class="service-tag">(OBLIGATORIO)</span></span>
-                                    <span class="service-price">$150.000</span>
+                                    <span class="service-price">$100.000</span>
                                 </div>
                                 <div class="service-item" id="modal-acomp-insc-item" style="display: none;">
                                     <span class="service-name" id="modal-acomp-insc-label">Acompañantes</span>
@@ -1780,7 +1780,7 @@
 
                             <div class="total-box">
                                 <p class="total-label">Total a Pagar</p>
-                                <p class="total-amount" id="modal-total">$150.000</p>
+                                <p class="total-amount" id="modal-total">$100.000</p>
                             </div>
                         </div>
                     </div>
@@ -1885,7 +1885,7 @@
                                 <p class="pdf-item-title">Inscripción Base al Campeonato</p>
                                 <p class="pdf-item-subtitle">CATEGORÍA: <span id="pdf-categoria"></span></p>
                             </td>
-                            <td>$150.000</td>
+                            <td>$100.000</td>
                         </tr>
                         <tr id="pdf-jersey-row" style="display: none;">
                             <td>
@@ -2129,7 +2129,7 @@
             });
         }
 
-        const BASE_PRICE = 150000;
+        const BASE_PRICE = 100000;
         const JERSEY_PRICE = 70000;
         let registroActual = {};
 
@@ -2483,7 +2483,7 @@
             resInscripcion.textContent = `$${BASE_PRICE.toLocaleString('es-CO')}`;
             if (acompanantesCount > 0) {
                 resAcompanantesRow.style.display = 'flex';
-                resAcompanantesLabel.textContent = `Acompañantes (${acompanantesCount} x $150.000)`;
+                resAcompanantesLabel.textContent = `Acompañantes (${acompanantesCount} x $100.000)`;
                 resAcompanantes.textContent = `$${(BASE_PRICE * acompanantesCount).toLocaleString('es-CO')}`;
             } else {
                 resAcompanantesRow.style.display = 'none';
@@ -2630,15 +2630,15 @@
                 ? data.acompanantes.filter(item => item.jersey).length
                 : 0;
             const jerseysCount = (data.jersey ? 1 : 0) + acompanantesJerseyCount;
-            const inscripcionTotal = 150000 * (1 + acompanantesCount);
+            const inscripcionTotal = 100000 * (1 + acompanantesCount);
             const jerseyTotal = 70000 * jerseysCount;
 
             mensaje += 'Inscripción Base (OBLIGATORIO)\n';
             mensaje += `$${inscripcionTotal.toLocaleString('es-CO')}\n`;
 
             if (acompanantesCount > 0) {
-                mensaje += `Acompañantes (${acompanantesCount} x $150.000)\n`;
-                mensaje += `$${(150000 * acompanantesCount).toLocaleString('es-CO')}\n`;
+                mensaje += `Acompañantes (${acompanantesCount} x $100.000)\n`;
+                mensaje += `$${(100000 * acompanantesCount).toLocaleString('es-CO')}\n`;
             }
 
             if (jerseysCount > 0) {
@@ -2958,7 +2958,7 @@
             // Acompañantes en el modal
             if (acompanantesCount > 0) {
                 document.getElementById('modal-acomp-insc-item').style.display = 'flex';
-                document.getElementById('modal-acomp-insc-label').textContent = `Acompañantes (${acompanantesCount} x $150.000)`;
+                document.getElementById('modal-acomp-insc-label').textContent = `Acompañantes (${acompanantesCount} x $100.000)`;
                 document.getElementById('modal-acomp-insc-total').textContent = `$${(BASE_PRICE * acompanantesCount).toLocaleString('es-CO')}`;
             } else {
                 document.getElementById('modal-acomp-insc-item').style.display = 'none';
@@ -3052,7 +3052,7 @@
             // Acompañantes
             if (acompanantesCount > 0) {
                 document.getElementById('pdf-acompanante-row').style.display = 'table-row';
-                document.getElementById('pdf-acomp-count').textContent = `${acompanantesCount} x $150.000`;
+                document.getElementById('pdf-acomp-count').textContent = `${acompanantesCount} x $100.000`;
                 document.getElementById('pdf-acomp-total').textContent = `$${(BASE_PRICE * acompanantesCount).toLocaleString('es-CO')}`;
             } else {
                 document.getElementById('pdf-acompanante-row').style.display = 'none';

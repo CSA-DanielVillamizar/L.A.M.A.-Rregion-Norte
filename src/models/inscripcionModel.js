@@ -86,9 +86,9 @@ BEGIN
         nombre_acompanante VARCHAR(200) NULL,
 
         -- Información Financiera
-        valor_base INT DEFAULT 150000,
+        valor_base INT DEFAULT 100000,
         valor_jersey INT DEFAULT 70000,
-        valor_total_pagar AS (150000 + (CASE WHEN adquiere_jersey = 1 THEN 70000 ELSE 0 END)),
+        valor_total_pagar AS (100000 + (CASE WHEN adquiere_jersey = 1 THEN 70000 ELSE 0 END)),
 
         -- Estado del Proceso
         estado_validacion VARCHAR(20) DEFAULT 'Pendiente' -- Pendiente, Aprobado, Rechazado
@@ -126,9 +126,9 @@ class InscripcionModel {
                     talla_jersey VARCHAR(10) NULL,
                     asiste_con_acompanante BIT DEFAULT 0,
                     nombre_acompanante VARCHAR(200) NULL,
-                    valor_base INT DEFAULT 150000,
+                    valor_base INT DEFAULT 100000,
                     valor_jersey INT DEFAULT 70000,
-                    valor_total_pagar AS (150000 + (CASE WHEN adquiere_jersey = 1 THEN 70000 ELSE 0 END)),
+                    valor_total_pagar AS (100000 + (CASE WHEN adquiere_jersey = 1 THEN 70000 ELSE 0 END)),
                     estado_validacion VARCHAR(20) DEFAULT 'Pendiente'
                 );
             END;
@@ -142,6 +142,65 @@ class InscripcionModel {
             BEGIN
                 CREATE INDEX IX_Participante_Cedula ON dbo.InscripcionesCampeonato(documento_numero);
             END;
+        `);
+
+        await this.asegurarValorBaseActualizado(pool);
+    }
+
+    /**
+     * El valor base de inscripción bajó de $150.000 a $100.000. Para una tabla
+     * ya existente (creada antes de este cambio) el DEFAULT de valor_base y la
+     * fórmula del computado valor_total_pagar quedan con el valor viejo hasta
+     * que se corrigen explícitamente aquí.
+     */
+    static async asegurarValorBaseActualizado(poolParam = null) {
+        const pool = poolParam || await getPool();
+
+        await pool.request().query(`
+            IF NOT EXISTS (
+                SELECT 1 FROM sys.default_constraints
+                WHERE name = 'DF_InscripcionesCampeonato_valor_base'
+                  AND parent_object_id = OBJECT_ID('dbo.InscripcionesCampeonato')
+            )
+            BEGIN
+                DECLARE @constraintValorBase SYSNAME;
+
+                SELECT TOP 1 @constraintValorBase = dc.name
+                FROM sys.default_constraints dc
+                INNER JOIN sys.columns c
+                    ON c.object_id = dc.parent_object_id
+                   AND c.column_id = dc.parent_column_id
+                WHERE dc.parent_object_id = OBJECT_ID('dbo.InscripcionesCampeonato')
+                  AND c.name = 'valor_base';
+
+                IF @constraintValorBase IS NOT NULL
+                BEGIN
+                    EXEC('ALTER TABLE dbo.InscripcionesCampeonato DROP CONSTRAINT [' + @constraintValorBase + ']');
+                END
+
+                ALTER TABLE dbo.InscripcionesCampeonato
+                ADD CONSTRAINT DF_InscripcionesCampeonato_valor_base DEFAULT 100000 FOR valor_base;
+            END
+
+            IF NOT EXISTS (
+                SELECT 1 FROM sys.computed_columns cc
+                WHERE cc.object_id = OBJECT_ID('dbo.InscripcionesCampeonato')
+                  AND cc.name = 'valor_total_pagar'
+                  AND cc.definition LIKE '%100000%'
+            )
+            BEGIN
+                IF EXISTS (
+                    SELECT 1 FROM sys.columns
+                    WHERE object_id = OBJECT_ID('dbo.InscripcionesCampeonato')
+                      AND name = 'valor_total_pagar'
+                )
+                BEGIN
+                    ALTER TABLE dbo.InscripcionesCampeonato DROP COLUMN valor_total_pagar;
+                END
+
+                ALTER TABLE dbo.InscripcionesCampeonato
+                ADD valor_total_pagar AS (100000 + (CASE WHEN adquiere_jersey = 1 THEN 70000 ELSE 0 END));
+            END
         `);
     }
 
@@ -379,10 +438,10 @@ class InscripcionModel {
     }
 
     static calcularTotalReal(inscripcion) {
-        const valorBase = Number(inscripcion.valor_base || 150000);
+        const valorBase = Number(inscripcion.valor_base || 100000);
         const valorJersey = inscripcion.adquiere_jersey ? Number(inscripcion.valor_jersey || 70000) : 0;
         const cantidadAcompanantes = this.calcularCantidadAcompanantes(inscripcion);
-        const valorAcompanantes = cantidadAcompanantes * 150000;
+        const valorAcompanantes = cantidadAcompanantes * 100000;
         const valorServicios = Number(inscripcion.total_servicios || 0);
         const valorMerchandising = Number(inscripcion.total_merchandising || 0);
 

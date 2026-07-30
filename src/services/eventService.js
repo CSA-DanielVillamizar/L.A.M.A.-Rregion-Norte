@@ -49,42 +49,19 @@ const eventsDB = [
         },
         capacidad: 150,
         registrados: 0,
-        precio: 150000,
+        precio: 100000,
         imagen: '/images/events/vnorte-2026.jpg',
         destacado: true,
         paqueteOficial: {
             titulo: 'PAQUETE OFICIAL "V CAMPEONATO"',
-            valor: 150000,
+            valor: 100000,
             moneda: 'COP',
             incluye: [
                 'Kit Oficial (Camiseta, Gorra, Parche Conmemorativo V Edición)',
                 'Brazalete identificador'
             ]
         },
-        costos_adicionales: [
-            {
-                categoria: 'Logistica Terrestre',
-                items: [
-                    { descripcion: 'Traslado terrestre terminal/hotel/punto de concentracion', valor: 40000, moneda: 'COP' }
-                ]
-            },
-            {
-                categoria: 'Vehiculos Nauticos',
-                items: [
-                    { descripcion: 'Cupo en Jet Ski (2 personas)', valor: 400000, moneda: 'COP', unidad: 'por hora' },
-                    { descripcion: 'Lancha de lujo y/o Pontón (9 am a 5 pm)', valor: 80000, moneda: 'COP', unidad: 'por persona' },
-                    { descripcion: 'Regata de Veleros en el Golfo de Morrosquillo', valor: 100000, moneda: 'COP', unidad: 'por persona' }
-                ]
-            },
-            {
-                categoria: 'Vehiculos Terrestres',
-                items: [
-                    { descripcion: 'Cupo en Mula (Golf Cart) para vuelta costera (9 am a 6 pm)', valor: 250000, moneda: 'COP', unidad: 'por 5 personas' },
-                    { descripcion: 'Cupo en Chiva', valor: 50000, moneda: 'COP', unidad: 'por persona (3 horas)' },
-                    { descripcion: 'Burro Tour', valor: 140000, moneda: 'COP', unidad: 'por persona (2 horas)' }
-                ]
-            }
-        ],
+        costos_adicionales: [],
         contactos: [
             { tipo: 'WhatsApp Oficial Región Norte', valor: '+57 310 632 81 71' },
             { tipo: 'WhatsApp Alterno', valor: '+57 317 7524965' },
@@ -97,8 +74,7 @@ const eventsDB = [
             'Llevar toalla',
             'Llevar protector solar',
             'Llevar gorra',
-            'Llevar lentes de sol',
-            'Llevar vestuario blanco para noche de gala'
+            'Llevar lentes de sol'
         ],
         agenda: [
             {
