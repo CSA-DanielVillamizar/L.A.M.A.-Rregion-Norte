@@ -21,6 +21,70 @@
             display: block;
         }
 
+        .combo-wrapper {
+            position: relative;
+        }
+
+        .combo-dropdown {
+            position: absolute;
+            top: calc(100% + 4px);
+            left: 0;
+            right: 0;
+            max-height: 260px;
+            overflow-y: auto;
+            background-color: #1A1A1A;
+            border: 2px solid #00F5FF;
+            border-radius: 6px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+            z-index: 30;
+        }
+
+        .combo-dropdown.hidden {
+            display: none;
+        }
+
+        .combo-option {
+            padding: 0.6rem 1rem;
+            color: #F5F5DC;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .combo-option:hover,
+        .combo-option.active {
+            background-color: rgba(0, 245, 255, 0.15);
+            color: #00F5FF;
+        }
+
+        .combo-empty {
+            padding: 0.6rem 1rem;
+            color: #7a7a7a;
+            font-size: 0.85rem;
+            font-style: italic;
+        }
+
+        .dropzone {
+            border: 2px dashed #4A4A4A;
+            border-radius: 8px;
+            padding: 1.75rem 1rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            background-color: rgba(26, 26, 26, 0.6);
+        }
+
+        .dropzone:hover,
+        .dropzone.dragover {
+            border-color: #00F5FF;
+            background-color: rgba(0, 245, 255, 0.06);
+            box-shadow: 0 0 15px rgba(0, 245, 255, 0.2);
+        }
+
+        .dropzone.has-file {
+            border-style: solid;
+            border-color: #D4AF37;
+        }
+
         .form-section {
             background: linear-gradient(135deg, #1A1A1A 0%, #0A0A0A 100%);
             border: 1px solid #D4AF37;
@@ -1055,17 +1119,27 @@
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
                                     <label class="form-label">País *</label>
-                                    <select name="pais" id="pais" class="form-input w-full px-4 py-3 rounded"
-                                        required>
-                                        <option value="">Seleccione...</option>
-                                    </select>
+                                    <div class="combo-wrapper">
+                                        <input type="text" id="paisBuscador" autocomplete="off"
+                                            class="form-input w-full px-4 py-3 rounded"
+                                            placeholder="Escribe para buscar tu país...">
+                                        <div id="paisDropdown" class="combo-dropdown hidden"></div>
+                                        <select name="pais" id="pais" class="hidden" required>
+                                            <option value="">Seleccione...</option>
+                                        </select>
+                                    </div>
                                 </div>
                                 <div>
                                     <label class="form-label">Capítulo *</label>
-                                    <select name="capitulo" id="capitulo" class="form-input w-full px-4 py-3 rounded"
-                                        required disabled>
-                                        <option value="">Seleccione un país primero...</option>
-                                    </select>
+                                    <div class="combo-wrapper">
+                                        <input type="text" id="capituloBuscador" autocomplete="off" disabled
+                                            class="form-input w-full px-4 py-3 rounded"
+                                            placeholder="Seleccione un país primero...">
+                                        <div id="capituloDropdown" class="combo-dropdown hidden"></div>
+                                        <select name="capitulo" id="capitulo" class="hidden" required disabled>
+                                            <option value="">Seleccione un país primero...</option>
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
                             <div class="mt-4">
@@ -1225,23 +1299,6 @@
                             </div>
 
                             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                                <!-- TRASLADOS AEROPUERTO -->
-                                <div class="service-card bg-lamaDark/40 backdrop-blur-md border-2 border-lamaGold/50 rounded-lg p-4 cursor-pointer hover:border-lamaNeon hover:shadow-lg hover:shadow-lamaNeon/20 transition-all"
-                                    data-service="traslado-aeropuerto" data-price="40000">
-                                    <div class="flex items-center gap-2 mb-3">
-                                        <svg class="w-6 h-6 text-lamaGold" fill="currentColor" viewBox="0 0 24 24">
-                                            <path
-                                                d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.22.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm11 0c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zM5 11l1.5-4.5h11L19 11H5z" />
-                                        </svg>
-                                        <h4 class="text-sm font-headings text-lamaGold">Traslado Aeropuerto</h4>
-                                    </div>
-                                    <p class="text-xs text-lamaBone mb-2 leading-relaxed">Taxi Hotel ↔ Aeropuerto con
-                                        conductor profesional. Trayecto individual.</p>
-                                    <div class="space-y-1 text-xs text-gray-400 mb-3">
-                                        <p>Hotel → Aeropuerto O Aeropuerto → Hotel</p>
-                                    </div>
-                                    <div class="text-lg font-bold text-lamaNeon">$40.000</div>
-                                </div>
 
                                 <!-- JET SKI -->
                                 <div class="service-card bg-lamaDark/40 backdrop-blur-md border-2 border-lamaGold/50 rounded-lg p-4 cursor-pointer hover:border-lamaNeon hover:shadow-lg hover:shadow-lamaNeon/20 transition-all"
@@ -1478,15 +1535,24 @@
                                 en la sección "INFORMACIÓN BANCARIA" y adjunta aquí el comprobante correspondiente.
                             </p>
                             <label class="form-label">Comprobante de Pago (Imagen o PDF) *</label>
+                            <label id="comprobanteDropzone" for="comprobante" class="dropzone block">
+                                <svg class="w-10 h-10 mx-auto mb-2 text-lamaGold" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                        d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M12 12v9m0-9l-3 3m3-3l3 3" />
+                                </svg>
+                                <p class="text-sm text-lamaBone"><span class="text-lamaNeon font-bold">Arrastra tu
+                                        comprobante aquí</span> o haz click para seleccionarlo</p>
+                                <p id="comprobanteFileName" class="text-xs text-lamaGold mt-2 font-bold"></p>
+                            </label>
                             <input type="file" name="comprobante" id="comprobante" accept=".pdf,image/jpeg,image/png"
-                                class="form-input w-full px-4 py-3 rounded" required>
+                                class="hidden" required>
                             <p class="text-xs text-gray-400 mt-2">Formatos permitidos: JPG, PNG o PDF. Tamaño máximo
                                 5MB.</p>
-                            <p id="comprobanteFileName" class="text-xs text-lamaNeon mt-2"></p>
                         </div>
 
                         <div class="form-section">
-                            <button type="submit" class="btn-submit">REGISTRAR INSCRIPCIÓN</button>
+                            <button type="submit" class="btn-submit cta-glow">REGISTRAR INSCRIPCIÓN</button>
                         </div>
                     </form>
                 </div>
@@ -1890,6 +1956,10 @@
         const form = document.getElementById('campeonatoForm');
         const paisSelect = document.getElementById('pais');
         const capituloSelect = document.getElementById('capitulo');
+        const paisBuscador = document.getElementById('paisBuscador');
+        const paisDropdown = document.getElementById('paisDropdown');
+        const capituloBuscador = document.getElementById('capituloBuscador');
+        const capituloDropdown = document.getElementById('capituloDropdown');
         const directivoSelect = document.getElementById('directivo');
         const directivoFields = document.getElementById('directivoFields');
         const jerseyCheckbox = document.getElementById('jersey');
@@ -1950,6 +2020,112 @@
             capituloSelect.appendChild(new Option('Seleccione...', ''));
             capitulos.forEach((capitulo) => {
                 capituloSelect.appendChild(new Option(capitulo, capitulo));
+            });
+        }
+
+        /**
+         * Convierte un <select> nativo (oculto) en un combo buscable: un input de
+         * texto con dropdown filtrado que, al elegir una opción, sincroniza el
+         * <select> real (value + evento change) para no tocar el resto de la
+         * lógica de validación/envío que ya depende de selectEl.value.
+         */
+        function crearComboBuscable(selectEl, inputEl, dropdownEl, obtenerOpciones) {
+            let opcionActiva = -1;
+
+            function cerrarDropdown() {
+                dropdownEl.classList.add('hidden');
+                dropdownEl.innerHTML = '';
+                opcionActiva = -1;
+            }
+
+            function seleccionarOpcion(valor) {
+                selectEl.value = valor;
+                inputEl.value = valor;
+                selectEl.dispatchEvent(new Event('change'));
+                cerrarDropdown();
+            }
+
+            function renderOpciones(filtro) {
+                const opciones = obtenerOpciones();
+                const filtroNormalizado = filtro.trim().toLowerCase();
+                const filtradas = filtroNormalizado
+                    ? opciones.filter((op) => op.toLowerCase().includes(filtroNormalizado))
+                    : opciones;
+
+                dropdownEl.innerHTML = '';
+                opcionActiva = -1;
+
+                if (filtradas.length === 0) {
+                    const vacio = document.createElement('div');
+                    vacio.className = 'combo-empty';
+                    vacio.textContent = 'Sin resultados';
+                    dropdownEl.appendChild(vacio);
+                } else {
+                    filtradas.forEach((opcion) => {
+                        const item = document.createElement('div');
+                        item.className = 'combo-option';
+                        item.textContent = opcion;
+                        item.addEventListener('mousedown', (event) => {
+                            event.preventDefault();
+                            seleccionarOpcion(opcion);
+                        });
+                        dropdownEl.appendChild(item);
+                    });
+                }
+
+                dropdownEl.classList.remove('hidden');
+            }
+
+            inputEl.addEventListener('input', () => {
+                if (inputEl.disabled) return;
+                if (selectEl.value && inputEl.value !== selectEl.value) {
+                    selectEl.value = '';
+                    selectEl.dispatchEvent(new Event('change'));
+                }
+                renderOpciones(inputEl.value);
+            });
+
+            inputEl.addEventListener('focus', () => {
+                if (inputEl.disabled) return;
+                renderOpciones(inputEl.value);
+            });
+
+            inputEl.addEventListener('keydown', (event) => {
+                const items = Array.from(dropdownEl.querySelectorAll('.combo-option'));
+                if (items.length === 0) return;
+
+                if (event.key === 'ArrowDown') {
+                    event.preventDefault();
+                    opcionActiva = Math.min(opcionActiva + 1, items.length - 1);
+                } else if (event.key === 'ArrowUp') {
+                    event.preventDefault();
+                    opcionActiva = Math.max(opcionActiva - 1, 0);
+                } else if (event.key === 'Enter') {
+                    if (opcionActiva >= 0) {
+                        event.preventDefault();
+                        seleccionarOpcion(items[opcionActiva].textContent);
+                    }
+                    return;
+                } else if (event.key === 'Escape') {
+                    cerrarDropdown();
+                    return;
+                } else {
+                    return;
+                }
+
+                items.forEach((item, index) => item.classList.toggle('active', index === opcionActiva));
+                items[opcionActiva].scrollIntoView({ block: 'nearest' });
+            });
+
+            inputEl.addEventListener('blur', () => {
+                setTimeout(() => {
+                    if (selectEl.value) {
+                        inputEl.value = selectEl.value;
+                    } else if (!inputEl.disabled) {
+                        inputEl.value = '';
+                    }
+                    cerrarDropdown();
+                }, 150);
             });
         }
 
@@ -2895,6 +3071,11 @@
         form.addEventListener('submit', handleFormSubmit);
         paisSelect.addEventListener('change', () => {
             poblarCapitulos();
+            capituloBuscador.value = '';
+            capituloBuscador.disabled = capituloSelect.disabled;
+            capituloBuscador.placeholder = capituloSelect.disabled
+                ? 'Seleccione un país primero...'
+                : 'Escribe para buscar tu capítulo...';
             updateResumenPago();
         });
         directivoSelect.addEventListener('change', toggleConditionalFields);
@@ -2935,10 +3116,13 @@
             llenarPDF();
             setTimeout(() => window.print(), 100);
         });
+        const comprobanteDropzone = document.getElementById('comprobanteDropzone');
+
         comprobanteInput.addEventListener('change', () => {
             const archivo = comprobanteInput.files && comprobanteInput.files[0];
             if (!archivo) {
                 comprobanteFileName.textContent = '';
+                comprobanteDropzone.classList.remove('has-file');
                 return;
             }
             const maxSizeMb = 5;
@@ -2946,9 +3130,35 @@
                 alert(`El comprobante supera ${maxSizeMb}MB. Por favor adjunta uno más liviano.`);
                 comprobanteInput.value = '';
                 comprobanteFileName.textContent = '';
+                comprobanteDropzone.classList.remove('has-file');
                 return;
             }
             comprobanteFileName.textContent = `Archivo seleccionado: ${archivo.name}`;
+            comprobanteDropzone.classList.add('has-file');
+        });
+
+        ['dragover', 'dragenter'].forEach((evento) => {
+            comprobanteDropzone.addEventListener(evento, (event) => {
+                event.preventDefault();
+                comprobanteDropzone.classList.add('dragover');
+            });
+        });
+
+        ['dragleave', 'dragend'].forEach((evento) => {
+            comprobanteDropzone.addEventListener(evento, () => {
+                comprobanteDropzone.classList.remove('dragover');
+            });
+        });
+
+        comprobanteDropzone.addEventListener('drop', (event) => {
+            event.preventDefault();
+            comprobanteDropzone.classList.remove('dragover');
+
+            const archivo = event.dataTransfer.files && event.dataTransfer.files[0];
+            if (!archivo) return;
+
+            comprobanteInput.files = event.dataTransfer.files;
+            comprobanteInput.dispatchEvent(new Event('change'));
         });
         closeModalBtn.addEventListener('click', () => {
             successModal.classList.remove('active');
@@ -3079,6 +3289,21 @@
 
         poblarPaises();
         poblarCapitulos();
+
+        crearComboBuscable(
+            paisSelect,
+            paisBuscador,
+            paisDropdown,
+            () => Object.keys(PAISES_CAPITULOS).sort((a, b) => a.localeCompare(b, 'es'))
+        );
+
+        crearComboBuscable(
+            capituloSelect,
+            capituloBuscador,
+            capituloDropdown,
+            () => PAISES_CAPITULOS[paisSelect.value] || []
+        );
+
         toggleConditionalFields();
         updateResumenPago();
     </script>

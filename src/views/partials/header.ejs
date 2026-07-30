@@ -111,13 +111,30 @@
             .animate-fade-in-up {
                 animation: fadeInUp 0.8s ease-out;
             }
+
+            @keyframes ctaGlowPulse {
+
+                0%,
+                100% {
+                    box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.55);
+                }
+
+                50% {
+                    box-shadow: 0 0 0 14px rgba(212, 175, 55, 0);
+                }
+            }
+
+            .cta-glow {
+                animation: ctaGlowPulse 2.2s ease-out infinite;
+            }
         </style>
 </head>
 
 <body class="antialiased">
 
     <!-- Navigation -->
-    <nav class="sticky top-0 z-50 bg-lamaDark/95 border-b border-lamaGold backdrop-blur-sm shadow-lg">
+    <nav id="siteNav"
+        class="sticky top-0 z-50 bg-lamaDark/40 border-b border-transparent backdrop-blur-sm transition-all duration-300">
         <div class="container mx-auto px-6 py-4 flex justify-between items-center">
             <a href="/" class="flex items-center space-x-3 hover:opacity-80 transition-opacity">
                 <img src="/img/LAMARegionNorte.png" alt="L.A.M.A. Región Norte" class="h-12 w-auto">

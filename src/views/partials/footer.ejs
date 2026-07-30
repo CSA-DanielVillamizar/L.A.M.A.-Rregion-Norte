@@ -50,6 +50,20 @@
             mobileMenu.classList.toggle('hidden');
         });
     }
+
+    const siteNav = document.getElementById('siteNav');
+    if (siteNav) {
+        const actualizarOpacidadNav = () => {
+            const conScroll = window.scrollY > 40;
+            siteNav.classList.toggle('bg-lamaDark/40', !conScroll);
+            siteNav.classList.toggle('bg-lamaDark/95', conScroll);
+            siteNav.classList.toggle('border-transparent', !conScroll);
+            siteNav.classList.toggle('border-lamaGold', conScroll);
+            siteNav.classList.toggle('shadow-lg', conScroll);
+        };
+        actualizarOpacidadNav();
+        window.addEventListener('scroll', actualizarOpacidadNav, { passive: true });
+    }
 </script>
 </body>
 
