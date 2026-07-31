@@ -114,7 +114,7 @@ const eventsDB = [
                         hora: '02:00 PM',
                         titulo: 'INICIO DEL CAMPEONATO REGIONAL',
                         detalles: 'Pilotos y copilotos: ruta terrestre de integracion por el eje Coveñas - San Antero. Acompanantes y familiares: agenda costera y actividades nauticas opcionales en el Golfo de Morrosquillo.',
-                        nota: 'IMPORTANTE: Si deseas participar en Lancha de Lujo/Pontón o Velero, debes seleccionarlas en el formulario de inscripción. Estas experiencias están disponibles tanto para miembros como para acompañantes.',
+                        nota: 'Actividades náuticas opcionales para miembros y acompañantes; consulta disponibilidad con la organización.',
                         subruta: [
                             'Concentracion en Coveñas',
                             'Tramo costero Punta Piedra',
@@ -152,7 +152,7 @@ const eventsDB = [
                         titulo: 'Regata de Veleros en el Golfo de Morrosquillo',
                         costo: 100000,
                         unidad: 'por persona',
-                        nota: 'IMPORTANTE: Selecciona "Velero Golfo de Morrosquillo" en el formulario de inscripcion para participar. Disponible para miembros y acompanantes.'
+                        nota: 'Actividad opcional para miembros y acompañantes; consulta disponibilidad con la organización.'
                     },
                     {
                         hora: '06:30 AM',
@@ -168,7 +168,7 @@ const eventsDB = [
                         hora: '10:00 AM',
                         titulo: 'Caravana Terrestre en "Mulas" o Chiva',
                         detalles: 'Caravana tematica en vehiculos de apoyo decorados por capitulo. Ruta turistica: Malecon de Coveñas -> corredor costero -> San Antero -> retorno por playa.',
-                        nota: 'IMPORTANTE: Si deseas participar, selecciona "Cupo en Chiva" o "Mula (Golf Cart)" en el formulario de inscripción. Estas experiencias están disponibles tanto para miembros como para acompañantes.',
+                        nota: 'Actividad opcional para miembros y acompañantes; consulta disponibilidad con la organización.',
                         subruta: [
                             'Malecon de Coveñas',
                             'Corredor costero',

@@ -284,6 +284,12 @@ class InscripcionModel {
 
             IF COL_LENGTH('InscripcionesCampeonato', 'checkin_fecha') IS NULL
                 ALTER TABLE InscripcionesCampeonato ADD checkin_fecha DATETIME NULL;
+
+            IF COL_LENGTH('InscripcionesCampeonato', 'email') IS NULL
+                ALTER TABLE InscripcionesCampeonato ADD email VARCHAR(150) NULL;
+
+            IF COL_LENGTH('InscripcionesCampeonato', 'fecha_nacimiento') IS NULL
+                ALTER TABLE InscripcionesCampeonato ADD fecha_nacimiento DATE NULL;
         `);
 
         await this.asegurarConstraintTiposParticipante(pool);
@@ -582,6 +588,8 @@ class InscripcionModel {
             request.input('comprobante_mime', sql.NVarChar(120), inscripcionData.comprobante_mime || null);
             request.input('comprobante_tamano_bytes', sql.Int, Number.isFinite(inscripcionData.comprobante_tamano_bytes) ? inscripcionData.comprobante_tamano_bytes : null);
             request.input('comprobante_contenido', sql.VarBinary(sql.MAX), inscripcionData.comprobante_contenido || null);
+            request.input('email', sql.VarChar(150), inscripcionData.email || null);
+            request.input('fecha_nacimiento', sql.Date, inscripcionData.fecha_nacimiento ? new Date(inscripcionData.fecha_nacimiento) : null);
 
             const query = `
                 INSERT INTO InscripcionesCampeonato (
@@ -593,7 +601,7 @@ class InscripcionModel {
                     servicios_acompanantes_json, total_servicios, merchandising_json, total_merchandising,
                     pais, estado_validacion,
                     comprobante_nombre_archivo, comprobante_mime, comprobante_tamano_bytes,
-                    comprobante_contenido
+                    comprobante_contenido, email, fecha_nacimiento
                 )
                 OUTPUT INSERTED.id_inscripcion, INSERTED.fecha_registro
                 VALUES (
@@ -605,7 +613,7 @@ class InscripcionModel {
                     @servicios_acompanantes_json, @total_servicios, @merchandising_json, @total_merchandising,
                     @pais, @estado_validacion,
                     @comprobante_nombre_archivo, @comprobante_mime, @comprobante_tamano_bytes,
-                    @comprobante_contenido
+                    @comprobante_contenido, @email, @fecha_nacimiento
                 )
             `;
 

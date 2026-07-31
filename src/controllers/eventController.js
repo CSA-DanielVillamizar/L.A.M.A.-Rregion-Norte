@@ -155,13 +155,15 @@ exports.registerToEvent = async (req, res) => {
             talla,
             acompanante,
             emergencia_nombre,
-            emergencia_telefono
+            emergencia_telefono,
+            email,
+            fecha_nacimiento
         } = req.body;
 
-        if (!nombre || !documento) {
+        if (!nombre || !documento || !email || !fecha_nacimiento) {
             return res.status(400).json({
                 success: false,
-                message: 'Faltan campos obligatorios (nombre y documento)'
+                message: 'Faltan campos obligatorios (nombre, documento, correo electrónico y fecha de nacimiento)'
             });
         }
 
@@ -204,6 +206,8 @@ exports.registerToEvent = async (req, res) => {
             eps: eps || 'No especificada',
             emergencia_nombre: emergencia_nombre || 'No especificado',
             emergencia_telefono: emergencia_telefono || 'No especificado',
+            email: String(email).trim(),
+            fecha_nacimiento,
             pais: paisNormalizado,
             capitulo: capituloNormalizado,
             cargo_directivo: String(directivo || '').toLowerCase() === 'sí' || String(directivo || '').toLowerCase() === 'si'

@@ -72,6 +72,14 @@ IF COL_LENGTH('dbo.InscripcionesCampeonato', 'checkin_fecha') IS NULL
     ALTER TABLE dbo.InscripcionesCampeonato ADD checkin_fecha DATETIME NULL;
 GO
 
+IF COL_LENGTH('dbo.InscripcionesCampeonato', 'email') IS NULL
+    ALTER TABLE dbo.InscripcionesCampeonato ADD email VARCHAR(150) NULL;
+GO
+
+IF COL_LENGTH('dbo.InscripcionesCampeonato', 'fecha_nacimiento') IS NULL
+    ALTER TABLE dbo.InscripcionesCampeonato ADD fecha_nacimiento DATE NULL;
+GO
+
 IF NOT EXISTS (
     SELECT 1 FROM sys.indexes
     WHERE name = 'UX_Inscripciones_QrToken'
