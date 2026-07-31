@@ -1,15 +1,240 @@
 /**
- * CAPA DE VALIDACIÓN: Esquemas de validación con Joi
- * Valida los datos de inscripción antes de procesarlos
+ * CAPA DE VALIDACIÓN: Esquema de validación con Joi para el registro real
+ * del V Campeonato (POST /eventos/vnorte-2026/registro).
+ *
+ * Los nombres de campo y valores permitidos aquí deben coincidir exactamente
+ * con lo que envía src/views/registro-campeonato.ejs y con el catálogo
+ * global de países/capítulos (src/data/paisesCapitulos.js) - no con la
+ * edición anterior del evento en San Andrés.
  */
 
 const Joi = require('joi');
+const { PAISES_CAPITULOS, esParPaisCapituloValido } = require('../data/paisesCapitulos');
+
+const acompananteSchema = Joi.object({
+    nombre: Joi.string().min(3).max(200).trim().required().messages({
+        'any.required': 'Acompañante: el nombre es obligatorio',
+        'string.min': 'Acompañante: el nombre debe tener al menos 3 caracteres'
+    }),
+    documento: Joi.string().min(3).max(30).trim().required().messages({
+        'any.required': 'Acompañante: el documento es obligatorio'
+    }),
+    telefono: Joi.string().min(7).max(50).trim().required().messages({
+        'any.required': 'Acompañante: el teléfono es obligatorio'
+    }),
+    jersey: Joi.boolean().default(false),
+    talla: Joi.string()
+        .valid('S', 'M', 'L', 'XL', 'XXL')
+        .allow(null, '')
+        .when('jersey', {
+            is: true,
+            then: Joi.required(),
+            otherwise: Joi.optional()
+        })
+        .messages({
+            'any.required': 'Acompañante: si adquiere jersey, debe indicar la talla',
+            'any.only': 'Acompañante: la talla debe ser S, M, L, XL o XXL'
+        })
+});
+
+const inscripcionSchema = Joi.object({
+    categoria: Joi.string()
+        .valid(
+            'DAMA L.A.M.A.',
+            'FULL COLOR MEMBER',
+            'ROCKET PROSPECT',
+            'PROSPECT',
+            'ESPOSA (a)',
+            'CONYUGUE',
+            'PAREJA',
+            'HIJA (o)',
+            'INVITADA (O)'
+        )
+        .required()
+        .messages({
+            'any.required': 'La categoría es obligatoria',
+            'any.only': 'Debe seleccionar una categoría válida'
+        }),
+
+    nombre: Joi.string().min(3).max(200).trim().required().messages({
+        'any.required': 'El nombre es obligatorio',
+        'string.min': 'El nombre debe tener al menos 3 caracteres',
+        'string.max': 'El nombre no puede exceder 200 caracteres'
+    }),
+
+    documento: Joi.string()
+        .pattern(/^[0-9A-Za-z-]+$/)
+        .min(6)
+        .max(30)
+        .trim()
+        .required()
+        .messages({
+            'any.required': 'El documento es obligatorio',
+            'string.pattern.base': 'El documento solo puede contener números, letras y guiones',
+            'string.min': 'El documento debe tener al menos 6 caracteres'
+        }),
+
+    eps: Joi.string().min(3).max(100).trim().required().messages({
+        'any.required': 'La EPS es obligatoria',
+        'string.min': 'La EPS debe tener al menos 3 caracteres'
+    }),
+
+    email: Joi.string().email({ tlds: false }).max(150).trim().required().messages({
+        'any.required': 'El correo electrónico es obligatorio',
+        'string.email': 'El correo electrónico no es válido'
+    }),
+
+    fecha_nacimiento: Joi.date().max('now').required().messages({
+        'any.required': 'La fecha de nacimiento es obligatoria',
+        'date.max': 'La fecha de nacimiento no puede ser futura',
+        'date.base': 'La fecha de nacimiento no es válida'
+    }),
+
+    emergencia_nombre: Joi.string().min(3).max(200).trim().required().messages({
+        'any.required': 'El contacto de emergencia es obligatorio',
+        'string.min': 'El contacto debe tener al menos 3 caracteres'
+    }),
+
+    emergencia_telefono: Joi.string()
+        .pattern(/^[\d\s+()-]+$/)
+        .min(7)
+        .max(50)
+        .trim()
+        .required()
+        .messages({
+            'any.required': 'El teléfono de emergencia es obligatorio',
+            'string.pattern.base': 'El teléfono debe ser un número válido',
+            'string.min': 'El teléfono debe tener al menos 7 dígitos'
+        }),
+
+    pais: Joi.string()
+        .valid(...Object.keys(PAISES_CAPITULOS))
+        .required()
+        .messages({
+            'any.required': 'El país es obligatorio',
+            'any.only': 'Debe seleccionar un país válido del catálogo L.A.M.A.'
+        }),
+
+    capitulo: Joi.string().trim().required().messages({
+        'any.required': 'El capítulo es obligatorio'
+    }),
+
+    directivo: Joi.string().valid('Sí', 'No').required().messages({
+        'any.required': 'Debe indicar si es directivo',
+        'any.only': 'Directivo debe ser "Sí" o "No"'
+    }),
+
+    ambito: Joi.string()
+        .valid('Capítulo', 'Región', 'País', 'Continente', 'Internacional')
+        .when('directivo', {
+            is: 'Sí',
+            then: Joi.required(),
+            otherwise: Joi.optional().allow(null, '')
+        })
+        .messages({
+            'any.required': 'Debe seleccionar el ámbito del cargo directivo',
+            'any.only': 'Ámbito no válido'
+        }),
+
+    cargo: Joi.string()
+        .valid(
+            'Presidente',
+            'Vicepresidente',
+            'Tesorero',
+            'Secretario',
+            'Gerente de Negocios',
+            'MTO',
+            'Sargento de Armas',
+            'Road Captain'
+        )
+        .when('directivo', {
+            is: 'Sí',
+            then: Joi.required(),
+            otherwise: Joi.optional().allow(null, '')
+        })
+        .messages({
+            'any.required': 'Debe seleccionar el cargo directivo',
+            'any.only': 'Cargo no válido'
+        }),
+
+    fecha_llegada: Joi.date()
+        .min('2026-09-11')
+        .max('2026-09-13')
+        .required()
+        .messages({
+            'any.required': 'La fecha de llegada es obligatoria',
+            'date.min': 'La fecha de llegada debe ser entre el 11 y el 13 de septiembre de 2026',
+            'date.max': 'La fecha de llegada debe ser entre el 11 y el 13 de septiembre de 2026'
+        }),
+
+    condicion_medica: Joi.string().max(1000).trim().allow(null, '').optional().messages({
+        'string.max': 'La condición médica no puede exceder 1000 caracteres'
+    }),
+
+    jersey: Joi.boolean().required().messages({
+        'any.required': 'Debe indicar si adquiere el jersey'
+    }),
+
+    talla: Joi.string()
+        .valid('S', 'M', 'L', 'XL', 'XXL')
+        .allow(null, '')
+        .when('jersey', {
+            is: true,
+            then: Joi.required(),
+            otherwise: Joi.optional()
+        })
+        .messages({
+            'any.required': 'Si adquiere jersey, debe especificar la talla',
+            'any.only': 'La talla debe ser S, M, L, XL o XXL'
+        }),
+
+    acompanante: Joi.boolean().required().messages({
+        'any.required': 'Debe indicar si asiste con acompañante'
+    }),
+
+    acompanantes: Joi.array()
+        .items(acompananteSchema)
+        .when('acompanante', {
+            is: true,
+            then: Joi.array().min(1).required(),
+            otherwise: Joi.optional()
+        })
+        .messages({
+            'array.min': 'Debe registrar al menos un acompañante'
+        })
+})
+    .custom((value, helpers) => {
+        if (!esParPaisCapituloValido(value.pais, value.capitulo)) {
+            return helpers.error('any.invalid', { message: 'El capítulo seleccionado no pertenece al país indicado' });
+        }
+        return value;
+    })
+    .messages({
+        'any.invalid': 'El país y/o capítulo L.A.M.A. seleccionado no es válido'
+    });
 
 /**
- * Schema de validación para inscripciones
- * Define las reglas de negocio y restricciones de datos
+ * Valida los datos ya normalizados (booleans y arrays reales, no strings de
+ * FormData) de una inscripción.
+ * @param {Object} data - Datos a validar
+ * @returns {Object} Resultado de la validación { error, value }
  */
-const inscripcionSchema = Joi.object({
+const validateInscripcion = (data) => {
+    return inscripcionSchema.validate(data, {
+        abortEarly: false,
+        stripUnknown: true
+    });
+};
+
+/**
+ * Esquema LEGACY: usado únicamente por el endpoint público sin autenticación
+ * POST /api/register (src/routes/apiRoutes.js), que antecede al formulario
+ * actual y normaliza a este mismo shape antiguo (fecha_llegada_isla,
+ * es_directivo, cargo_directivo, capitulo restringido a Colombia). No se
+ * toca aquí para no romper ese endpoint; ver nota en apiRoutes.js sobre por
+ * qué convendría revisar si sigue siendo necesario.
+ */
+const inscripcionSchemaLegacy = Joi.object({
     tipo_participante: Joi.string()
         .valid(
             'DAMA L.A.M.A.',
@@ -40,7 +265,7 @@ const inscripcionSchema = Joi.object({
         }),
 
     documento_numero: Joi.string()
-        .pattern(/^[0-9A-Z\-]+$/)
+        .pattern(/^[0-9A-Z-]+$/)
         .min(6)
         .max(30)
         .trim()
@@ -72,7 +297,7 @@ const inscripcionSchema = Joi.object({
         }),
 
     emergencia_telefono: Joi.string()
-        .pattern(/^[\d\s\+\-\(\)]+$/)
+        .pattern(/^[\d\s+\-()]+$/)
         .min(7)
         .max(50)
         .trim()
@@ -167,13 +392,9 @@ const inscripcionSchema = Joi.object({
         }),
 
     fecha_llegada_isla: Joi.date()
-        .min('2026-09-10')
-        .max('2026-09-15')
         .required()
         .messages({
-            'any.required': 'La fecha de llegada es obligatoria',
-            'date.min': 'La fecha de llegada debe ser entre el 10 y 15 de septiembre de 2026',
-            'date.max': 'La fecha de llegada debe ser entre el 10 y 15 de septiembre de 2026'
+            'any.required': 'La fecha de llegada es obligatoria'
         }),
 
     condicion_medica: Joi.string()
@@ -225,24 +446,11 @@ const inscripcionSchema = Joi.object({
         })
 });
 
-/**
- * Valida los datos de inscripción
- * @param {Object} data - Datos a validar
- * @returns {Object} Resultado de la validación { error, value }
- */
-const validateInscripcion = (data) => {
-    return inscripcionSchema.validate(data, {
-        abortEarly: false, // Retorna todos los errores, no solo el primero
-        stripUnknown: true // Remueve campos no definidos en el schema
-    });
-};
-
-/**
- * Middleware de Express para validar inscripciones
- * Retorna 400 con los errores de validación si falla
- */
 const validateInscripcionMiddleware = (req, res, next) => {
-    const { error, value } = validateInscripcion(req.body);
+    const { error, value } = inscripcionSchemaLegacy.validate(req.body, {
+        abortEarly: false,
+        stripUnknown: true
+    });
 
     if (error) {
         const errors = error.details.map(detail => ({
@@ -257,7 +465,6 @@ const validateInscripcionMiddleware = (req, res, next) => {
         });
     }
 
-    // Reemplaza req.body con los datos validados y sanitizados
     req.body = value;
     next();
 };
@@ -265,5 +472,6 @@ const validateInscripcionMiddleware = (req, res, next) => {
 module.exports = {
     inscripcionSchema,
     validateInscripcion,
+    inscripcionSchemaLegacy,
     validateInscripcionMiddleware
 };

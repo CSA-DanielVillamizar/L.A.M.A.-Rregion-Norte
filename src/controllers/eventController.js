@@ -7,6 +7,7 @@ const eventService = require('../services/eventService');
 const { InscripcionModel } = require('../models/inscripcionModel');
 const multer = require('multer');
 const { esParPaisCapituloValido } = require('../data/paisesCapitulos');
+const { validateInscripcion } = require('../validators/inscripcionValidator');
 
 const COMPROBANTE_MIME_PERMITIDOS = ['application/pdf', 'image/jpeg', 'image/png'];
 
@@ -160,20 +161,40 @@ exports.registerToEvent = async (req, res) => {
             fecha_nacimiento
         } = req.body;
 
-        if (!nombre || !documento || !email || !fecha_nacimiento) {
-            return res.status(400).json({
-                success: false,
-                message: 'Faltan campos obligatorios (nombre, documento, correo electrónico y fecha de nacimiento)'
-            });
-        }
-
         const paisNormalizado = String(pais || '').trim();
         const capituloNormalizado = String(capitulo || '').trim();
+        const acompanantes = parsearArregloJsonSeguro(req.body.acompanantes);
 
-        if (!esParPaisCapituloValido(paisNormalizado, capituloNormalizado)) {
+        const { error: errorValidacion } = validateInscripcion({
+            categoria: req.body.categoria,
+            nombre,
+            documento,
+            eps,
+            email,
+            fecha_nacimiento,
+            emergencia_nombre,
+            emergencia_telefono,
+            pais: paisNormalizado,
+            capitulo: capituloNormalizado,
+            directivo,
+            ambito,
+            cargo,
+            fecha_llegada,
+            condicion_medica,
+            jersey: parsearBooleanoFormData(jersey),
+            talla,
+            acompanante: parsearBooleanoFormData(acompanante),
+            acompanantes
+        });
+
+        if (errorValidacion) {
             return res.status(400).json({
                 success: false,
-                message: 'El país y/o capítulo L.A.M.A. seleccionado no es válido'
+                message: 'Errores de validación en los datos enviados',
+                errors: errorValidacion.details.map((detail) => ({
+                    field: detail.path.join('.'),
+                    message: detail.message
+                }))
             });
         }
 
@@ -192,7 +213,6 @@ exports.registerToEvent = async (req, res) => {
             });
         }
 
-        const acompanantes = parsearArregloJsonSeguro(req.body.acompanantes);
         const serviciosPrincipal = parsearArregloJsonSeguro(req.body.servicios_principal);
         const serviciosAcompanantes = parsearArregloJsonSeguro(req.body.servicios_acompanantes);
         const totalServicios = Number(req.body.total_servicios || 0);
