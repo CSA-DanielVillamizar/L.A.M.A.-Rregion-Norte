@@ -1068,7 +1068,7 @@
                                     <option value="FULL COLOR MEMBER">FULL COLOR MEMBER</option>
                                     <option value="ROCKET PROSPECT">ROCKET PROSPECT</option>
                                     <option value="PROSPECT">PROSPECT</option>
-                                    <option value="ESPOSA (a)">ESPOSA (a)</option>
+                                    <option value="ESPOSA (o)">ESPOSA (o)</option>
                                     <option value="CONYUGUE">CONYUGUE</option>
                                     <option value="PAREJA">PAREJA</option>
                                     <option value="HIJA (o)">HIJA (o)</option>
@@ -1216,7 +1216,7 @@
                             <h2 class="form-section-title font-headings">MERCADEO</h2>
                             <div class="flex items-center gap-3 mb-4">
                                 <input type="checkbox" id="jersey" name="jersey" class="w-5 h-5">
-                                <label for="jersey" class="text-lamaBone">¿Interesado en Jersey Oficial
+                                <label for="jersey" class="text-lamaBone">¿Interesado en Camiseta Oficial Región Norte
                                     ($70.000)?</label>
                             </div>
                             <div id="jerseyFields" class="grid grid-cols-1 md:grid-cols-2 gap-4 hidden">
@@ -1241,7 +1241,7 @@
                                 prendas adicionales; se suman al total a transferir y se entregan en tu kit el
                                 viernes en el registro de Coveñas.</p>
 
-                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <!-- GORRA -->
                                 <div class="merch-card bg-lamaDark/40 backdrop-blur-md border-2 border-lamaGold/50 rounded-lg p-4 cursor-pointer hover:border-lamaNeon hover:shadow-lg hover:shadow-lamaNeon/20 transition-all"
                                     data-item="gorra" data-nombre="Gorra Oficial V Campeonato" data-price="25000">
@@ -1251,25 +1251,6 @@
                                     <div class="text-lg font-bold text-lamaNeon">$25.000</div>
                                 </div>
 
-                                <!-- CAMISETA (requiere talla) -->
-                                <div class="merch-card bg-lamaDark/40 backdrop-blur-md border-2 border-lamaGold/50 rounded-lg p-4 cursor-pointer hover:border-lamaNeon hover:shadow-lg hover:shadow-lamaNeon/20 transition-all"
-                                    data-item="camiseta" data-nombre="Camiseta Táctica de Rodada (Dry-Fit)"
-                                    data-price="50000" data-requiere-talla="true">
-                                    <h4 class="text-sm font-headings text-lamaGold mb-2">👕 Camiseta Táctica</h4>
-                                    <p class="text-xs text-lamaBone mb-2 leading-relaxed">Tela Dry-Fit, diseño
-                                        conmemorativo de rodada.</p>
-                                    <div class="text-lg font-bold text-lamaNeon mb-2">$50.000</div>
-                                    <select class="merch-talla hidden w-full px-2 py-1 bg-lamaBlack border border-lamaGold/40 rounded text-white text-xs"
-                                        data-placeholder="Selecciona talla">
-                                        <option value="">Talla...</option>
-                                        <option value="S">S</option>
-                                        <option value="M">M</option>
-                                        <option value="L">L</option>
-                                        <option value="XL">XL</option>
-                                        <option value="2XL">2XL</option>
-                                    </select>
-                                </div>
-
                                 <!-- BUFF -->
                                 <div class="merch-card bg-lamaDark/40 backdrop-blur-md border-2 border-lamaGold/50 rounded-lg p-4 cursor-pointer hover:border-lamaNeon hover:shadow-lg hover:shadow-lamaNeon/20 transition-all"
                                     data-item="buff" data-nombre="Buff Cortavientos Región Norte" data-price="25000">
@@ -1277,24 +1258,6 @@
                                     <p class="text-xs text-lamaBone mb-2 leading-relaxed">Protección facial/cuello
                                         para la rodada.</p>
                                     <div class="text-lg font-bold text-lamaNeon">$25.000</div>
-                                </div>
-
-                                <!-- PARCHES (cantidad) -->
-                                <div class="merch-card bg-lamaDark/40 backdrop-blur-md border-2 border-lamaGold/50 rounded-lg p-4 cursor-pointer hover:border-lamaNeon hover:shadow-lg hover:shadow-lamaNeon/20 transition-all"
-                                    data-item="parches" data-nombre="Parches Conmemorativos Adicionales"
-                                    data-price="2000" data-permite-cantidad="true">
-                                    <h4 class="text-sm font-headings text-lamaGold mb-2">🛡️ Parches Conmemorativos
-                                    </h4>
-                                    <p class="text-xs text-lamaBone mb-2 leading-relaxed">Parches adicionales de
-                                        colección (c/u).</p>
-                                    <div class="text-lg font-bold text-lamaNeon mb-2">$2.000 c/u</div>
-                                    <div class="merch-cantidad hidden flex items-center gap-2">
-                                        <button type="button"
-                                            class="merch-cantidad-menos w-7 h-7 bg-lamaBlack border border-lamaGold/40 rounded text-white">-</button>
-                                        <span class="merch-cantidad-valor text-white text-sm w-6 text-center">1</span>
-                                        <button type="button"
-                                            class="merch-cantidad-mas w-7 h-7 bg-lamaBlack border border-lamaGold/40 rounded text-white">+</button>
-                                    </div>
                                 </div>
                             </div>
 
@@ -1546,7 +1509,7 @@
                                     <span class="service-price" id="modal-acomp-insc-total">$0</span>
                                 </div>
                                 <div class="service-item" id="modal-jersey-item" style="display: none;">
-                                    <span class="service-name" id="modal-jersey-label">Jersey Oficial</span>
+                                    <span class="service-name" id="modal-jersey-label">Camiseta Oficial Región Norte</span>
                                     <span class="service-price" id="modal-jersey-total">$0</span>
                                 </div>
                                 <div class="service-item" id="modal-merchandising-item" style="display: none;">
@@ -1666,7 +1629,7 @@
                         </tr>
                         <tr id="pdf-jersey-row" style="display: none;">
                             <td>
-                                <p class="pdf-item-title" id="pdf-jersey-title">Jersey Oficial</p>
+                                <p class="pdf-item-title" id="pdf-jersey-title">Camiseta Oficial Región Norte</p>
                                 <p class="pdf-item-subtitle">TOTAL: <span id="pdf-jersey-count"></span></p>
                             </td>
                             <td id="pdf-jersey-total">$0</td>
@@ -1945,7 +1908,7 @@
                     if (card.dataset.requiereTalla === 'true') {
                         const talla = card.querySelector('.merch-talla');
                         if (talla && !talla.value) {
-                            alert('Selecciona una talla para la Camiseta Táctica antes de agregarla.');
+                            alert('Selecciona una talla antes de agregarla.');
                             return;
                         }
                     }
@@ -2056,7 +2019,7 @@
                 </div>
                 <div class="flex items-center gap-3 mt-2">
                     <input type="checkbox" class="w-5 h-5 acompanante-jersey">
-                    <label class="text-lamaBone">¿Interesado en Jersey Oficial ($70.000)?</label>
+                    <label class="text-lamaBone">¿Interesado en Camiseta Oficial Región Norte ($70.000)?</label>
                 </div>
                 <div class="acompanante-talla-field hidden">
                     <label class="form-label">Talla *</label>
@@ -2245,7 +2208,7 @@
             mensaje += `Condición Médica: ${data.condicion_medica || 'NO'}\n`;
             mensaje += `Contacto de Emergencia: ${data.emergencia_nombre}\n`;
             mensaje += `Teléfono Emergencia: ${data.emergencia_telefono}\n`;
-            mensaje += `Jersey Oficial: ${data.jersey ? 'Sí' : 'No'}${data.jersey ? ` (Talla: ${data.talla})` : ''}\n`;
+            mensaje += `Camiseta Oficial Región Norte: ${data.jersey ? 'Sí' : 'No'}${data.jersey ? ` (Talla: ${data.talla})` : ''}\n`;
 
             // ACOMPAÑANTES
             if (data.acompanantes && data.acompanantes.length) {
@@ -2255,7 +2218,7 @@
                     mensaje += `Documento Acompañante: ${acompanante.documento || ''}\n`;
                     mensaje += `Teléfono Acompañante: ${acompanante.telefono || ''}\n`;
                     if (acompanante.jersey) {
-                        mensaje += `Jersey Oficial: Sí (Talla: ${acompanante.talla || ''})\n`;
+                        mensaje += `Camiseta Oficial Región Norte: Sí (Talla: ${acompanante.talla || ''})\n`;
                     }
                 });
             } else {
@@ -2281,7 +2244,7 @@
             }
 
             if (jerseysCount > 0) {
-                mensaje += `Jersey Oficial (${jerseysCount} x $70.000)\n`;
+                mensaje += `Camiseta Oficial Región Norte (${jerseysCount} x $70.000)\n`;
                 mensaje += `$${jerseyTotal.toLocaleString('es-CO')}\n`;
             }
 
@@ -2506,7 +2469,7 @@
             // Jersey en el modal
             if (jerseysCount > 0) {
                 document.getElementById('modal-jersey-item').style.display = 'flex';
-                document.getElementById('modal-jersey-label').textContent = `Jersey Oficial (${jerseysCount} x $70.000)`;
+                document.getElementById('modal-jersey-label').textContent = `Camiseta Oficial Región Norte (${jerseysCount} x $70.000)`;
                 document.getElementById('modal-jersey-total').textContent = `$${totalJerseys.toLocaleString('es-CO')}`;
             } else {
                 document.getElementById('modal-jersey-item').style.display = 'none';

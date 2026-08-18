@@ -9,13 +9,14 @@ const MAPA_CAPITULOS = {
     'Floridablanca (Santander)': 'Floridablanca',
     'Medellín (Antioquia)': 'Medellín',
     'Puerto Colombia (Atlántico)': 'Puerto Colombia',
+    'Rionegro (Antioquia)': 'Rionegro',
     'Valle de Aburrá (Antioquia)': 'Valle Aburrá',
     'Zenú (Sucre - Córdoba)': 'Zenu'
 };
 
 const CAPITULOS_VALIDOS = [
     'Barranquilla', 'Bucaramanga', 'Cartagena', 'Cúcuta', 'Floridablanca',
-    'Medellín', 'Puerto Colombia', 'Valle Aburrá', 'Zenu'
+    'Medellín', 'Puerto Colombia', 'Rionegro', 'Valle Aburrá', 'Zenu'
 ];
 
 const TIPOS_PARTICIPANTE_VALIDOS = [
@@ -23,7 +24,7 @@ const TIPOS_PARTICIPANTE_VALIDOS = [
     'FULL COLOR MEMBER',
     'ROCKET PROSPECT',
     'PROSPECT',
-    'ESPOSA (a)',
+    'ESPOSA (o)',
     'CONYUGUE',
     'PAREJA',
     'HIJA (o)',
@@ -67,7 +68,7 @@ function mapearRegistroAInscripcion(registro) {
     } else if (textoCategoria.includes('prospect')) {
         tipoParticipante = 'PROSPECT';
     } else if (textoCategoria.includes('esposa')) {
-        tipoParticipante = 'ESPOSA (a)';
+        tipoParticipante = 'ESPOSA (o)';
     } else if (textoCategoria.includes('conyuge')) {
         tipoParticipante = 'CONYUGUE';
     } else if (textoCategoria.includes('pareja')) {

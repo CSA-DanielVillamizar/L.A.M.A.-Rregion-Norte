@@ -11,7 +11,7 @@ const TIPOS_PARTICIPANTE_PERMITIDOS = [
     'FULL COLOR MEMBER',
     'ROCKET PROSPECT',
     'PROSPECT',
-    'ESPOSA (a)',
+    'ESPOSA (o)',
     'CONYUGUE',
     'PAREJA',
     'HIJA (o)',
@@ -57,7 +57,7 @@ BEGIN
         -- Información del Participante
         tipo_participante VARCHAR(50) NOT NULL CHECK (tipo_participante IN (
             'DAMA L.A.M.A.', 'FULL COLOR MEMBER', 'ROCKET PROSPECT', 'PROSPECT',
-            'ESPOSA (a)', 'CONYUGUE', 'PAREJA', 'HIJA (o)', 'INVITADA (O)'
+            'ESPOSA (o)', 'CONYUGUE', 'PAREJA', 'HIJA (o)', 'INVITADA (O)'
         )),
         nombre_completo VARCHAR(200) NOT NULL,
         documento_numero VARCHAR(30) NOT NULL UNIQUE, -- Evita inscripciones dobles
@@ -215,7 +215,7 @@ class InscripcionModel {
         if (texto.includes('full color')) return 'FULL COLOR MEMBER';
         if (texto.includes('rocket')) return 'ROCKET PROSPECT';
         if (texto.includes('prosp') || texto.includes('prospect')) return 'PROSPECT';
-        if (texto.includes('esposa')) return 'ESPOSA (a)';
+        if (texto.includes('esposa')) return 'ESPOSA (o)';
         if (texto.includes('conyuge')) return 'CONYUGUE';
         if (texto.includes('pareja')) return 'PAREJA';
         if (texto.includes('hija') || texto.includes('hijo')) return 'HIJA (o)';
@@ -423,7 +423,7 @@ class InscripcionModel {
                         'FULL COLOR MEMBER',
                         'ROCKET PROSPECT',
                         'PROSPECT',
-                        'ESPOSA (a)',
+                        'ESPOSA (o)',
                         'CONYUGUE',
                         'PAREJA',
                         'HIJA (o)',

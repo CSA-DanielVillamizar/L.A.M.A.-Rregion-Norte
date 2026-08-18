@@ -4,6 +4,7 @@
  */
 
 const formularioService = require('./formularioService');
+const capitulosService = require('./capitulosService');
 
 /**
  * Obtiene los datos para la página principal
@@ -23,7 +24,7 @@ exports.getHomeData = () => {
             {
                 icon: '<svg class="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>',
                 title: 'ADRENALINA',
-                description: 'Competencia de Jet Skis y rutas extremas'
+                description: 'Rodada de carretera por el Golfo de Morrosquillo'
             },
             {
                 icon: '<svg class="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M14 10l-2 1m0 0l-2-1m2 1v2.5M20 7l-2 1m2-1l-2-1m2 1v2.5M14 4l-2-1-2 1M4 7l2-1M4 7l2 1M4 7v2.5M12 21l-2-1m2 1l2-1m-2 1v-2.5M6 18l-2-1v-2.5M18 18l2-1v-2.5" /></svg>',
@@ -32,14 +33,14 @@ exports.getHomeData = () => {
             },
             {
                 icon: '<svg class="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" /></svg>',
-                title: 'LUJO',
-                description: 'Hotelería y eventos VIP Clase 2'
+                title: 'HERMANDAD',
+                description: 'Integración de capítulos L.A.M.A. Región Norte'
             }
         ],
         stats: {
             miembros: '250+',
             eventos: '11',
-            capitulos: '9'
+            capitulos: String(capitulosService.getAllCapitulos().length)
         }
     };
 };

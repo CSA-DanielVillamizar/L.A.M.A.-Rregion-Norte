@@ -36,6 +36,7 @@ const normalizarCapitulo = (capitulo = '') => {
         'Floridablanca (Santander)': 'Floridablanca',
         'Medellín (Antioquia)': 'Medellín',
         'Puerto Colombia (Atlántico)': 'Puerto Colombia',
+        'Rionegro (Antioquia)': 'Rionegro',
         'Valle de Aburrá (Antioquia)': 'Valle Aburrá',
         'Zenú (Sucre - Córdoba)': 'Zenu'
     };

@@ -49,7 +49,7 @@ const TIPOS_PARTICIPANTE_VALIDOS = [
     'FULL COLOR MEMBER',
     'ROCKET PROSPECT',
     'PROSPECT',
-    'ESPOSA (a)',
+    'ESPOSA (o)',
     'CONYUGUE',
     'PAREJA',
     'HIJA (o)',
@@ -67,7 +67,7 @@ function normalizarTipoParticipante(categoria) {
     if (texto.includes('full color')) return 'FULL COLOR MEMBER';
     if (texto.includes('rocket')) return 'ROCKET PROSPECT';
     if (texto.includes('prospect') || texto.includes('prosp')) return 'PROSPECT';
-    if (texto.includes('esposa')) return 'ESPOSA (a)';
+    if (texto.includes('esposa')) return 'ESPOSA (o)';
     if (texto.includes('conyuge')) return 'CONYUGUE';
     if (texto.includes('pareja')) return 'PAREJA';
     if (texto.includes('hija') || texto.includes('hijo')) return 'HIJA (o)';
@@ -79,7 +79,10 @@ function normalizarTipoParticipante(categoria) {
  */
 exports.getAllEvents = async (req, res) => {
     try {
-        const events = await eventService.getAllEvents();
+        const todosLosEventos = await eventService.getAllEvents();
+        // Solo se publica el V Campeonato: el resto son eventos semilla/placeholder
+        // sin flujo de inscripcion real, y saturaban el listado a los visitantes.
+        const events = todosLosEventos.filter((evento) => evento.id === 'vnorte-2026');
         res.render('events/list', {
             title: 'Eventos L.A.M.A.',
             events

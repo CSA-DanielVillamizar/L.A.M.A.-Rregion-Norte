@@ -98,7 +98,17 @@ let capitulos = [
         miembros: 16,
         fundado: 2025,
         imagen: '/img/capitulos/zenu.jpg',
-        descripcion: 'Nuestro capítulo más reciente',
+        descripcion: 'Capítulo en el departamento de Córdoba',
+        activo: true
+    },
+    {
+        id: 10,
+        nombre: 'Rionegro',
+        departamento: 'Antioquia',
+        miembros: 14,
+        fundado: 2026,
+        imagen: '/img/capitulos/rionegro.jpg',
+        descripcion: 'Nuestro capítulo más reciente, en el oriente antioqueño',
         activo: true
     }
 ];

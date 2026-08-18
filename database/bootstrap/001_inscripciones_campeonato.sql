@@ -150,7 +150,7 @@ BEGIN
             'FULL COLOR MEMBER',
             'ROCKET PROSPECT',
             'PROSPECT',
-            'ESPOSA (a)',
+            'ESPOSA (o)',
             'CONYUGUE',
             'PAREJA',
             'HIJA (o)',
