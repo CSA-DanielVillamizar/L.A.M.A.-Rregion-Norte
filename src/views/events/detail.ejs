@@ -42,7 +42,7 @@
                             <%= event.id==='vnorte-2026' ? 'V CAMPEONATO REGION NORTE 2026' : event.nombre %>
                         </h1>
                         <p class="text-lamaNeon text-lg">Lugar: <%= event.id==='vnorte-2026'
-                                ? 'Costa Caribe Continental (Eje Covenas - San Antero)' : event.ubicacion %>
+                                ? 'Golfo de Morrosquillo · Coveñas' : event.ubicacion %>
                         </p>
                     </div>
                     <% if (event.destacado) { %>
@@ -201,7 +201,7 @@
                                                                             <% } %>
                                                         </h3>
                                                         <p class="text-lamaNeon text-sm">
-                                                            <%= new Date(dia.fecha).toLocaleDateString('es-CO', {
+                                                            <%= new Date(dia.fecha + 'T12:00:00').toLocaleDateString('es-CO', {
                                                                 weekday: 'long' , day: 'numeric' , month: 'long' }) %>
                                                         </p>
                                                     </div>

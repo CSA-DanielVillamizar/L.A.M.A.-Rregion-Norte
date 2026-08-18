@@ -10,9 +10,9 @@ const eventsDB = [
     {
         id: 'vnorte-2026',
         nombre: 'V Campeonato Región Norte',
-        fecha: '2026-09-12',
+        fecha: '2026-09-11',
         fechaFin: '2026-09-13',
-        ubicacion: 'Costa Caribe Continental (Coveñas - San Antero), Colombia',
+        ubicacion: 'Golfo de Morrosquillo · Coveñas, Colombia',
         hotel: 'Hotel Playa Coveñas (Segunda Ensenada de Coveñas, frente a la playa)',
         descripcion: 'Evento cumbre de la Región Norte en el Golfo de Morrosquillo: mototurismo de carretera, agenda costera, integración regional y premiación oficial.',
         hospedajeOficial: {
@@ -57,7 +57,8 @@ const eventsDB = [
             valor: 100000,
             moneda: 'COP',
             incluye: [
-                'Kit Oficial (Camiseta, Gorra, Parche Conmemorativo V Edición)',
+                'Cena acto protocolario',
+                'Gorra',
                 'Brazalete identificador'
             ]
         },
@@ -79,116 +80,123 @@ const eventsDB = [
         agenda: [
             {
                 dia: 1,
-                fecha: '2026-09-12',
-                titulo: 'SABADO 12 DE SEPTIEMBRE - APERTURA RUTA COSTERA L.A.M.A.',
+                fecha: '2026-09-11',
+                titulo: 'VIERNES 11 DE SEPTIEMBRE - ARRIBO Y ACUARTELAMIENTO',
                 actividades: [
                     {
-                        hora: '08:00 AM',
-                        titulo: 'Recepcion de Delegaciones y Registro',
-                        lugar: 'Punto de concentracion oficial en Coveñas',
-                        detalles: 'Bienvenida oficial a las delegaciones nacionales e internacionales. Registro logistico y alistamiento de caravanas por capitulo.',
-                        costo: 40000,
-                        nota: 'Por cuenta de participante'
+                        hora: '02:00 PM - 06:00 PM',
+                        titulo: 'Llegada y Registro',
+                        lugar: 'Hotel Playa Coveñas',
+                        detalles: 'Llegada al parqueadero interno del hotel. Registro, validación de inscripciones, entrega de kits y acomodación en las habitaciones.',
+                        nota: 'Holgura de 4 horas previendo retrasos climáticos o mecánicos en las rutas de aproximación.'
                     },
                     {
-                        hora: '09:00 AM',
-                        titulo: 'Check-in y Entrega de Kits',
-                        lugar: 'Zona hotelera Coveñas - San Antero',
-                        detalles: 'Entrega de credenciales, camiseta oficial "V Campeonato", gorra náutica y brazalete All Access.',
+                        hora: '06:00 PM - 08:00 PM',
+                        titulo: 'Tiempo Libre',
+                        detalles: 'Tiempo libre para que los socios cenen (no incluido en el plan) y se instalen.'
+                    },
+                    {
+                        hora: '08:00 PM - 09:00 PM',
+                        titulo: 'Bienvenida Oficial',
+                        lugar: 'Quioscos frente al mar',
+                        detalles: 'Apertura a cargo del Presidente Daniel Andrey Villamizar Araque y el Vicepresidente Samuel Chamey Raigoza. Intervención del equipo gerencial (Víctor Gonzalo Mejía, Juliana Cogollo, Víctor Rueda y Orlando Ozuna) para bajar las directrices disciplinarias de la visita a la base militar del día siguiente.',
                         incluido: true
-                    },
-                    {
-                        hora: '12:00 PM',
-                        titulo: 'Almuerzo Tipico Caribe',
-                        detalles: 'Cocina regional de mar para cargar energias antes de la caravana costera.',
-                        nota: 'Por cuenta de cada miembro'
-                    },
-                    {
-                        hora: '01:30 PM',
-                        titulo: 'FORMACION DE CARAVANA PRINCIPAL (Evento Central)',
-                        lugar: 'Corredor costero Coveñas',
-                        detalles: 'Briefing de seguridad vial y protocolo de avance por bloques para todo el peloton.',
-                        obligatorio: true
-                    },
-                    {
-                        hora: '02:00 PM',
-                        titulo: 'INICIO DEL CAMPEONATO REGIONAL',
-                        detalles: 'Pilotos y copilotos: ruta terrestre de integracion por el eje Coveñas - San Antero. Acompanantes y familiares: agenda costera y actividades nauticas opcionales en el Golfo de Morrosquillo.',
-                        nota: 'Actividades náuticas opcionales para miembros y acompañantes; consulta disponibilidad con la organización.',
-                        subruta: [
-                            'Concentracion en Coveñas',
-                            'Tramo costero Punta Piedra',
-                            'Ingreso a San Antero',
-                            'Parada tecnica y foto oficial'
-                        ]
-                    },
-                    {
-                        hora: '04:30 PM',
-                        titulo: 'Juegos Playeros y Actividades de Integracion',
-                        detalles: 'Juegos de campeonato por capitulos: relevos en arena, desafios de equipo y actividades de hermandad frente al mar.',
-                        incluido: true
-                    },
-                    {
-                        hora: '08:00 PM',
-                        titulo: 'CENA DE GALA: "NOCHE BLANCA"',
-                        codigoVestuario: 'Ropa blanca',
-                        detalles: 'Cena buffet caribena, show cultural regional y fiesta de integracion.',
-                        nota: 'Por cuenta de cada miembro'
                     }
                 ]
             },
             {
                 dia: 2,
-                fecha: '2026-09-13',
-                titulo: 'DOMINGO 13 DE SEPTIEMBRE - RUTA COVEÑAS SAN ANTERO',
+                fecha: '2026-09-12',
+                titulo: 'SÁBADO 12 DE SEPTIEMBRE - OPERACIÓN NAVAL Y NOCHE DE GALA',
                 actividades: [
                     {
-                        hora: '05:00 AM',
-                        titulo: 'Vista de Amanecer',
-                        lugar: 'Playa principal de Coveñas'
+                        hora: '07:00 AM - 08:30 AM',
+                        titulo: 'Desayuno',
+                        detalles: 'Desayuno en el hotel.',
+                        incluido: true
                     },
                     {
-                        hora: '05:30 AM',
-                        titulo: 'Regata de Veleros en el Golfo de Morrosquillo',
-                        costo: 100000,
-                        unidad: 'por persona',
-                        nota: 'Actividad opcional para miembros y acompañantes; consulta disponibilidad con la organización.'
+                        hora: '08:30 AM - 09:15 AM',
+                        titulo: 'Formación y Briefing',
+                        nota: 'Holgura de 45 minutos: organizar decenas de motocicletas, asegurar que todos tengan el equipo de protección y dar instrucciones toma tiempo.'
                     },
                     {
-                        hora: '06:30 AM',
-                        titulo: 'Actividad Acuatica Opcional',
-                        detalles: 'Espacio libre para experiencias nauticas guiadas.'
+                        hora: '09:15 AM - 09:30 AM',
+                        titulo: 'Desplazamiento a la Base Naval',
+                        detalles: 'Desplazamiento corto hacia la Base de Entrenamiento de Infantería de Marina.'
                     },
                     {
-                        hora: '09:00 AM',
-                        titulo: 'Desayuno Costeno',
-                        nota: 'Por cuenta de cada miembro'
+                        hora: '09:30 AM - 12:00 PM',
+                        titulo: 'Visita Oficial al Parque Museo de Infantería de Marina',
+                        lugar: 'Base de Entrenamiento de Infantería de Marina',
+                        detalles: 'Ingreso pausado por los controles de la guardia militar, parqueo organizado, recorrido por el museo y toma de la fotografía oficial del campeonato.',
+                        nota: 'Holgura de 2.5 horas.'
                     },
                     {
-                        hora: '10:00 AM',
-                        titulo: 'Caravana Terrestre en "Mulas" o Chiva',
-                        detalles: 'Caravana tematica en vehiculos de apoyo decorados por capitulo. Ruta turistica: Malecon de Coveñas -> corredor costero -> San Antero -> retorno por playa.',
-                        nota: 'Actividad opcional para miembros y acompañantes; consulta disponibilidad con la organización.',
-                        subruta: [
-                            'Malecon de Coveñas',
-                            'Corredor costero',
-                            'Parque principal de San Antero',
-                            'Zona gastronomica',
-                            'Foto oficial de clausura'
-                        ]
+                        hora: '12:00 PM - 12:45 PM',
+                        titulo: 'Rodada de Exhibición',
+                        lugar: 'Nuevo Malecón de Coveñas',
+                        detalles: 'Rodada de exhibición pasando por el nuevo Malecón de Coveñas (a 300 m del hotel) y retorno a la sede.'
                     },
                     {
-                        hora: '12:30 PM',
-                        titulo: 'ALMUERZO DE CLAUSURA Y PREMIACIÓN',
-                        lugar: 'Restaurante de Playa en San Antero',
-                        detalles: 'Entrega de trofeos y reconocimientos: campeon de juegos playeros, capitulo con mayor asistencia y mencion honorifica al rider de mayor kilometraje.',
-                        nota: 'Por cuenta de cada miembro'
+                        hora: '01:00 PM - 03:00 PM',
+                        titulo: 'Almuerzo',
+                        lugar: 'Hotel Playa Coveñas',
+                        detalles: 'Almuerzo en el Hotel Playa Coveñas.',
+                        incluido: true
                     },
                     {
-                        hora: '03:00 PM',
-                        titulo: 'Tarde Libre - Retorno y Despedida',
-                        detalles: 'Retorno por carretera y cierre oficial del evento.',
-                        nota: 'Por cuenta de cada miembro'
+                        hora: '03:00 PM - 06:30 PM',
+                        titulo: 'Tarde de Esparcimiento',
+                        detalles: 'Piscina (abierta hasta las 7:00 PM), playa y descanso antes del evento formal.'
+                    },
+                    {
+                        hora: '06:30 PM - 08:00 PM',
+                        titulo: 'Cena de Integración',
+                        detalles: 'Cena de Integración cubierta por el valor de la inscripción.',
+                        incluido: true
+                    },
+                    {
+                        hora: '08:00 PM - 10:00 PM',
+                        titulo: 'Protocolo de Premiación L.A.M.A. Región Norte',
+                        detalles: 'Entrega de los 9 trofeos principales, otorgamiento de las 4 placas especiales y reconocimiento y entrega de recordatorios a cada capítulo asistente.',
+                        obligatorio: true
+                    },
+                    {
+                        hora: '10:00 PM en adelante',
+                        titulo: 'Fiesta de Clausura',
+                        detalles: 'Coctelería y tienda del hotel disponibles con cargo a la habitación de quien consuma.'
+                    }
+                ]
+            },
+            {
+                dia: 3,
+                fecha: '2026-09-13',
+                titulo: 'DOMINGO 13 DE SEPTIEMBRE - GOBERNANZA Y RETORNO SEGURO',
+                actividades: [
+                    {
+                        hora: '07:00 AM - 08:30 AM',
+                        titulo: 'Desayuno de Despedida',
+                        detalles: 'Desayuno de despedida incluido. Se recomienda que los oficiales y presidentes de capítulo desayunen a las 7:00 AM en punto para estar liberados a tiempo.',
+                        incluido: true
+                    },
+                    {
+                        hora: '08:30 AM - 10:00 AM',
+                        titulo: 'Reunión Extraordinaria de Oficiales',
+                        lugar: 'Espacio reservado en el hotel',
+                        detalles: 'Elección de Presidencia Región Norte. Exclusiva para Presidentes de Capítulo y Oficiales con derecho a voto: lectura de la nueva disposición estatutaria, postulación de candidatos, votación, escrutinio y nombramiento del nuevo Presidente de la Región Norte, marcando la entrega del cargo.'
+                    },
+                    {
+                        hora: '10:00 AM - 11:30 AM',
+                        titulo: 'Check-out Administrativo',
+                        detalles: 'Anuncio oficial a toda la membrecía del nuevo Presidente Regional. Tiempo para cargar equipajes en las motocicletas, revisión mecánica básica y toma de la fotografía con la nueva junta regional.',
+                        nota: 'Holgura de 1.5 horas para evitar congestiones en la recepción.'
+                    },
+                    {
+                        hora: '11:30 AM',
+                        titulo: 'Orden de Partida',
+                        detalles: 'Todas las delegaciones inician rodada hacia sus ciudades de origen.',
+                        obligatorio: true
                     }
                 ]
             }
