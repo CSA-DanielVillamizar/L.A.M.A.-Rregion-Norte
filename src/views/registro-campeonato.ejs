@@ -1105,6 +1105,11 @@
                                     <input type="date" name="fecha_nacimiento" id="fechaNacimiento"
                                         class="form-input w-full px-4 py-3 rounded" required>
                                 </div>
+                                <div>
+                                    <label class="form-label">Teléfono Celular *</label>
+                                    <input type="tel" name="telefono_celular" id="telefonoCelular"
+                                        class="form-input w-full px-4 py-3 rounded" required>
+                                </div>
                             </div>
                         </div>
 
@@ -1196,7 +1201,8 @@
                                 <div>
                                     <label class="form-label">Fecha de llegada a la ruta continental *</label>
                                     <input type="date" name="fecha_llegada" id="fechaLlegada"
-                                        class="form-input w-full px-4 py-3 rounded" min="2026-09-07" required>
+                                        class="form-input w-full px-4 py-3 rounded" min="2026-09-11"
+                                        max="2026-09-13" value="2026-09-12" required>
                                 </div>
                                 <div>
                                     <label class="form-label">Condición médica</label>
@@ -1310,12 +1316,14 @@
                         </div>
 
                         <div class="form-section">
-                            <h2 class="form-section-title font-headings">COMPROBANTE DE PAGO</h2>
+                            <h2 class="form-section-title font-headings">COMPROBANTE DE PAGO (Opcional por ahora)</h2>
                             <p class="text-lamaBone mb-4 text-sm">
-                                Realiza el pago escaneando el Código QR o transfiriendo al número de cuenta indicado
-                                en la sección "INFORMACIÓN BANCARIA" y adjunta aquí el comprobante correspondiente.
+                                Si ya realizaste la transferencia (Código QR o número de cuenta en "INFORMACIÓN
+                                BANCARIA"), adjunta aquí tu comprobante. Si vas a pagar más adelante o el día del
+                                evento, puedes enviarlo después desde <strong class="text-lamaGold">"Buscar mi
+                                    inscripción"</strong> sin volver a llenar el formulario.
                             </p>
-                            <label class="form-label">Comprobante de Pago (Imagen o PDF) *</label>
+                            <label class="form-label">Comprobante de Pago (Imagen o PDF)</label>
                             <label id="comprobanteDropzone" for="comprobante" class="dropzone block">
                                 <svg class="w-10 h-10 mx-auto mb-2 text-lamaGold" fill="none" stroke="currentColor"
                                     viewBox="0 0 24 24">
@@ -1323,11 +1331,11 @@
                                         d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M12 12v9m0-9l-3 3m3-3l3 3" />
                                 </svg>
                                 <p class="text-sm text-lamaBone"><span class="text-lamaNeon font-bold">Arrastra tu
-                                        comprobante aquí</span> o haz click para seleccionarlo</p>
+                                        comprobante aquí</span> o haz click para seleccionarlo (opcional)</p>
                                 <p id="comprobanteFileName" class="text-xs text-lamaGold mt-2 font-bold"></p>
                             </label>
                             <input type="file" name="comprobante" id="comprobante" accept=".pdf,image/jpeg,image/png"
-                                class="hidden" required>
+                                class="hidden">
                             <p class="text-xs text-gray-400 mt-2">Formatos permitidos: JPG, PNG o PDF. Tamaño máximo
                                 5MB.</p>
                         </div>
@@ -1392,7 +1400,7 @@
                                     directamente a la cuenta oficial de L.A.M.A. Región Norte.
                                 </p>
                                 <p class="text-gray-400 text-xs mb-1">Número de Cuenta</p>
-                                <p class="font-mono text-lg font-bold text-lamaBone">1234 5678 9012</p>
+                                <p class="font-mono text-lg font-bold text-lamaBone">23078821027</p>
                             </div>
                         </div>
 
@@ -1404,15 +1412,11 @@
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-lamaBone">
                                 <div>
                                     <p class="text-gray-400 text-xs mb-1">Número de Cuenta</p>
-                                    <p class="font-mono text-lg font-bold">1234 5678 9012</p>
+                                    <p class="font-mono text-lg font-bold">23078821027</p>
                                 </div>
                                 <div>
                                     <p class="text-gray-400 text-xs mb-1">Titular</p>
                                     <p class="font-bold">L.A.M.A. REGIÓN NORTE</p>
-                                </div>
-                                <div>
-                                    <p class="text-gray-400 text-xs mb-1">NIT</p>
-                                    <p class="font-mono">900.123.456-7</p>
                                 </div>
                                 <div>
                                     <p class="text-gray-400 text-xs mb-1">Tipo de Cuenta</p>
@@ -1429,7 +1433,7 @@
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-lamaBone">
                                 <div>
                                     <p class="text-gray-400 text-xs mb-1">Número Nequi</p>
-                                    <p class="font-mono text-lg font-bold">310 632 8171</p>
+                                    <p class="font-mono text-lg font-bold">310 432 6730</p>
                                 </div>
                                 <div>
                                     <p class="text-gray-400 text-xs mb-1">Titular</p>
@@ -1716,7 +1720,7 @@
                         <p class="pdf-bank-item"><strong>Número:</strong> Por definir</p>
                         <p class="pdf-bank-item"><strong>Titular:</strong> L.A.M.A. Región Norte</p>
                         <p class="pdf-bank-item" style="font-style: italic; margin-top: 2mm;">* Envíe el comprobante al
-                            WhatsApp: <strong>+57 310 632 8171</strong></p>
+                            WhatsApp: <strong>+57 310 432 6730</strong></p>
                     </div>
                 </div>
             </div>
@@ -2157,6 +2161,7 @@
             const eps = document.getElementById('eps').value.trim();
             const email = document.getElementById('email').value.trim();
             const fechaNacimiento = document.getElementById('fechaNacimiento').value;
+            const telefonoCelular = document.getElementById('telefonoCelular').value.trim();
             const emergenciaNombre = document.getElementById('emergenciaNombre').value.trim();
             const emergenciaTelefono = document.getElementById('emergenciaTelefono').value.trim();
 
@@ -2164,6 +2169,7 @@
             if (!eps) errors.push('EPS es obligatorio');
             if (!email) errors.push('Correo electrónico es obligatorio');
             if (!fechaNacimiento) errors.push('Fecha de nacimiento es obligatoria');
+            if (!telefonoCelular) errors.push('Teléfono celular es obligatorio');
             if (!emergenciaNombre) errors.push('Nombre de emergencia es obligatorio');
             if (!emergenciaTelefono) errors.push('Teléfono de emergencia es obligatorio');
 
@@ -2354,6 +2360,7 @@
                 eps: document.getElementById('eps').value.trim(),
                 email: document.getElementById('email').value.trim(),
                 fecha_nacimiento: document.getElementById('fechaNacimiento').value,
+                telefono_celular: document.getElementById('telefonoCelular').value.trim(),
                 emergencia_nombre: document.getElementById('emergenciaNombre').value.trim(),
                 emergencia_telefono: document.getElementById('emergenciaTelefono').value.trim(),
                 pais: paisSelect.value,
@@ -2411,11 +2418,10 @@
             const merchandisingItems = MerchandisingManager.obtenerItems();
             const totalMerchandising = MerchandisingManager.calcularTotal();
 
+            // El comprobante es opcional al momento de pre-inscribirse: muchos socios
+            // pagan despues (algunos hasta el dia del evento). Si no lo adjuntan ahora,
+            // pueden subirlo mas tarde desde "Buscar mi inscripcion".
             const comprobanteFile = comprobanteInput.files && comprobanteInput.files[0];
-            if (!comprobanteFile) {
-                alert('El comprobante de pago es obligatorio.');
-                return;
-            }
 
             try {
                 const formData = new FormData();
@@ -2425,6 +2431,7 @@
                 formData.append('eps', data.eps);
                 formData.append('email', data.email);
                 formData.append('fecha_nacimiento', data.fecha_nacimiento);
+                formData.append('telefono_celular', data.telefono_celular);
                 formData.append('emergencia_nombre', data.emergencia_nombre);
                 formData.append('emergencia_telefono', data.emergencia_telefono);
                 formData.append('pais', data.pais);
@@ -2440,7 +2447,9 @@
                 formData.append('acompanantes', JSON.stringify(data.acompanantes));
                 formData.append('merchandising', JSON.stringify(merchandisingItems));
                 formData.append('total_merchandising', String(totalMerchandising));
-                formData.append('comprobante', comprobanteFile);
+                if (comprobanteFile) {
+                    formData.append('comprobante', comprobanteFile);
+                }
 
                 const response = await fetch('/eventos/vnorte-2026/registro', {
                     method: 'POST',

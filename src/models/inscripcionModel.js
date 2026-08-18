@@ -290,6 +290,9 @@ class InscripcionModel {
 
             IF COL_LENGTH('InscripcionesCampeonato', 'fecha_nacimiento') IS NULL
                 ALTER TABLE InscripcionesCampeonato ADD fecha_nacimiento DATE NULL;
+
+            IF COL_LENGTH('InscripcionesCampeonato', 'telefono_celular') IS NULL
+                ALTER TABLE InscripcionesCampeonato ADD telefono_celular VARCHAR(50) NULL;
         `);
 
         await this.asegurarConstraintTiposParticipante(pool);
@@ -590,6 +593,7 @@ class InscripcionModel {
             request.input('comprobante_contenido', sql.VarBinary(sql.MAX), inscripcionData.comprobante_contenido || null);
             request.input('email', sql.VarChar(150), inscripcionData.email || null);
             request.input('fecha_nacimiento', sql.Date, inscripcionData.fecha_nacimiento ? new Date(inscripcionData.fecha_nacimiento) : null);
+            request.input('telefono_celular', sql.VarChar(50), inscripcionData.telefono_celular || null);
 
             const query = `
                 INSERT INTO InscripcionesCampeonato (
@@ -601,7 +605,7 @@ class InscripcionModel {
                     servicios_acompanantes_json, total_servicios, merchandising_json, total_merchandising,
                     pais, estado_validacion,
                     comprobante_nombre_archivo, comprobante_mime, comprobante_tamano_bytes,
-                    comprobante_contenido, email, fecha_nacimiento
+                    comprobante_contenido, email, fecha_nacimiento, telefono_celular
                 )
                 OUTPUT INSERTED.id_inscripcion, INSERTED.fecha_registro
                 VALUES (
@@ -613,7 +617,7 @@ class InscripcionModel {
                     @servicios_acompanantes_json, @total_servicios, @merchandising_json, @total_merchandising,
                     @pais, @estado_validacion,
                     @comprobante_nombre_archivo, @comprobante_mime, @comprobante_tamano_bytes,
-                    @comprobante_contenido, @email, @fecha_nacimiento
+                    @comprobante_contenido, @email, @fecha_nacimiento, @telefono_celular
                 )
             `;
 
@@ -649,9 +653,48 @@ class InscripcionModel {
             `;
 
             const result = await request.query(query);
-            return result.recordset.length > 0 ? result.recordset[0] : null;
+            return result.recordset.length > 0
+                ? this.normalizarInscripcionSalida(result.recordset[0])
+                : null;
         } catch (error) {
             console.error('Error en InscripcionModel.findByDocumento:', error);
+            throw error;
+        }
+    }
+
+    /**
+     * Adjunta o reemplaza el comprobante de pago de una inscripción ya
+     * existente. Pensado para el flujo de "pre-inscripción sin pago": el
+     * socio llena el formulario primero y sube el comprobante despues,
+     * sin volver a diligenciar sus datos.
+     * @param {string} documento
+     * @param {{nombreArchivo:string, mime:string, tamanoBytes:number, contenido:Buffer}} archivo
+     * @returns {Promise<Object|null>} Inscripción actualizada o null si no existe
+     */
+    static async actualizarComprobante(documento, archivo) {
+        try {
+            await this.asegurarColumnasExtendidas();
+            const pool = await getPool();
+            const request = pool.request();
+            request.input('documento', sql.VarChar(30), String(documento).trim());
+            request.input('comprobante_nombre_archivo', sql.NVarChar(260), archivo.nombreArchivo || null);
+            request.input('comprobante_mime', sql.NVarChar(120), archivo.mime || null);
+            request.input('comprobante_tamano_bytes', sql.Int, Number.isFinite(archivo.tamanoBytes) ? archivo.tamanoBytes : null);
+            request.input('comprobante_contenido', sql.VarBinary(sql.MAX), archivo.contenido || null);
+
+            const result = await request.query(`
+                UPDATE InscripcionesCampeonato
+                SET comprobante_nombre_archivo = @comprobante_nombre_archivo,
+                    comprobante_mime = @comprobante_mime,
+                    comprobante_tamano_bytes = @comprobante_tamano_bytes,
+                    comprobante_contenido = @comprobante_contenido
+                OUTPUT INSERTED.id_inscripcion
+                WHERE documento_numero = @documento
+            `);
+
+            return result.recordset.length > 0 ? result.recordset[0] : null;
+        } catch (error) {
+            console.error('Error en InscripcionModel.actualizarComprobante:', error);
             throw error;
         }
     }
