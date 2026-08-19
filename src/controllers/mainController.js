@@ -95,7 +95,7 @@ exports.getRegistro = (req, res) => {
     res.render('registro', {
         title: 'Registro V Campeonato',
         precioBase: 100000,
-        precioJersey: 70000
+        precioJersey: 65000
     });
 };
 

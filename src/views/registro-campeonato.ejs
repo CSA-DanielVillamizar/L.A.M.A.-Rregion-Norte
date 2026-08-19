@@ -1050,7 +1050,7 @@
                 <h1 class="text-4xl md:text-6xl font-headings text-lamaGold tracking-widest mb-3">
                     INSCRIPCIÓN V CAMPEONATO REGIONAL
                 </h1>
-                <p class="text-lamaNeon neon-text text-lg">Costa Caribe Continental (Coveñas - San Antero) • Septiembre
+                <p class="text-lamaNeon neon-text text-lg">Costa Caribe Continental ( Golfo de Morrosquillo - Coveñas) • Septiembre
                     12-13, 2026</p>
             </div>
 
@@ -1214,10 +1214,14 @@
 
                         <div class="form-section">
                             <h2 class="form-section-title font-headings">MERCADEO</h2>
+                            <div class="bg-white rounded mb-3 overflow-hidden max-w-xs">
+                                <img src="/img/merchandising/camiseta.png" alt="Camiseta Oficial Región Norte"
+                                    class="w-full h-40 object-contain" loading="lazy">
+                            </div>
                             <div class="flex items-center gap-3 mb-4">
                                 <input type="checkbox" id="jersey" name="jersey" class="w-5 h-5">
                                 <label for="jersey" class="text-lamaBone">¿Interesado en Camiseta Oficial Región Norte
-                                    ($70.000)?</label>
+                                    ($65.000)?</label>
                             </div>
                             <div id="jerseyFields" class="grid grid-cols-1 md:grid-cols-2 gap-4 hidden">
                                 <div>
@@ -1245,6 +1249,10 @@
                                 <!-- GORRA -->
                                 <div class="merch-card bg-lamaDark/40 backdrop-blur-md border-2 border-lamaGold/50 rounded-lg p-4 cursor-pointer hover:border-lamaNeon hover:shadow-lg hover:shadow-lamaNeon/20 transition-all"
                                     data-item="gorra" data-nombre="Gorra Oficial V Campeonato" data-price="25000">
+                                    <div class="bg-white rounded mb-3 overflow-hidden">
+                                        <img src="/img/merchandising/gorra.png" alt="Gorra Oficial V Campeonato Región Norte"
+                                            class="w-full h-36 object-contain" loading="lazy">
+                                    </div>
                                     <h4 class="text-sm font-headings text-lamaGold mb-2 flex items-center gap-2">
                                         <span class="icon-symbol text-lamaNeon" aria-hidden="true">checkroom</span>
                                         Gorra Oficial</h4>
@@ -1256,6 +1264,10 @@
                                 <!-- BUFF -->
                                 <div class="merch-card bg-lamaDark/40 backdrop-blur-md border-2 border-lamaGold/50 rounded-lg p-4 cursor-pointer hover:border-lamaNeon hover:shadow-lg hover:shadow-lamaNeon/20 transition-all"
                                     data-item="buff" data-nombre="Buff Cortavientos Región Norte" data-price="25000">
+                                    <div class="bg-white rounded mb-3 overflow-hidden">
+                                        <img src="/img/merchandising/buff.png" alt="Buff Cortavientos Región Norte"
+                                            class="w-full h-36 object-contain" loading="lazy">
+                                    </div>
                                     <h4 class="text-sm font-headings text-lamaGold mb-2 flex items-center gap-2">
                                         <span class="icon-symbol text-lamaNeon" aria-hidden="true">air</span>
                                         Buff Cortavientos</h4>
@@ -1329,9 +1341,9 @@
                                 <span id="resJerseyLabel">Camiseta</span>
                                 <span id="resJersey">$0</span>
                             </div>
-                            <div class="flex justify-between" id="resMerchandisingRow" style="display: none;">
-                                <span id="resMerchandisingLabel">Boutique</span>
-                                <span id="resMerchandising">$0</span>
+                            <div class="flex justify-between items-start gap-3" id="resMerchandisingRow" style="display: none;">
+                                <span id="resMerchandisingLabel" class="flex-1">Boutique</span>
+                                <span id="resMerchandising" class="whitespace-nowrap">$0</span>
                             </div>
                             <div class="border-t border-gray-700 pt-3 flex justify-between font-bold text-lamaGold">
                                 <span>Total a transferir</span>
@@ -1871,7 +1883,7 @@
         }
 
         const BASE_PRICE = 100000;
-        const JERSEY_PRICE = 70000;
+        const JERSEY_PRICE = 65000;
         let registroActual = {};
 
         /**
@@ -1969,6 +1981,12 @@
                 }));
             },
 
+            formatearResumen() {
+                return this.obtenerItems()
+                    .map((i) => `${i.nombre} x${i.cantidad}`)
+                    .join(', ');
+            },
+
             calcularTotal() {
                 return this.obtenerItems().reduce((sum, i) => sum + i.precio_total, 0);
             },
@@ -2023,7 +2041,7 @@
                 </div>
                 <div class="flex items-center gap-3 mt-2">
                     <input type="checkbox" class="w-5 h-5 acompanante-jersey">
-                    <label class="text-lamaBone">¿Interesado en Camiseta Oficial Región Norte ($70.000)?</label>
+                    <label class="text-lamaBone">¿Interesado en Camiseta Oficial Región Norte ($65.000)?</label>
                 </div>
                 <div class="acompanante-talla-field hidden">
                     <label class="form-label">Talla *</label>
@@ -2099,7 +2117,7 @@
             }
 
             if (jerseysCount > 0) {
-                resJerseyLabel.textContent = `Camiseta (${jerseysCount} x $70.000)`;
+                resJerseyLabel.textContent = `Camiseta (${jerseysCount} x $65.000)`;
                 resJersey.textContent = `$${totalJerseys.toLocaleString('es-CO')}`;
             } else {
                 resJerseyLabel.textContent = 'Camiseta';
@@ -2108,7 +2126,7 @@
 
             if (totalMerchandising > 0) {
                 resMerchandisingRow.style.display = 'flex';
-                resMerchandisingLabel.textContent = `Boutique (${merchandisingItems.length} items)`;
+                resMerchandisingLabel.textContent = `Boutique: ${MerchandisingManager.formatearResumen()}`;
                 resMerchandising.textContent = `$${totalMerchandising.toLocaleString('es-CO')}`;
             } else {
                 resMerchandisingRow.style.display = 'none';
@@ -2237,7 +2255,7 @@
                 : 0;
             const jerseysCount = (data.jersey ? 1 : 0) + acompanantesJerseyCount;
             const inscripcionTotal = 100000 * (1 + acompanantesCount);
-            const jerseyTotal = 70000 * jerseysCount;
+            const jerseyTotal = 65000 * jerseysCount;
 
             mensaje += 'Inscripción Base (OBLIGATORIO)\n';
             mensaje += `$${inscripcionTotal.toLocaleString('es-CO')}\n`;
@@ -2248,7 +2266,7 @@
             }
 
             if (jerseysCount > 0) {
-                mensaje += `Camiseta Oficial Región Norte (${jerseysCount} x $70.000)\n`;
+                mensaje += `Camiseta Oficial Región Norte (${jerseysCount} x $65.000)\n`;
                 mensaje += `$${jerseyTotal.toLocaleString('es-CO')}\n`;
             }
 
@@ -2473,7 +2491,7 @@
             // Jersey en el modal
             if (jerseysCount > 0) {
                 document.getElementById('modal-jersey-item').style.display = 'flex';
-                document.getElementById('modal-jersey-label').textContent = `Camiseta Oficial Región Norte (${jerseysCount} x $70.000)`;
+                document.getElementById('modal-jersey-label').textContent = `Camiseta Oficial Región Norte (${jerseysCount} x $65.000)`;
                 document.getElementById('modal-jersey-total').textContent = `$${totalJerseys.toLocaleString('es-CO')}`;
             } else {
                 document.getElementById('modal-jersey-item').style.display = 'none';
@@ -2484,7 +2502,7 @@
             if (modalMerchandisingItem) {
                 if (totalMerchandising > 0) {
                     modalMerchandisingItem.style.display = 'flex';
-                    document.getElementById('modal-merchandising-label').textContent = `Boutique (${merchandisingItems.length} items)`;
+                    document.getElementById('modal-merchandising-label').textContent = `Boutique: ${MerchandisingManager.formatearResumen()}`;
                     document.getElementById('modal-merchandising-total').textContent = `$${totalMerchandising.toLocaleString('es-CO')}`;
                 } else {
                     modalMerchandisingItem.style.display = 'none';
@@ -2537,7 +2555,7 @@
             // Jersey
             if (jerseysCount > 0) {
                 document.getElementById('pdf-jersey-row').style.display = 'table-row';
-                document.getElementById('pdf-jersey-count').textContent = `${jerseysCount} x $70.000`;
+                document.getElementById('pdf-jersey-count').textContent = `${jerseysCount} x $65.000`;
                 document.getElementById('pdf-jersey-total').textContent = `$${totalJerseys.toLocaleString('es-CO')}`;
             } else {
                 document.getElementById('pdf-jersey-row').style.display = 'none';
