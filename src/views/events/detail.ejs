@@ -140,7 +140,9 @@
                                         <p class="text-xs text-gray-400 mb-3"><%= tarifa.unidad %></p>
                                         <ul class="space-y-1">
                                             <% tarifa.incluye.forEach(function(item) { %>
-                                                <li class="text-lamaBone text-xs">✓ <%= item %></li>
+                                                <li class="text-lamaBone text-xs flex items-start gap-1"><span
+                                                        class="icon-symbol text-sm text-lamaNeon"
+                                                        style="font-size: 14px;">check</span> <%= item %></li>
                                                 <% }); %>
                                         </ul>
                                     </div>
