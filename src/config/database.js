@@ -4,6 +4,7 @@
  */
 
 const sql = require('mssql');
+const logger = require('../utils/logger');
 
 /**
  * Configuración de conexión a Azure SQL Database
@@ -48,11 +49,11 @@ const getPool = async () => {
                 throw new Error(`Faltan variables de entorno para Azure SQL: ${missing.join(', ')}`);
             }
             pool = await sql.connect(config);
-            console.log('Conexión establecida con Azure SQL Database');
+            logger.info('Conexión establecida con Azure SQL Database');
         }
         return pool;
     } catch (error) {
-        console.error('Error al conectar con Azure SQL Database:', error.message);
+        logger.error('Error al conectar con Azure SQL Database', { error });
         throw error;
     }
 };
@@ -66,10 +67,10 @@ const closePool = async () => {
         if (pool) {
             await pool.close();
             pool = null;
-            console.log('Conexión con Azure SQL Database cerrada');
+            logger.info('Conexión con Azure SQL Database cerrada');
         }
     } catch (error) {
-        console.error('Error al cerrar conexión:', error.message);
+        logger.error('Error al cerrar conexión', { error });
         throw error;
     }
 };

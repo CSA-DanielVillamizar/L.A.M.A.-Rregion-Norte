@@ -8,6 +8,7 @@ const { InscripcionModel } = require('../models/inscripcionModel');
 const multer = require('multer');
 const { esParPaisCapituloValido } = require('../data/paisesCapitulos');
 const { validateInscripcion } = require('../validators/inscripcionValidator');
+const logger = require('../utils/logger');
 
 const COMPROBANTE_MIME_PERMITIDOS = ['application/pdf', 'image/jpeg', 'image/png'];
 
@@ -88,7 +89,7 @@ exports.getAllEvents = async (req, res) => {
             events
         });
     } catch (error) {
-        console.error('Error en getAllEvents:', error);
+        logger.error('Error en getAllEvents', { error });
         res.status(500).render('error', {
             message: 'Error al cargar eventos'
         });
@@ -115,7 +116,7 @@ exports.getEventById = async (req, res) => {
             event
         });
     } catch (error) {
-        console.error('Error en getEventById:', error);
+        logger.error('Error en getEventById', { error });
         res.status(500).render('error', {
             message: 'Error al cargar el evento'
         });
@@ -274,7 +275,7 @@ exports.registerToEvent = async (req, res) => {
             }
         });
     } catch (error) {
-        console.error('Error en registerToEvent:', error);
+        logger.error('Error en registerToEvent', { error });
         res.status(500).json({
             success: false,
             message: 'Error al procesar el registro'

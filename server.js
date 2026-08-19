@@ -14,19 +14,67 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const path = require('path');
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
 
 const { getPool } = require('./src/config/database');
+const logger = require('./src/utils/logger');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+// Necesario para que req.ip refleje la IP real del cliente detrás del
+// proxy de Azure App Service (afecta rate limiting y el bloqueo por
+// intentos fallidos en authMiddleware.js).
+app.set('trust proxy', 1);
 
 // ============================================
 // CAPA DE CONFIGURACIÓN: Middleware
 // ============================================
 app.use(cors());
+app.use(helmet({
+    // La app carga Tailwind, Google Fonts, Leaflet y html5-qrcode desde CDN
+    // y usa scripts/estilos inline en casi todas las vistas. Construir un
+    // Content-Security-Policy correcto requiere catalogar cada fuente
+    // externa por vista — queda pendiente como tarea aparte, no se
+    // improvisa aquí. El resto de cabeceras de helmet (nosniff, frameguard,
+    // HSTS, etc.) sí quedan activas.
+    contentSecurityPolicy: false,
+    crossOriginEmbedderPolicy: false
+}));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
+
+// Límite general de peticiones por IP, como protección base contra abuso/DoS
+app.use(rateLimit({
+    windowMs: 15 * 60 * 1000,
+    limit: 300,
+    standardHeaders: true,
+    legacyHeaders: false
+}));
+
+// Límite más estricto para el panel admin y el punto de control MTO,
+// complementa el bloqueo por intentos fallidos de authMiddleware.js
+const limiterAuth = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    limit: 20,
+    standardHeaders: true,
+    legacyHeaders: false,
+    message: { success: false, message: 'Demasiadas peticiones. Intenta de nuevo en unos minutos.' }
+});
+app.use(['/admin', '/checkin'], limiterAuth);
+
+// Límite para los envíos reales de los formularios públicos (no las páginas
+// que los muestran), evita spam de inscripciones/registros.
+const limiterFormularios = rateLimit({
+    windowMs: 60 * 60 * 1000,
+    limit: 10,
+    standardHeaders: true,
+    legacyHeaders: false,
+    message: { success: false, message: 'Demasiados envíos. Intenta de nuevo más tarde.' }
+});
+app.use(['/eventos/:eventId/registro', '/api/registro/pdf'], limiterFormularios);
 
 // Motor de plantillas EJS
 app.set('view engine', 'ejs');
@@ -80,20 +128,20 @@ const startServer = () => {
 
     getPool()
         .then(() => {
-            console.log('Conexión a base de datos verificada');
+            logger.info('Conexión a base de datos verificada');
         })
         .catch((error) => {
-            console.error('Error al verificar conexión a base de datos:', error.message);
+            logger.error('Error al verificar conexión a base de datos', { error });
         });
 };
 
 // Manejo de errores no capturados
 process.on('unhandledRejection', (reason) => {
-    console.error('Promesa rechazada no controlada:', reason);
+    logger.error('Promesa rechazada no controlada', { error: reason });
 });
 
 process.on('uncaughtException', (error) => {
-    console.error('Excepción no controlada:', error);
+    logger.error('Excepción no controlada', { error });
 });
 
 startServer();

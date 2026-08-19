@@ -4,6 +4,7 @@
  */
 
 const mainService = require('../services/mainService');
+const logger = require('../utils/logger');
 const capitulosService = require('../services/capitulosService');
 const { PAISES_CAPITULOS } = require('../data/paisesCapitulos');
 
@@ -18,7 +19,7 @@ exports.getHome = (req, res) => {
             ...homeData
         });
     } catch (error) {
-        console.error('Error en getHome:', error);
+        logger.error('Error en getHome', { error });
         res.status(500).render('error', {
             message: 'Error al cargar la página principal'
         });
@@ -36,7 +37,7 @@ exports.getClubInfo = (req, res) => {
             ...clubData
         });
     } catch (error) {
-        console.error('Error en getClubInfo:', error);
+        logger.error('Error en getClubInfo', { error });
         res.status(500).render('error', {
             message: 'Error al cargar información del club'
         });
@@ -78,7 +79,7 @@ exports.postContact = async (req, res) => {
             error: null
         });
     } catch (error) {
-        console.error('Error en postContact:', error);
+        logger.error('Error en postContact', { error });
         res.render('contact', {
             title: 'Contacto',
             success: false,
@@ -117,7 +118,7 @@ exports.getItinerario = (req, res) => {
             title: 'Mapa Interactivo - V Campeonato Regional'
         });
     } catch (error) {
-        console.error('Error en getItinerario:', error);
+        logger.error('Error en getItinerario', { error });
         res.status(500).render('error', {
             message: 'Error al cargar el mapa del evento'
         });
@@ -140,7 +141,7 @@ exports.getCapitulos = (req, res) => {
             porDepartamento
         });
     } catch (error) {
-        console.error('Error en getCapitulos:', error);
+        logger.error('Error en getCapitulos', { error });
         res.status(500).render('error', {
             message: 'Error al cargar los capítulos'
         });

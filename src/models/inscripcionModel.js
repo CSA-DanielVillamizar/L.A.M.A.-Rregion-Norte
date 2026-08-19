@@ -5,6 +5,7 @@
 
 const crypto = require('crypto');
 const { getPool, sql } = require('../config/database');
+const logger = require('../utils/logger');
 
 const TIPOS_PARTICIPANTE_PERMITIDOS = [
     'DAMA L.A.M.A.',
@@ -628,7 +629,7 @@ class InscripcionModel {
                 fecha_registro: result.recordset[0].fecha_registro
             };
         } catch (error) {
-            console.error('Error en InscripcionModel.create:', error);
+            logger.error('Error en InscripcionModel.create', { error });
             throw error;
         }
     }
@@ -657,7 +658,7 @@ class InscripcionModel {
                 ? this.normalizarInscripcionSalida(result.recordset[0])
                 : null;
         } catch (error) {
-            console.error('Error en InscripcionModel.findByDocumento:', error);
+            logger.error('Error en InscripcionModel.findByDocumento', { error });
             throw error;
         }
     }
@@ -694,7 +695,7 @@ class InscripcionModel {
 
             return result.recordset.length > 0 ? result.recordset[0] : null;
         } catch (error) {
-            console.error('Error en InscripcionModel.actualizarComprobante:', error);
+            logger.error('Error en InscripcionModel.actualizarComprobante', { error });
             throw error;
         }
     }
@@ -717,7 +718,7 @@ class InscripcionModel {
             const result = await request.query(query);
             return result.recordset.map((inscripcion) => this.normalizarInscripcionSalida(inscripcion));
         } catch (error) {
-            console.error('Error en InscripcionModel.getAll:', error);
+            logger.error('Error en InscripcionModel.getAll', { error });
             throw error;
         }
     }
@@ -772,7 +773,7 @@ class InscripcionModel {
                 merchandising: this.construirResumenMerchandising(inscripciones)
             };
         } catch (error) {
-            console.error('Error en InscripcionModel.getStats:', error);
+            logger.error('Error en InscripcionModel.getStats', { error });
             throw error;
         }
     }
@@ -797,7 +798,7 @@ class InscripcionModel {
                 ? this.normalizarInscripcionSalida(result.recordset[0])
                 : null;
         } catch (error) {
-            console.error('Error en InscripcionModel.getById:', error);
+            logger.error('Error en InscripcionModel.getById', { error });
             throw error;
         }
     }
@@ -867,7 +868,7 @@ class InscripcionModel {
                 ? this.normalizarInscripcionSalida(result.recordset[0])
                 : null;
         } catch (error) {
-            console.error('Error en InscripcionModel.obtenerPorQrToken:', error);
+            logger.error('Error en InscripcionModel.obtenerPorQrToken', { error });
             throw error;
         }
     }
@@ -895,7 +896,7 @@ class InscripcionModel {
 
             return result.recordset.length > 0 ? result.recordset[0] : null;
         } catch (error) {
-            console.error('Error en InscripcionModel.confirmarCheckin:', error);
+            logger.error('Error en InscripcionModel.confirmarCheckin', { error });
             throw error;
         }
     }
@@ -925,7 +926,7 @@ class InscripcionModel {
                 affectedRows: result.rowsAffected[0]
             };
         } catch (error) {
-            console.error('Error en InscripcionModel.updateEstadoValidacion:', error);
+            logger.error('Error en InscripcionModel.updateEstadoValidacion', { error });
             throw error;
         }
     }
@@ -951,7 +952,7 @@ class InscripcionModel {
                 affectedRows: result.rowsAffected[0]
             };
         } catch (error) {
-            console.error('Error en InscripcionModel.deleteById:', error);
+            logger.error('Error en InscripcionModel.deleteById', { error });
             throw error;
         }
     }

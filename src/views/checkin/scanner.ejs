@@ -100,7 +100,6 @@
     </div>
 
     <script>
-        const API_KEY = '<%= apiKey || "" %>';
 
         const panelResultado = document.getElementById('panelResultado');
         const resultadoMensaje = document.getElementById('resultadoMensaje');
@@ -130,7 +129,6 @@
             tokenActual = token;
             try {
                 const response = await fetch(`/checkin/validar/${token}`, {
-                    headers: { 'x-api-key': API_KEY }
                 });
                 const data = await response.json();
 
@@ -165,7 +163,6 @@
             try {
                 const response = await fetch(`/checkin/validar/${tokenActual}/confirmar`, {
                     method: 'POST',
-                    headers: { 'x-api-key': API_KEY }
                 });
                 const data = await response.json();
 

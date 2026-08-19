@@ -4,6 +4,7 @@
  */
 
 const InscripcionService = require('../services/inscripcionService');
+const logger = require('../utils/logger');
 
 class InscripcionController {
     /**
@@ -29,7 +30,7 @@ class InscripcionController {
                 return res.status(statusCode).json(resultado);
             }
         } catch (error) {
-            console.error('Error en InscripcionController.register:', error);
+            logger.error('Error en InscripcionController.register', { error });
             return res.status(500).json({
                 success: false,
                 message: 'Error interno del servidor al procesar la inscripción',
@@ -54,7 +55,7 @@ class InscripcionController {
                 return res.status(500).json(resultado);
             }
         } catch (error) {
-            console.error('Error en InscripcionController.getAllInscripciones:', error);
+            logger.error('Error en InscripcionController.getAllInscripciones', { error });
             return res.status(500).json({
                 success: false,
                 message: 'Error al obtener inscripciones',
@@ -79,7 +80,7 @@ class InscripcionController {
                 return res.status(500).json(resultado);
             }
         } catch (error) {
-            console.error('Error en InscripcionController.getEstadisticas:', error);
+            logger.error('Error en InscripcionController.getEstadisticas', { error });
             return res.status(500).json({
                 success: false,
                 message: 'Error al obtener estadísticas',
@@ -110,7 +111,7 @@ class InscripcionController {
             const statusCode = resultado.success ? 200 : 404;
             return res.status(statusCode).json(resultado);
         } catch (error) {
-            console.error('Error en InscripcionController.getByDocumento:', error);
+            logger.error('Error en InscripcionController.getByDocumento', { error });
             return res.status(500).json({
                 success: false,
                 message: 'Error al buscar inscripción',

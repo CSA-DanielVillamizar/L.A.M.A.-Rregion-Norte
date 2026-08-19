@@ -9,6 +9,7 @@ const eventService = require('../services/eventService');
 const serviciosPremiumService = require('../services/serviciosPremiumService');
 const RegistroCampeonatoSyncService = require('../services/registroCampeonatoSyncService');
 const QrService = require('../services/qrService');
+const logger = require('../utils/logger');
 const multer = require('multer');
 const path = require('path');
 
@@ -27,11 +28,10 @@ class AdminController {
                 title: 'Panel de Administración - L.A.M.A.',
                 inscripciones,
                 stats,
-                user: req.user,
-                apiKey: process.env.API_KEY || ''
+                user: req.user
             });
         } catch (error) {
-            console.error('Error en AdminController.showDashboard:', error);
+            logger.error('Error en AdminController.showDashboard', { error });
             res.status(500).render('error', {
                 title: 'Error',
                 message: 'Error al cargar el dashboard',
@@ -55,7 +55,7 @@ class AdminController {
                 data: inscripciones
             });
         } catch (error) {
-            console.error('Error en AdminController.getAllInscripciones:', error);
+            logger.error('Error en AdminController.getAllInscripciones', { error });
             res.status(500).json({
                 success: false,
                 message: 'Error al obtener inscripciones',
@@ -107,7 +107,7 @@ class AdminController {
                 }
             });
         } catch (error) {
-            console.error('Error en AdminController.actualizarEstado:', error);
+            logger.error('Error en AdminController.actualizarEstado', { error });
             res.status(500).json({
                 success: false,
                 message: 'Error al actualizar el estado',
@@ -156,7 +156,7 @@ class AdminController {
                 }
             });
         } catch (error) {
-            console.error('Error en AdminController.obtenerQrInscripcion:', error);
+            logger.error('Error en AdminController.obtenerQrInscripcion', { error });
             res.status(500).json({
                 success: false,
                 message: 'Error al generar el QR de check-in'
@@ -178,7 +178,7 @@ class AdminController {
                 data: stats
             });
         } catch (error) {
-            console.error('Error en AdminController.getEstadisticas:', error);
+            logger.error('Error en AdminController.getEstadisticas', { error });
             res.status(500).json({
                 success: false,
                 message: 'Error al obtener estadísticas',
@@ -209,7 +209,7 @@ class AdminController {
                 message: 'Inscripción eliminada exitosamente'
             });
         } catch (error) {
-            console.error('Error en AdminController.eliminarInscripcion:', error);
+            logger.error('Error en AdminController.eliminarInscripcion', { error });
             res.status(500).json({
                 success: false,
                 message: 'Error al eliminar inscripción',
@@ -236,7 +236,7 @@ class AdminController {
                 data: eventos
             });
         } catch (error) {
-            console.error('Error en AdminController.getAllEventos:', error);
+            logger.error('Error en AdminController.getAllEventos', { error });
             res.status(500).json({
                 success: false,
                 message: 'Error al obtener eventos',
@@ -259,7 +259,7 @@ class AdminController {
                 data: nuevoEvento
             });
         } catch (error) {
-            console.error('Error en AdminController.createEvento:', error);
+            logger.error('Error en AdminController.createEvento', { error });
             res.status(500).json({
                 success: false,
                 message: 'Error al crear evento',
@@ -289,7 +289,7 @@ class AdminController {
                 data: eventoActualizado
             });
         } catch (error) {
-            console.error('Error en AdminController.updateEvento:', error);
+            logger.error('Error en AdminController.updateEvento', { error });
             res.status(500).json({
                 success: false,
                 message: 'Error al actualizar evento',
@@ -318,7 +318,7 @@ class AdminController {
                 message: 'Evento eliminado exitosamente'
             });
         } catch (error) {
-            console.error('Error en AdminController.deleteEvento:', error);
+            logger.error('Error en AdminController.deleteEvento', { error });
             res.status(500).json({
                 success: false,
                 message: 'Error al eliminar evento',
@@ -351,7 +351,7 @@ class AdminController {
                 data: eventos
             });
         } catch (error) {
-            console.error('Error en AdminController.reorderEventos:', error);
+            logger.error('Error en AdminController.reorderEventos', { error });
             res.status(500).json({
                 success: false,
                 message: 'Error al reordenar eventos',
@@ -380,7 +380,7 @@ class AdminController {
                 data: capitulos
             });
         } catch (error) {
-            console.error('Error en AdminController.getAllCapitulos:', error);
+            logger.error('Error en AdminController.getAllCapitulos', { error });
             res.status(500).json({
                 success: false,
                 message: 'Error al obtener capítulos',
@@ -409,7 +409,7 @@ class AdminController {
                 data: capitulo
             });
         } catch (error) {
-            console.error('Error en AdminController.getCapituloById:', error);
+            logger.error('Error en AdminController.getCapituloById', { error });
             res.status(500).json({
                 success: false,
                 message: 'Error al obtener capítulo',
@@ -432,7 +432,7 @@ class AdminController {
                 data: nuevoCapitulo
             });
         } catch (error) {
-            console.error('Error en AdminController.createCapitulo:', error);
+            logger.error('Error en AdminController.createCapitulo', { error });
             res.status(500).json({
                 success: false,
                 message: 'Error al crear capítulo',
@@ -462,7 +462,7 @@ class AdminController {
                 data: capituloActualizado
             });
         } catch (error) {
-            console.error('Error en AdminController.updateCapitulo:', error);
+            logger.error('Error en AdminController.updateCapitulo', { error });
             res.status(500).json({
                 success: false,
                 message: 'Error al actualizar capítulo',
@@ -491,7 +491,7 @@ class AdminController {
                 message: 'Capítulo eliminado exitosamente'
             });
         } catch (error) {
-            console.error('Error en AdminController.deleteCapitulo:', error);
+            logger.error('Error en AdminController.deleteCapitulo', { error });
             res.status(500).json({
                 success: false,
                 message: 'Error al eliminar capítulo',
@@ -533,7 +533,7 @@ class AdminController {
                 }
             });
         } catch (error) {
-            console.error('Error en AdminController.uploadCapituloImagen:', error);
+            logger.error('Error en AdminController.uploadCapituloImagen', { error });
             res.status(500).json({
                 success: false,
                 message: 'Error al cargar imagen',
@@ -558,7 +558,7 @@ class AdminController {
                 data: announcements
             });
         } catch (error) {
-            console.error('Error en getTickerPublic:', error);
+            logger.error('Error en getTickerPublic', { error });
             res.status(500).json({
                 success: false,
                 message: 'Error al obtener anuncios del ticker',
@@ -582,7 +582,7 @@ class AdminController {
                 data: announcements
             });
         } catch (error) {
-            console.error('Error en getAllTicker:', error);
+            logger.error('Error en getAllTicker', { error });
             res.status(500).json({
                 success: false,
                 message: 'Error al obtener anuncios del ticker',
@@ -621,7 +621,7 @@ class AdminController {
                 data: announcement
             });
         } catch (error) {
-            console.error('Error en createTicker:', error);
+            logger.error('Error en createTicker', { error });
             res.status(500).json({
                 success: false,
                 message: 'Error al crear anuncio',
@@ -669,7 +669,7 @@ class AdminController {
                 data: announcement
             });
         } catch (error) {
-            console.error('Error en updateTicker:', error);
+            logger.error('Error en updateTicker', { error });
             res.status(500).json({
                 success: false,
                 message: 'Error al actualizar anuncio',
@@ -709,7 +709,7 @@ class AdminController {
                 message: 'Anuncio eliminado exitosamente'
             });
         } catch (error) {
-            console.error('Error en deleteTicker:', error);
+            logger.error('Error en deleteTicker', { error });
             res.status(500).json({
                 success: false,
                 message: 'Error al eliminar anuncio',
@@ -743,7 +743,7 @@ class AdminController {
                 data: anuncios
             });
         } catch (error) {
-            console.error('Error en reorderTicker:', error);
+            logger.error('Error en reorderTicker', { error });
             res.status(500).json({
                 success: false,
                 message: 'Error al reordenar anuncios',
@@ -765,7 +765,7 @@ class AdminController {
                 data: servicios
             });
         } catch (error) {
-            console.error('Error en getServiciosPublic:', error);
+            logger.error('Error en getServiciosPublic', { error });
             res.status(500).json({
                 success: false,
                 message: 'Error al obtener servicios',
@@ -788,7 +788,7 @@ class AdminController {
                 data: servicios
             });
         } catch (error) {
-            console.error('Error en getAllServicios:', error);
+            logger.error('Error en getAllServicios', { error });
             res.status(500).json({
                 success: false,
                 message: 'Error al obtener servicios',
@@ -828,7 +828,7 @@ class AdminController {
                 data: nuevoServicio
             });
         } catch (error) {
-            console.error('Error en createServicio:', error);
+            logger.error('Error en createServicio', { error });
             res.status(500).json({
                 success: false,
                 message: 'Error al crear servicio',
@@ -868,7 +868,7 @@ class AdminController {
                 data: servicioActualizado
             });
         } catch (error) {
-            console.error('Error en updateServicio:', error);
+            logger.error('Error en updateServicio', { error });
             res.status(500).json({
                 success: false,
                 message: 'Error al actualizar servicio',
@@ -900,7 +900,7 @@ class AdminController {
                 data: { id: parseInt(id) }
             });
         } catch (error) {
-            console.error('Error en deleteServicio:', error);
+            logger.error('Error en deleteServicio', { error });
             res.status(500).json({
                 success: false,
                 message: 'Error al eliminar servicio',
@@ -946,7 +946,7 @@ class AdminController {
                 data: registrosEnriquecidos
             });
         } catch (error) {
-            console.error('Error en AdminController.getHistorialFormulariosPdf:', error);
+            logger.error('Error en AdminController.getHistorialFormulariosPdf', { error });
             res.status(500).json({
                 success: false,
                 message: 'Error al consultar el historial de formularios PDF',
@@ -987,7 +987,7 @@ class AdminController {
             res.setHeader('X-Registro-Pdf-Documento', String(registro.documento || ''));
             return res.status(200).send(registro.contenidoPdf);
         } catch (error) {
-            console.error('Error en AdminController.descargarFormularioPdf:', error);
+            logger.error('Error en AdminController.descargarFormularioPdf', { error });
             res.status(500).json({
                 success: false,
                 message: 'Error al descargar el formulario PDF',
@@ -1051,7 +1051,7 @@ class AdminController {
             res.setHeader('X-Registro-Pdf-Documento', String(registroAdjunto.documento || ''));
             return res.status(200).send(registroAdjunto.contenidoAdjunto);
         } catch (error) {
-            console.error('Error en AdminController.descargarAdjuntoTransito:', error);
+            logger.error('Error en AdminController.descargarAdjuntoTransito', { error });
             return res.status(500).json({
                 success: false,
                 message: `Error al descargar ${etiqueta}`,

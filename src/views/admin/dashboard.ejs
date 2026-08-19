@@ -697,7 +697,6 @@
         </div>
 
         <script>
-            const API_KEY = '<%= apiKey || "" %>';
 
             // Cambiar estado de inscripción
             async function cambiarEstado(id, nuevoEstado) {
@@ -708,7 +707,6 @@
                         method: 'PUT',
                         headers: {
                             'Content-Type': 'application/json',
-                            'x-api-key': API_KEY
                         },
                         body: JSON.stringify({ estado_validacion: nuevoEstado })
                     });
@@ -731,7 +729,6 @@
             async function verQr(id) {
                 try {
                     const response = await fetch(`/admin/inscripciones/${id}/qr`, {
-                        headers: { 'x-api-key': API_KEY }
                     });
                     const result = await response.json();
 
@@ -910,7 +907,6 @@
                 try {
                     const response = await fetch('/admin/api/eventos', {
                         headers: {
-                            'x-api-key': API_KEY
                         }
                     });
                     const data = await response.json();
@@ -952,7 +948,6 @@
                 try {
                     const response = await fetch('/admin/api/eventos', {
                         headers: {
-                            'x-api-key': API_KEY
                         }
                     });
 
@@ -978,7 +973,6 @@
                         method: 'PUT',
                         headers: {
                             'Content-Type': 'application/json',
-                            'x-api-key': API_KEY
                         },
                         body: JSON.stringify({ ids: orderedIds })
                     });
@@ -1039,7 +1033,6 @@
                         method: method,
                         headers: {
                             'Content-Type': 'application/json',
-                            'x-api-key': API_KEY
                         },
                         body: JSON.stringify(eventoData)
                     });
@@ -1064,7 +1057,6 @@
                 try {
                     const response = await fetch('/admin/api/eventos', {
                         headers: {
-                            'x-api-key': API_KEY
                         }
                     });
                     const data = await response.json();
@@ -1107,7 +1099,6 @@
                     const response = await fetch(`/admin/api/eventos/${id}`, {
                         method: 'DELETE',
                         headers: {
-                            'x-api-key': API_KEY
                         }
                     });
                     if (response.ok) {
@@ -1127,7 +1118,6 @@
                 try {
                     const response = await fetch('/admin/capitulos', {
                         headers: {
-                            'x-api-key': API_KEY
                         }
                     });
                     const data = await response.json();
@@ -1218,7 +1208,6 @@
                         method: method,
                         headers: {
                             'Content-Type': 'application/json',
-                            'x-api-key': API_KEY
                         },
                         body: JSON.stringify(capituloData)
                     });
@@ -1244,7 +1233,6 @@
                     // Obtener datos actuales
                     const response = await fetch(`/admin/capitulos/${id}`, {
                         headers: {
-                            'x-api-key': API_KEY
                         }
                     });
                     const result = await response.json();
@@ -1285,7 +1273,6 @@
                     const response = await fetch(`/admin/capitulos/${id}`, {
                         method: 'DELETE',
                         headers: {
-                            'x-api-key': API_KEY
                         }
                     });
 
@@ -1311,7 +1298,6 @@
                     const response = await fetch(`/admin/capitulos/${id}/imagen`, {
                         method: 'POST',
                         headers: {
-                            'x-api-key': API_KEY
                         },
                         body: formData
                     });
@@ -1338,7 +1324,6 @@
                 try {
                     const response = await fetch('/admin/ticker', {
                         headers: {
-                            'x-api-key': API_KEY
                         }
                     });
                     const data = await response.json();
@@ -1394,7 +1379,6 @@
                 try {
                     const response = await fetch('/admin/ticker', {
                         headers: {
-                            'x-api-key': API_KEY
                         }
                     });
                     const data = await response.json();
@@ -1419,7 +1403,6 @@
                         method: 'PUT',
                         headers: {
                             'Content-Type': 'application/json',
-                            'x-api-key': API_KEY
                         },
                         body: JSON.stringify({ ids: orderedIds })
                     });
@@ -1472,7 +1455,6 @@
                         method: method,
                         headers: {
                             'Content-Type': 'application/json',
-                            'x-api-key': API_KEY
                         },
                         body: JSON.stringify(nuevoAnuncio)
                     });
@@ -1497,7 +1479,6 @@
                 try {
                     const response = await fetch('/admin/ticker', {
                         headers: {
-                            'x-api-key': API_KEY
                         }
                     });
                     const data = await response.json();
@@ -1540,7 +1521,6 @@
                     const response = await fetch(`/admin/ticker/${id}`, {
                         method: 'DELETE',
                         headers: {
-                            'x-api-key': API_KEY
                         }
                     });
 
@@ -1563,7 +1543,6 @@
                 try {
                     const response = await fetch('/admin/api/servicios', {
                         headers: {
-                            'x-api-key': API_KEY
                         }
                     });
                     const data = await response.json();
@@ -1636,7 +1615,6 @@
                         method: method,
                         headers: {
                             'Content-Type': 'application/json',
-                            'x-api-key': API_KEY
                         },
                         body: JSON.stringify(nuevoServicio)
                     });
@@ -1660,7 +1638,6 @@
                 try {
                     const response = await fetch('/admin/api/servicios', {
                         headers: {
-                            'x-api-key': API_KEY
                         }
                     });
                     const data = await response.json();
@@ -1705,7 +1682,6 @@
                     const response = await fetch(`/admin/api/servicios/${id}`, {
                         method: 'DELETE',
                         headers: {
-                            'x-api-key': API_KEY
                         }
                     });
 
@@ -1735,7 +1711,6 @@
                 try {
                     const response = await fetch('/admin/pdf-formularios?limite=100', {
                         headers: {
-                            'x-api-key': API_KEY
                         }
                     });
 
@@ -1801,7 +1776,6 @@
                 try {
                     const response = await fetch(url, {
                         headers: {
-                            'x-api-key': API_KEY
                         }
                     });
 

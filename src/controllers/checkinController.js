@@ -5,6 +5,7 @@
  */
 
 const { InscripcionModel } = require('../models/inscripcionModel');
+const logger = require('../utils/logger');
 
 /**
  * Renderiza la página de escaneo (cámara web, sin instalación de app)
@@ -12,8 +13,7 @@ const { InscripcionModel } = require('../models/inscripcionModel');
  */
 exports.mostrarScanner = (req, res) => {
     res.render('checkin/scanner', {
-        title: 'Check-in MTO · V Campeonato Región Norte',
-        apiKey: process.env.API_KEY || ''
+        title: 'Check-in MTO · V Campeonato Región Norte'
     });
 };
 
@@ -75,7 +75,7 @@ exports.validarToken = async (req, res) => {
             puedeConfirmar: true
         });
     } catch (error) {
-        console.error('Error en CheckinController.validarToken:', error);
+        logger.error('Error en CheckinController.validarToken', { error });
         res.status(500).json({ success: false, message: 'Error al validar el código QR' });
     }
 };
@@ -103,7 +103,7 @@ exports.confirmarCheckin = async (req, res) => {
             data: resultado
         });
     } catch (error) {
-        console.error('Error en CheckinController.confirmarCheckin:', error);
+        logger.error('Error en CheckinController.confirmarCheckin', { error });
         res.status(500).json({ success: false, message: 'Error al confirmar el check-in' });
     }
 };

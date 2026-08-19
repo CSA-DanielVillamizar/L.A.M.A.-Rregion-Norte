@@ -1,62 +1,151 @@
 /**
  * MIDDLEWARE DE AUTENTICACIÓN
- * Protege rutas administrativas con autenticación básica
+ * Protege rutas administrativas y del punto de control MTO.
  */
+
+const logger = require('../utils/logger');
+
+const MAX_INTENTOS = 5;
+const VENTANA_BLOQUEO_MS = 15 * 60 * 1000; // 15 minutos
 
 /**
- * Middleware de autenticación básica
- * Usuario y contraseña configurados en variables de entorno
+ * Rastreo de intentos fallidos en memoria, por (tipo de credencial + IP).
+ * Nota: esto vive en memoria del proceso Node; si la app llega a escalar a
+ * más de una instancia, este contador deja de ser compartido entre
+ * instancias y habría que moverlo a un almacén externo (Redis/DB).
  */
-const basicAuth = (req, res, next) => {
-    const authHeader = req.headers.authorization;
+const intentosFallidos = new Map();
 
-    if (!authHeader || !authHeader.startsWith('Basic ')) {
-        res.setHeader('WWW-Authenticate', 'Basic realm="Admin Dashboard"');
-        return res.status(401).json({
-            success: false,
-            message: 'Autenticación requerida'
+function obtenerIp(req) {
+    return req.ip || req.connection?.remoteAddress || 'desconocida';
+}
+
+function estaBloqueado(clave) {
+    const registro = intentosFallidos.get(clave);
+    if (!registro) return false;
+
+    if (registro.bloqueadoHasta && Date.now() < registro.bloqueadoHasta) {
+        return true;
+    }
+
+    if (registro.bloqueadoHasta && Date.now() >= registro.bloqueadoHasta) {
+        intentosFallidos.delete(clave);
+    }
+
+    return false;
+}
+
+function registrarFallo(clave) {
+    const registro = intentosFallidos.get(clave) || { count: 0 };
+    registro.count += 1;
+
+    if (registro.count >= MAX_INTENTOS) {
+        registro.bloqueadoHasta = Date.now() + VENTANA_BLOQUEO_MS;
+        logger.warn('IP bloqueada temporalmente por intentos fallidos de autenticación', {
+            clave,
+            intentos: registro.count
         });
     }
 
-    try {
-        // Decodificar credenciales Base64
-        const base64Credentials = authHeader.split(' ')[1];
-        const credentials = Buffer.from(base64Credentials, 'base64').toString('utf-8');
-        const [username, password] = credentials.split(':');
+    intentosFallidos.set(clave, registro);
+}
 
-        // Validar contra variables de entorno
-        const adminUser = process.env.ADMIN_USERNAME;
-        const adminPass = process.env.ADMIN_PASSWORD;
+function registrarExito(clave) {
+    intentosFallidos.delete(clave);
+}
 
-        if (!adminUser || !adminPass) {
-            return res.status(500).json({
+function respuestaBloqueado(res) {
+    return res.status(429).json({
+        success: false,
+        message: 'Demasiados intentos fallidos. Intenta de nuevo en unos minutos.'
+    });
+}
+
+/**
+ * Construye un middleware de Basic Auth puro (para carga de página), con
+ * bloqueo temporal tras varios intentos fallidos consecutivos por IP.
+ */
+function crearBasicAuth({ realm, envUser, envPass, tipoLockout, rol }) {
+    return (req, res, next) => {
+        const authHeader = req.headers.authorization;
+
+        if (!authHeader || !authHeader.startsWith('Basic ')) {
+            res.setHeader('WWW-Authenticate', `Basic realm="${realm}"`);
+            return res.status(401).json({
                 success: false,
-                message: 'Configuración insegura: faltan ADMIN_USERNAME y/o ADMIN_PASSWORD en variables de entorno'
+                message: 'Autenticación requerida'
             });
         }
 
-        if (username === adminUser && password === adminPass) {
-            req.user = { username, role: 'admin' };
-            next();
-        } else {
-            res.setHeader('WWW-Authenticate', 'Basic realm="Admin Dashboard"');
+        const clave = `${tipoLockout}:${obtenerIp(req)}`;
+        if (estaBloqueado(clave)) {
+            return respuestaBloqueado(res);
+        }
+
+        try {
+            const base64Credentials = authHeader.split(' ')[1];
+            const credentials = Buffer.from(base64Credentials, 'base64').toString('utf-8');
+            const [username, password] = credentials.split(':');
+
+            const usuarioValido = process.env[envUser];
+            const passValido = process.env[envPass];
+
+            if (!usuarioValido || !passValido) {
+                return res.status(500).json({
+                    success: false,
+                    message: `Configuración insegura: faltan ${envUser} y/o ${envPass} en variables de entorno`
+                });
+            }
+
+            if (username === usuarioValido && password === passValido) {
+                registrarExito(clave);
+                req.user = { username, role: rol };
+                return next();
+            }
+
+            registrarFallo(clave);
+            logger.warn('Intento de autenticación fallido', { realm, ip: obtenerIp(req) });
+            res.setHeader('WWW-Authenticate', `Basic realm="${realm}"`);
             return res.status(401).json({
                 success: false,
                 message: 'Credenciales inválidas'
             });
+        } catch (error) {
+            logger.error('Error en autenticación', { realm, error });
+            return res.status(500).json({
+                success: false,
+                message: 'Error en el proceso de autenticación'
+            });
         }
-    } catch (error) {
-        console.error('Error en autenticación:', error);
-        return res.status(500).json({
-            success: false,
-            message: 'Error en el proceso de autenticación'
-        });
-    }
-};
+    };
+}
 
 /**
- * Middleware para proteger endpoints de API
- * Verifica token simple en headers
+ * Middleware de autenticación básica para el panel administrativo (carga de página)
+ */
+const basicAuth = crearBasicAuth({
+    realm: 'Admin Dashboard',
+    envUser: 'ADMIN_USERNAME',
+    envPass: 'ADMIN_PASSWORD',
+    tipoLockout: 'admin',
+    rol: 'admin'
+});
+
+/**
+ * Middleware de autenticación básica para el punto de control MTO (carga de página)
+ */
+const mtoAuth = crearBasicAuth({
+    realm: 'MTO Check-in',
+    envUser: 'MTO_USERNAME',
+    envPass: 'MTO_PASSWORD',
+    tipoLockout: 'mto',
+    rol: 'mto'
+});
+
+/**
+ * Middleware para proteger endpoints de API mediante API Key estática.
+ * Pensado para llamadas externas (CI/CD, integraciones), no para el propio
+ * frontend del dashboard/scanner — ver `crearAuthDual` para ese caso.
  */
 const apiKeyAuth = (req, res, next) => {
     const apiKey = req.headers['x-api-key'];
@@ -81,58 +170,49 @@ const apiKeyAuth = (req, res, next) => {
 };
 
 /**
- * Middleware de autenticación básica para el punto de control MTO (check-in por QR)
- * Usa credenciales propias (MTO_USERNAME/MTO_PASSWORD), separadas de las del
- * panel administrativo, para no exponer la clave del tesorero en el dispositivo
- * de recepción del evento.
+ * Middleware de autenticación dual: acepta la API Key (para CI/integraciones
+ * externas) O las credenciales de Basic Auth de la sesión ya autenticada
+ * (para las propias llamadas fetch() del dashboard/scanner). Esto permite
+ * que el HTML nunca tenga que incrustar la API Key: el navegador ya reenvía
+ * automáticamente las credenciales de Basic Auth cacheadas en cada request
+ * al mismo origen tras el primer login exitoso.
  */
-const mtoAuth = (req, res, next) => {
-    const authHeader = req.headers.authorization;
+function crearAuthDual({ realm, envUser, envPass, tipoLockout, rol }) {
+    const validarBasicAuth = crearBasicAuth({ realm, envUser, envPass, tipoLockout, rol });
 
-    if (!authHeader || !authHeader.startsWith('Basic ')) {
-        res.setHeader('WWW-Authenticate', 'Basic realm="MTO Check-in"');
-        return res.status(401).json({
-            success: false,
-            message: 'Autenticación requerida'
-        });
-    }
+    return (req, res, next) => {
+        const apiKey = req.headers['x-api-key'];
+        const validApiKey = process.env.API_KEY;
 
-    try {
-        const base64Credentials = authHeader.split(' ')[1];
-        const credentials = Buffer.from(base64Credentials, 'base64').toString('utf-8');
-        const [username, password] = credentials.split(':');
-
-        const mtoUser = process.env.MTO_USERNAME;
-        const mtoPass = process.env.MTO_PASSWORD;
-
-        if (!mtoUser || !mtoPass) {
-            return res.status(500).json({
-                success: false,
-                message: 'Configuración insegura: faltan MTO_USERNAME y/o MTO_PASSWORD en variables de entorno'
-            });
+        if (validApiKey && apiKey === validApiKey) {
+            req.user = { role: rol, via: 'api-key' };
+            return next();
         }
 
-        if (username === mtoUser && password === mtoPass) {
-            req.user = { username, role: 'mto' };
-            next();
-        } else {
-            res.setHeader('WWW-Authenticate', 'Basic realm="MTO Check-in"');
-            return res.status(401).json({
-                success: false,
-                message: 'Credenciales inválidas'
-            });
-        }
-    } catch (error) {
-        console.error('Error en autenticación MTO:', error);
-        return res.status(500).json({
-            success: false,
-            message: 'Error en el proceso de autenticación'
-        });
-    }
-};
+        return validarBasicAuth(req, res, next);
+    };
+}
+
+const adminApiAuth = crearAuthDual({
+    realm: 'Admin Dashboard',
+    envUser: 'ADMIN_USERNAME',
+    envPass: 'ADMIN_PASSWORD',
+    tipoLockout: 'admin',
+    rol: 'admin'
+});
+
+const checkinApiAuth = crearAuthDual({
+    realm: 'MTO Check-in',
+    envUser: 'MTO_USERNAME',
+    envPass: 'MTO_PASSWORD',
+    tipoLockout: 'mto',
+    rol: 'mto'
+});
 
 module.exports = {
     basicAuth,
     apiKeyAuth,
-    mtoAuth
+    mtoAuth,
+    adminApiAuth,
+    checkinApiAuth
 };

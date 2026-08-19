@@ -1,4 +1,5 @@
 const UbicacionService = require('../services/ubicacionService');
+const logger = require('../utils/logger');
 
 class UbicacionController {
     static async buscarMunicipios(req, res) {
@@ -12,7 +13,7 @@ class UbicacionController {
                 data
             });
         } catch (error) {
-            console.error('Error en UbicacionController.buscarMunicipios:', error);
+            logger.error('Error en UbicacionController.buscarMunicipios', { error });
             return res.status(500).json({
                 success: false,
                 message: 'No fue posible consultar municipios',

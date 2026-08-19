@@ -8,10 +8,10 @@
 const express = require('express');
 const router = express.Router();
 const CheckinController = require('../controllers/checkinController');
-const { mtoAuth, apiKeyAuth } = require('../middleware/authMiddleware');
+const { mtoAuth, checkinApiAuth } = require('../middleware/authMiddleware');
 
 router.get('/', mtoAuth, CheckinController.mostrarScanner);
-router.get('/validar/:token', apiKeyAuth, CheckinController.validarToken);
-router.post('/validar/:token/confirmar', apiKeyAuth, CheckinController.confirmarCheckin);
+router.get('/validar/:token', checkinApiAuth, CheckinController.validarToken);
+router.post('/validar/:token/confirmar', checkinApiAuth, CheckinController.confirmarCheckin);
 
 module.exports = router;
