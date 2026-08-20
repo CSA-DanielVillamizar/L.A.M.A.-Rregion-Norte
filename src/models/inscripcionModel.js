@@ -418,8 +418,10 @@ class InscripcionModel {
     }
 
     /**
-     * Amplía estado_validacion para admitir el estado por defecto
-     * 'Pendiente_Validacion_Tesoreria' (flujo de pago manual con comprobante).
+     * Amplía estado_validacion a VARCHAR(40) (histórico: un estado anterior
+     * más descriptivo lo necesitaba). El estado por defecto actual es
+     * 'Pendiente', el único junto con 'Aprobado'/'Rechazado' que permite el
+     * CHECK CK_InscripcionesCampeonato_estado_validacion.
      */
     static async asegurarColumnaEstadoValidacionAmpliada(poolParam = null) {
         const pool = poolParam || await getPool();
@@ -645,7 +647,7 @@ class InscripcionModel {
             request.input('merchandising_json', sql.NVarChar(sql.MAX), JSON.stringify(inscripcionData.merchandising || []));
             request.input('total_merchandising', sql.Int, Number.isFinite(inscripcionData.total_merchandising) ? inscripcionData.total_merchandising : 0);
             request.input('pais', sql.VarChar(100), inscripcionData.pais || null);
-            request.input('estado_validacion', sql.VarChar(40), inscripcionData.estado_validacion || 'Pendiente_Validacion_Tesoreria');
+            request.input('estado_validacion', sql.VarChar(40), inscripcionData.estado_validacion || 'Pendiente');
             request.input('comprobante_nombre_archivo', sql.NVarChar(260), inscripcionData.comprobante_nombre_archivo || null);
             request.input('comprobante_mime', sql.NVarChar(120), inscripcionData.comprobante_mime || null);
             request.input('comprobante_tamano_bytes', sql.Int, Number.isFinite(inscripcionData.comprobante_tamano_bytes) ? inscripcionData.comprobante_tamano_bytes : null);

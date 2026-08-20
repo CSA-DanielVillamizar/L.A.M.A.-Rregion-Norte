@@ -244,7 +244,7 @@ exports.registerToEvent = async (req, res) => {
             total_servicios: Number.isFinite(totalServicios) ? totalServicios : 0,
             merchandising,
             total_merchandising: Number.isFinite(totalMerchandising) ? totalMerchandising : 0,
-            estado_validacion: 'Pendiente_Validacion_Tesoreria',
+            estado_validacion: 'Pendiente',
             comprobante_nombre_archivo: req.file ? req.file.originalname : null,
             comprobante_mime: req.file ? req.file.mimetype : null,
             comprobante_tamano_bytes: req.file ? req.file.size : null,
