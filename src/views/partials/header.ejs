@@ -163,7 +163,7 @@
                     L.A.M.A. <span class="text-lamaBone">REGIÓN NORTE</span>
                 </span>
             </a>
-            <div class="hidden md:flex space-x-8 font-bold text-sm text-lamaBone">
+            <div class="hidden lg:flex space-x-6 font-bold text-sm text-lamaBone items-center">
                 <a href="/" class="hover:text-lamaNeon transition-colors">INICIO</a>
                 <a href="/registro" class="hover:text-lamaGold transition-colors">HAZTE LAMA</a>
                 <a href="/eventos" class="hover:text-lamaNeon transition-colors">EVENTOS</a>
@@ -171,10 +171,20 @@
                 <a href="/itinerario" class="hover:text-lamaNeon transition-colors">ITINERARIO</a>
                 <a href="/club" class="hover:text-lamaNeon transition-colors">CLUB</a>
                 <a href="/contacto" class="hover:text-lamaNeon transition-colors">CONTACTO</a>
+                <span class="w-px h-4 bg-gray-700"></span>
+                <a href="/mi-inscripcion" class="hover:text-lamaNeon transition-colors flex items-center gap-1">
+                    <span class="icon-symbol text-base" aria-hidden="true">search</span>MI INSCRIPCIÓN
+                </a>
+                <a href="/admin/dashboard" class="hover:text-lamaGold transition-colors flex items-center gap-1">
+                    <span class="icon-symbol text-base" aria-hidden="true">lock</span>ADMIN
+                </a>
+                <a href="/checkin" class="hover:text-lamaGold transition-colors flex items-center gap-1">
+                    <span class="icon-symbol text-base" aria-hidden="true">qr_code_scanner</span>MTO
+                </a>
             </div>
-            <button id="mobile-menu-btn" class="md:hidden text-lamaGold text-sm">Menu</button>
+            <button id="mobile-menu-btn" class="lg:hidden text-lamaGold text-sm">Menu</button>
         </div>
-        <div id="mobile-menu" class="hidden md:hidden bg-lamaDark border-t border-gray-800">
+        <div id="mobile-menu" class="hidden lg:hidden bg-lamaDark border-t border-gray-800">
             <div class="flex flex-col space-y-2 p-4 font-bold text-lamaBone">
                 <a href="/" class="hover:text-lamaNeon transition-colors py-2">INICIO</a>
                 <a href="/registro" class="hover:text-lamaGold transition-colors py-2">HAZTE LAMA</a>
@@ -183,6 +193,16 @@
                 <a href="/itinerario" class="hover:text-lamaNeon transition-colors py-2">ITINERARIO</a>
                 <a href="/club" class="hover:text-lamaNeon transition-colors py-2">CLUB</a>
                 <a href="/contacto" class="hover:text-lamaNeon transition-colors py-2">CONTACTO</a>
+                <hr class="border-gray-700 my-1">
+                <a href="/mi-inscripcion" class="hover:text-lamaNeon transition-colors py-2 flex items-center gap-2">
+                    <span class="icon-symbol text-base" aria-hidden="true">search</span>MI INSCRIPCIÓN
+                </a>
+                <a href="/admin/dashboard" class="hover:text-lamaGold transition-colors py-2 flex items-center gap-2">
+                    <span class="icon-symbol text-base" aria-hidden="true">lock</span>ADMIN
+                </a>
+                <a href="/checkin" class="hover:text-lamaGold transition-colors py-2 flex items-center gap-2">
+                    <span class="icon-symbol text-base" aria-hidden="true">qr_code_scanner</span>MTO
+                </a>
             </div>
         </div>
     </nav>

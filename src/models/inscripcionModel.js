@@ -724,22 +724,20 @@ class InscripcionModel {
     }
 
     /**
-     * Busca una inscripción para el portal público "Buscar mi inscripción".
-     * Exige documento + email (segundo factor) para que nadie pueda consultar
-     * o modificar el registro de otra persona solo adivinando un número de
-     * documento. Devuelve un DTO reducido: nunca expone comprobante_contenido
-     * (el binario del archivo) ni datos de contacto de emergencia.
-     * @param {string} documento
-     * @param {string} email
+     * Busca una inscripción para el portal público "Buscar mi inscripción"
+     * por documento O por email (decisión de producto: priorizar UX de un
+     * solo campo sobre exigir ambos como segundo factor). Devuelve un DTO
+     * reducido: nunca expone comprobante_contenido (el binario del archivo)
+     * ni datos de contacto de emergencia.
+     * @param {string} identificador - Documento o email del socio
      * @returns {Promise<Object|null>}
      */
-    static async buscarConVerificacion(documento, email) {
+    static async buscarPorIdentificador(identificador) {
         try {
             await this.asegurarColumnasExtendidas();
             const pool = await getPool();
             const request = pool.request();
-            request.input('documento', sql.VarChar(30), String(documento).trim());
-            request.input('email', sql.VarChar(150), String(email).trim().toLowerCase());
+            request.input('identificador', sql.VarChar(150), String(identificador).trim().toLowerCase());
 
             const result = await request.query(`
                 SELECT TOP 1
@@ -749,8 +747,8 @@ class InscripcionModel {
                     merchandising_json, total_merchandising, valor_base, valor_jersey,
                     comprobante_nombre_archivo
                 FROM InscripcionesCampeonato
-                WHERE documento_numero = @documento
-                  AND LOWER(LTRIM(RTRIM(email))) = @email
+                WHERE LOWER(LTRIM(RTRIM(documento_numero))) = @identificador
+                   OR LOWER(LTRIM(RTRIM(email))) = @identificador
                 ORDER BY fecha_registro DESC
             `);
 
@@ -762,7 +760,7 @@ class InscripcionModel {
                 tiene_comprobante: Boolean(inscripcion.comprobante_nombre_archivo)
             };
         } catch (error) {
-            logger.error('Error en InscripcionModel.buscarConVerificacion', { error });
+            logger.error('Error en InscripcionModel.buscarPorIdentificador', { error });
             throw error;
         }
     }
@@ -771,21 +769,18 @@ class InscripcionModel {
      * Adjunta o reemplaza el comprobante de pago de una inscripción ya
      * existente. Pensado para el flujo de "pre-inscripción sin pago": el
      * socio llena el formulario primero y sube el comprobante despues,
-     * sin volver a diligenciar sus datos. Exige el mismo segundo factor
-     * (email) que buscarConVerificacion para que nadie pueda sobrescribir
-     * el comprobante de otra persona solo con su número de documento.
-     * @param {string} documento
-     * @param {string} email
+     * sin volver a diligenciar sus datos. Usa el mismo criterio de
+     * documento-o-email que buscarPorIdentificador.
+     * @param {string} identificador - Documento o email del socio
      * @param {{nombreArchivo:string, mime:string, tamanoBytes:number, contenido:Buffer}} archivo
-     * @returns {Promise<Object|null>} Inscripción actualizada o null si no existe/no coincide el email
+     * @returns {Promise<Object|null>} Inscripción actualizada o null si no existe
      */
-    static async actualizarComprobante(documento, email, archivo) {
+    static async actualizarComprobante(identificador, archivo) {
         try {
             await this.asegurarColumnasExtendidas();
             const pool = await getPool();
             const request = pool.request();
-            request.input('documento', sql.VarChar(30), String(documento).trim());
-            request.input('email', sql.VarChar(150), String(email).trim().toLowerCase());
+            request.input('identificador', sql.VarChar(150), String(identificador).trim().toLowerCase());
             request.input('comprobante_nombre_archivo', sql.NVarChar(260), archivo.nombreArchivo || null);
             request.input('comprobante_mime', sql.NVarChar(120), archivo.mime || null);
             request.input('comprobante_tamano_bytes', sql.Int, Number.isFinite(archivo.tamanoBytes) ? archivo.tamanoBytes : null);
@@ -798,8 +793,8 @@ class InscripcionModel {
                     comprobante_tamano_bytes = @comprobante_tamano_bytes,
                     comprobante_contenido = @comprobante_contenido
                 OUTPUT INSERTED.id_inscripcion
-                WHERE documento_numero = @documento
-                  AND LOWER(LTRIM(RTRIM(email))) = @email
+                WHERE LOWER(LTRIM(RTRIM(documento_numero))) = @identificador
+                   OR LOWER(LTRIM(RTRIM(email))) = @identificador
             `);
 
             return result.recordset.length > 0 ? result.recordset[0] : null;

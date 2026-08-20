@@ -12,18 +12,11 @@
             <div id="buscarPanel" class="bg-lamaDark p-6 sm:p-8 rounded-lg border border-gray-800">
                 <div class="space-y-4">
                     <div>
-                        <label for="buscarDocumento" class="text-lamaBone font-bold text-sm block mb-2">Documento
-                            (C.C./NUIP) *</label>
-                        <input type="text" id="buscarDocumento"
+                        <label for="buscarIdentificador" class="text-lamaBone font-bold text-sm block mb-2">Documento
+                            (C.C./NUIP) o Correo Electrónico *</label>
+                        <input type="text" id="buscarIdentificador"
+                            placeholder="Ej: 1020304050 o tucorreo@ejemplo.com"
                             class="w-full px-4 py-3 rounded bg-lamaBlack border-2 border-gray-700 text-lamaBone focus:outline-none focus:border-lamaNeon transition-colors">
-                    </div>
-                    <div>
-                        <label for="buscarEmail" class="text-lamaBone font-bold text-sm block mb-2">Correo
-                            Electrónico *</label>
-                        <input type="email" id="buscarEmail"
-                            class="w-full px-4 py-3 rounded bg-lamaBlack border-2 border-gray-700 text-lamaBone focus:outline-none focus:border-lamaNeon transition-colors">
-                        <p class="text-xs text-gray-500 mt-1">El mismo correo que usaste al registrarte. Lo pedimos
-                            como verificación para proteger tus datos.</p>
                     </div>
                     <p id="buscarError" class="text-sm text-red-400 hidden"></p>
                     <button type="button" id="buscarBtn"
@@ -102,8 +95,7 @@
     </section>
 
     <script>
-        const buscarDocumento = document.getElementById('buscarDocumento');
-        const buscarEmail = document.getElementById('buscarEmail');
+        const buscarIdentificador = document.getElementById('buscarIdentificador');
         const buscarBtn = document.getElementById('buscarBtn');
         const buscarError = document.getElementById('buscarError');
         const resultadoPanel = document.getElementById('resultadoPanel');
@@ -120,11 +112,10 @@
 
         async function buscarInscripcion() {
             buscarError.classList.add('hidden');
-            const documento = buscarDocumento.value.trim();
-            const email = buscarEmail.value.trim();
+            const identificador = buscarIdentificador.value.trim();
 
-            if (!documento || !email) {
-                buscarError.textContent = 'Ingresa tu documento y correo electrónico.';
+            if (!identificador) {
+                buscarError.textContent = 'Ingresa tu documento o correo electrónico.';
                 buscarError.classList.remove('hidden');
                 return;
             }
@@ -136,7 +127,7 @@
                 const respuesta = await fetch('/api/mi-inscripcion/buscar', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ documento, email })
+                    body: JSON.stringify({ identificador })
                 });
                 const datos = await respuesta.json();
 
@@ -205,10 +196,8 @@
         }
 
         buscarBtn.addEventListener('click', buscarInscripcion);
-        [buscarDocumento, buscarEmail].forEach((input) => {
-            input.addEventListener('keydown', (event) => {
-                if (event.key === 'Enter') buscarInscripcion();
-            });
+        buscarIdentificador.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') buscarInscripcion();
         });
 
         // Subida de comprobante
@@ -249,8 +238,7 @@
 
             try {
                 const formData = new FormData();
-                formData.append('documento', buscarDocumento.value.trim());
-                formData.append('email', buscarEmail.value.trim());
+                formData.append('identificador', buscarIdentificador.value.trim());
                 formData.append('comprobante', archivo);
 
                 const respuesta = await fetch('/api/mi-inscripcion/comprobante', {

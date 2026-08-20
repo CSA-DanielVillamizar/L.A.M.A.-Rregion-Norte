@@ -24,27 +24,25 @@ const comprobanteUpload = multer({
 exports.uploadComprobanteMiddleware = comprobanteUpload.single('comprobante');
 
 /**
- * Busca una inscripción validando documento + email. Devuelve el mismo
- * mensaje de "no encontrada" tanto si el documento no existe como si el
- * email no coincide, para no revelar cuál de los dos datos falló.
+ * Busca una inscripción por documento o email (cualquiera de los dos).
  */
 exports.buscarInscripcion = async (req, res) => {
     try {
-        const { documento, email } = req.body;
+        const { identificador } = req.body;
 
-        if (!documento || String(documento).trim().length < 3 || !email || !String(email).trim()) {
+        if (!identificador || String(identificador).trim().length < 3) {
             return res.status(400).json({
                 success: false,
-                message: 'Documento y correo electrónico son obligatorios'
+                message: 'Ingresa tu documento o correo electrónico'
             });
         }
 
-        const inscripcion = await InscripcionModel.buscarConVerificacion(documento, email);
+        const inscripcion = await InscripcionModel.buscarPorIdentificador(identificador);
 
         if (!inscripcion) {
             return res.status(404).json({
                 success: false,
-                message: 'No encontramos una inscripción con ese documento y correo electrónico'
+                message: 'No encontramos una inscripción con ese documento o correo electrónico'
             });
         }
 
@@ -62,17 +60,17 @@ exports.buscarInscripcion = async (req, res) => {
 };
 
 /**
- * Adjunta el comprobante de pago a una inscripción ya existente, tras
- * revalidar documento + email (el mismo segundo factor que la búsqueda).
+ * Adjunta el comprobante de pago a una inscripción ya existente, ubicada
+ * por documento o email.
  */
 exports.subirComprobante = async (req, res) => {
     try {
-        const { documento, email } = req.body;
+        const { identificador } = req.body;
 
-        if (!documento || !email) {
+        if (!identificador) {
             return res.status(400).json({
                 success: false,
-                message: 'Documento y correo electrónico son obligatorios'
+                message: 'Ingresa tu documento o correo electrónico'
             });
         }
 
@@ -83,7 +81,7 @@ exports.subirComprobante = async (req, res) => {
             });
         }
 
-        const actualizada = await InscripcionModel.actualizarComprobante(documento, email, {
+        const actualizada = await InscripcionModel.actualizarComprobante(identificador, {
             nombreArchivo: req.file.originalname,
             mime: req.file.mimetype,
             tamanoBytes: req.file.size,
@@ -93,7 +91,7 @@ exports.subirComprobante = async (req, res) => {
         if (!actualizada) {
             return res.status(404).json({
                 success: false,
-                message: 'No encontramos una inscripción con ese documento y correo electrónico'
+                message: 'No encontramos una inscripción con ese documento o correo electrónico'
             });
         }
 
