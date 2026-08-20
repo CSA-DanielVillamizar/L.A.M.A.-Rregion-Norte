@@ -24,7 +24,7 @@ const acompananteSchema = Joi.object({
     }),
     jersey: Joi.boolean().default(false),
     talla: Joi.string()
-        .valid('S', 'M', 'L', 'XL', 'XXL')
+        .valid('S', 'M', 'L', 'XL', '2XL')
         .allow(null, '')
         .when('jersey', {
             is: true,
@@ -33,7 +33,7 @@ const acompananteSchema = Joi.object({
         })
         .messages({
             'any.required': 'Acompañante: si adquiere jersey, debe indicar la talla',
-            'any.only': 'Acompañante: la talla debe ser S, M, L, XL o XXL'
+            'any.only': 'Acompañante: la talla debe ser S, M, L, XL o 2XL'
         })
 });
 
@@ -176,7 +176,7 @@ const inscripcionSchema = Joi.object({
     }),
 
     talla: Joi.string()
-        .valid('S', 'M', 'L', 'XL', 'XXL')
+        .valid('S', 'M', 'L', 'XL', '2XL')
         .allow(null, '')
         .when('jersey', {
             is: true,
@@ -185,7 +185,7 @@ const inscripcionSchema = Joi.object({
         })
         .messages({
             'any.required': 'Si adquiere jersey, debe especificar la talla',
-            'any.only': 'La talla debe ser S, M, L, XL o XXL'
+            'any.only': 'La talla debe ser S, M, L, XL o 2XL'
         }),
 
     acompanante: Joi.boolean().required().messages({

@@ -34,7 +34,7 @@ const TIPOS_PARTICIPANTE_PERMITIDOS = [
  * @property {Date} fecha_llegada - Fecha de llegada al evento
  * @property {string} condicion_medica - Condiciones médicas especiales
  * @property {boolean} interes_jersey - Interés en adquirir jersey
- * @property {string} talla_jersey - Talla del jersey (XS, S, M, L, XL, XXL)
+ * @property {string} talla_jersey - Talla del jersey (S, M, L, XL, 2XL)
  * @property {boolean} asiste_acompanante - Si asiste con acompañante
  * @property {string} nombre_acompanante - Nombre del acompañante
  * @property {Date} fecha_registro - Fecha de registro (auto)

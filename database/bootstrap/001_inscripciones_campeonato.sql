@@ -160,31 +160,13 @@ BEGIN
 END;
 GO
 
-IF NOT EXISTS (
-    SELECT 1
-    FROM sys.check_constraints
-    WHERE parent_object_id = OBJECT_ID('dbo.InscripcionesCampeonato')
-      AND name = 'CK_InscripcionesCampeonato_capitulo'
-)
-BEGIN
-    ALTER TABLE dbo.InscripcionesCampeonato
-    ADD CONSTRAINT CK_InscripcionesCampeonato_capitulo
-    CHECK (
-        capitulo IN (
-            'Barranquilla',
-            'Bucaramanga',
-            'Cartagena',
-            'Cúcuta',
-            'Floridablanca',
-            'Medellín',
-            'Puerto Colombia',
-            'Valle Aburrá',
-            'Zenu',
-            'Otros'
-        )
-    );
-END;
-GO
+-- No se agrega un CHECK de capitulo aquí: el catálogo de capítulos
+-- (src/data/paisesCapitulos.js) crece con el tiempo (p. ej. Rionegro se
+-- sumó después) y una lista fija en la base de datos queda desactualizada
+-- en silencio, causando el mismo tipo de fallo que un CHECK de
+-- estado_validacion desincronizado. La validación de capítulo/país ya la
+-- hace Joi (inscripcionValidator.js) contra ese catálogo, que es la única
+-- fuente de verdad.
 
 IF NOT EXISTS (
     SELECT 1
