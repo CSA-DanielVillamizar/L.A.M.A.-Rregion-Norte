@@ -1,0 +1,282 @@
+<%- include('partials/header') %>
+
+    <section class="min-h-[70vh] px-4 py-16">
+        <div class="container mx-auto max-w-2xl">
+            <div class="text-center mb-10">
+                <h1 class="text-4xl sm:text-5xl font-headings text-lamaGold mb-3">BUSCAR MI INSCRIPCIÓN</h1>
+                <p class="text-lamaBone text-sm">Consulta el estado de tu registro al V Campeonato Región Norte y, si
+                    aún no lo has hecho, adjunta tu comprobante de pago sin volver a llenar el formulario.</p>
+            </div>
+
+            <!-- FORMULARIO DE BÚSQUEDA -->
+            <div id="buscarPanel" class="bg-lamaDark p-6 sm:p-8 rounded-lg border border-gray-800">
+                <div class="space-y-4">
+                    <div>
+                        <label for="buscarDocumento" class="text-lamaBone font-bold text-sm block mb-2">Documento
+                            (C.C./NUIP) *</label>
+                        <input type="text" id="buscarDocumento"
+                            class="w-full px-4 py-3 rounded bg-lamaBlack border-2 border-gray-700 text-lamaBone focus:outline-none focus:border-lamaNeon transition-colors">
+                    </div>
+                    <div>
+                        <label for="buscarEmail" class="text-lamaBone font-bold text-sm block mb-2">Correo
+                            Electrónico *</label>
+                        <input type="email" id="buscarEmail"
+                            class="w-full px-4 py-3 rounded bg-lamaBlack border-2 border-gray-700 text-lamaBone focus:outline-none focus:border-lamaNeon transition-colors">
+                        <p class="text-xs text-gray-500 mt-1">El mismo correo que usaste al registrarte. Lo pedimos
+                            como verificación para proteger tus datos.</p>
+                    </div>
+                    <p id="buscarError" class="text-sm text-red-400 hidden"></p>
+                    <button type="button" id="buscarBtn"
+                        class="btn-submit cta-glow w-full bg-lamaGold text-lamaBlack font-bold py-3 rounded hover:bg-lamaNeon transition-colors flex items-center justify-center gap-2">
+                        <span class="icon-symbol" aria-hidden="true">search</span>
+                        Buscar mi inscripción
+                    </button>
+                </div>
+            </div>
+
+            <!-- RESULTADO -->
+            <div id="resultadoPanel" class="bg-lamaDark p-6 sm:p-8 rounded-lg border border-gray-800 mt-6 hidden">
+                <div class="flex items-start justify-between gap-4 mb-6">
+                    <div>
+                        <h2 id="resNombre" class="text-2xl font-headings text-lamaGold"></h2>
+                        <p id="resCapitulo" class="text-sm text-gray-400"></p>
+                    </div>
+                    <span id="resEstadoBadge"
+                        class="text-xs font-bold uppercase px-3 py-1 rounded-full whitespace-nowrap"></span>
+                </div>
+
+                <div class="space-y-2 text-sm text-lamaBone mb-6">
+                    <div class="flex justify-between border-b border-gray-800 pb-2">
+                        <span class="text-gray-400">Tipo de participante</span>
+                        <span id="resTipo"></span>
+                    </div>
+                    <div class="flex justify-between border-b border-gray-800 pb-2" id="resJerseyRow">
+                        <span class="text-gray-400">Camiseta Oficial</span>
+                        <span id="resJersey"></span>
+                    </div>
+                    <div class="flex justify-between border-b border-gray-800 pb-2" id="resMerchRow">
+                        <span class="text-gray-400">Boutique</span>
+                        <span id="resMerch"></span>
+                    </div>
+                    <div class="flex justify-between border-b border-gray-800 pb-2">
+                        <span class="text-gray-400">Total a transferir</span>
+                        <span id="resTotal" class="text-lamaGold font-bold"></span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-400">Fecha de registro</span>
+                        <span id="resFecha"></span>
+                    </div>
+                </div>
+
+                <!-- COMPROBANTE: ya adjunto -->
+                <div id="comprobanteOk"
+                    class="hidden bg-lamaBlack/60 border border-lamaNeon/40 rounded p-4 flex items-center gap-3">
+                    <span class="icon-symbol text-lamaNeon" aria-hidden="true">task_alt</span>
+                    <p class="text-sm text-lamaBone">Ya tienes un comprobante de pago adjunto. Nuestro equipo de
+                        tesorería lo validará antes del evento.</p>
+                </div>
+
+                <!-- COMPROBANTE: pendiente de subir -->
+                <div id="comprobantePendiente" class="hidden">
+                    <h3 class="text-lamaGold font-bold text-sm mb-3 flex items-center gap-2">
+                        <span class="icon-symbol text-lamaNeon" aria-hidden="true">upload_file</span>
+                        Adjuntar comprobante de pago
+                    </h3>
+                    <label id="miComprobanteDropzone" for="miComprobanteInput"
+                        class="block border-2 border-dashed border-gray-700 rounded-lg p-6 text-center cursor-pointer hover:border-lamaNeon transition-colors">
+                        <p class="text-sm text-lamaBone"><span class="text-lamaNeon font-bold">Arrastra tu
+                                comprobante aquí</span> o haz click para seleccionarlo</p>
+                        <p id="miComprobanteFileName" class="text-xs text-lamaGold mt-2 font-bold"></p>
+                    </label>
+                    <input type="file" id="miComprobanteInput" accept=".pdf,image/jpeg,image/png" class="hidden">
+                    <p class="text-xs text-gray-400 mt-2">Formatos permitidos: JPG, PNG o PDF. Tamaño máximo 5MB.</p>
+                    <p id="subirError" class="text-sm text-red-400 mt-2 hidden"></p>
+                    <p id="subirExito" class="text-sm text-lamaNeon mt-2 hidden"></p>
+                    <button type="button" id="subirBtn"
+                        class="w-full mt-3 bg-lamaGold text-lamaBlack font-bold py-3 rounded hover:bg-lamaNeon transition-colors">
+                        Enviar comprobante
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        const buscarDocumento = document.getElementById('buscarDocumento');
+        const buscarEmail = document.getElementById('buscarEmail');
+        const buscarBtn = document.getElementById('buscarBtn');
+        const buscarError = document.getElementById('buscarError');
+        const resultadoPanel = document.getElementById('resultadoPanel');
+
+        const ESTADOS = {
+            Aprobado: { texto: 'Aprobado', clase: 'bg-lamaNeon/20 text-lamaNeon border border-lamaNeon' },
+            Rechazado: { texto: 'Rechazado', clase: 'bg-red-500/20 text-red-400 border border-red-500' }
+        };
+        const ESTADO_DEFAULT = { texto: 'Pendiente de validación', clase: 'bg-lamaGold/20 text-lamaGold border border-lamaGold' };
+
+        function formatearMoneda(valor) {
+            return `$${Number(valor || 0).toLocaleString('es-CO')}`;
+        }
+
+        async function buscarInscripcion() {
+            buscarError.classList.add('hidden');
+            const documento = buscarDocumento.value.trim();
+            const email = buscarEmail.value.trim();
+
+            if (!documento || !email) {
+                buscarError.textContent = 'Ingresa tu documento y correo electrónico.';
+                buscarError.classList.remove('hidden');
+                return;
+            }
+
+            buscarBtn.disabled = true;
+            buscarBtn.textContent = 'Buscando...';
+
+            try {
+                const respuesta = await fetch('/api/mi-inscripcion/buscar', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ documento, email })
+                });
+                const datos = await respuesta.json();
+
+                if (!datos.success) {
+                    resultadoPanel.classList.add('hidden');
+                    buscarError.textContent = datos.message || 'No encontramos tu inscripción.';
+                    buscarError.classList.remove('hidden');
+                    return;
+                }
+
+                mostrarResultado(datos.inscripcion);
+            } catch (error) {
+                buscarError.textContent = 'Error de conexión. Intenta de nuevo.';
+                buscarError.classList.remove('hidden');
+            } finally {
+                buscarBtn.disabled = false;
+                buscarBtn.innerHTML = '<span class="icon-symbol" aria-hidden="true">search</span> Buscar mi inscripción';
+            }
+        }
+
+        function mostrarResultado(inscripcion) {
+            document.getElementById('resNombre').textContent = inscripcion.nombre_completo;
+            document.getElementById('resCapitulo').textContent = inscripcion.capitulo === 'Otros' && inscripcion.capitulo_otro
+                ? inscripcion.capitulo_otro
+                : inscripcion.capitulo;
+            document.getElementById('resTipo').textContent = inscripcion.tipo_participante;
+            document.getElementById('resTotal').textContent = formatearMoneda(inscripcion.valor_total_pagar);
+            document.getElementById('resFecha').textContent = new Date(inscripcion.fecha_registro).toLocaleDateString('es-CO', {
+                year: 'numeric', month: 'long', day: 'numeric'
+            });
+
+            const estado = ESTADOS[inscripcion.estado_validacion] || ESTADO_DEFAULT;
+            const badge = document.getElementById('resEstadoBadge');
+            badge.textContent = estado.texto;
+            badge.className = `text-xs font-bold uppercase px-3 py-1 rounded-full whitespace-nowrap ${estado.clase}`;
+
+            const jerseyRow = document.getElementById('resJerseyRow');
+            if (inscripcion.adquiere_jersey) {
+                jerseyRow.classList.remove('hidden');
+                document.getElementById('resJersey').textContent = inscripcion.talla_jersey ? `Talla ${inscripcion.talla_jersey}` : 'Sí';
+            } else {
+                jerseyRow.classList.add('hidden');
+            }
+
+            const merchRow = document.getElementById('resMerchRow');
+            let merchItems = [];
+            try {
+                merchItems = inscripcion.merchandising_json ? JSON.parse(inscripcion.merchandising_json) : [];
+            } catch (error) {
+                merchItems = [];
+            }
+            if (Array.isArray(merchItems) && merchItems.length > 0) {
+                merchRow.classList.remove('hidden');
+                document.getElementById('resMerch').textContent = merchItems
+                    .map((item) => `${item.nombre} x${item.cantidad}`)
+                    .join(', ');
+            } else {
+                merchRow.classList.add('hidden');
+            }
+
+            document.getElementById('comprobanteOk').classList.toggle('hidden', !inscripcion.tiene_comprobante);
+            document.getElementById('comprobantePendiente').classList.toggle('hidden', Boolean(inscripcion.tiene_comprobante));
+
+            resultadoPanel.classList.remove('hidden');
+            resultadoPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        buscarBtn.addEventListener('click', buscarInscripcion);
+        [buscarDocumento, buscarEmail].forEach((input) => {
+            input.addEventListener('keydown', (event) => {
+                if (event.key === 'Enter') buscarInscripcion();
+            });
+        });
+
+        // Subida de comprobante
+        const miComprobanteInput = document.getElementById('miComprobanteInput');
+        const miComprobanteDropzone = document.getElementById('miComprobanteDropzone');
+        const miComprobanteFileName = document.getElementById('miComprobanteFileName');
+        const subirBtn = document.getElementById('subirBtn');
+        const subirError = document.getElementById('subirError');
+        const subirExito = document.getElementById('subirExito');
+
+        miComprobanteInput.addEventListener('change', () => {
+            const archivo = miComprobanteInput.files && miComprobanteInput.files[0];
+            if (archivo) {
+                miComprobanteFileName.textContent = `Archivo seleccionado: ${archivo.name}`;
+            } else {
+                miComprobanteFileName.textContent = '';
+            }
+        });
+
+        subirBtn.addEventListener('click', async () => {
+            subirError.classList.add('hidden');
+            subirExito.classList.add('hidden');
+            const archivo = miComprobanteInput.files && miComprobanteInput.files[0];
+
+            if (!archivo) {
+                subirError.textContent = 'Selecciona un archivo primero.';
+                subirError.classList.remove('hidden');
+                return;
+            }
+            if (archivo.size > 5 * 1024 * 1024) {
+                subirError.textContent = 'El archivo supera 5MB. Adjunta uno más liviano.';
+                subirError.classList.remove('hidden');
+                return;
+            }
+
+            subirBtn.disabled = true;
+            subirBtn.textContent = 'Enviando...';
+
+            try {
+                const formData = new FormData();
+                formData.append('documento', buscarDocumento.value.trim());
+                formData.append('email', buscarEmail.value.trim());
+                formData.append('comprobante', archivo);
+
+                const respuesta = await fetch('/api/mi-inscripcion/comprobante', {
+                    method: 'POST',
+                    body: formData
+                });
+                const datos = await respuesta.json();
+
+                if (!datos.success) {
+                    subirError.textContent = datos.message || 'No fue posible adjuntar el comprobante.';
+                    subirError.classList.remove('hidden');
+                    return;
+                }
+
+                subirExito.textContent = 'Comprobante adjuntado correctamente. ¡Gracias!';
+                subirExito.classList.remove('hidden');
+                document.getElementById('comprobantePendiente').classList.add('hidden');
+                document.getElementById('comprobanteOk').classList.remove('hidden');
+            } catch (error) {
+                subirError.textContent = 'Error de conexión. Intenta de nuevo.';
+                subirError.classList.remove('hidden');
+            } finally {
+                subirBtn.disabled = false;
+                subirBtn.textContent = 'Enviar comprobante';
+            }
+        });
+    </script>
+
+    <%- include('partials/footer') %>

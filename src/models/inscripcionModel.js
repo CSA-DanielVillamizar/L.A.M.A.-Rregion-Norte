@@ -722,20 +722,68 @@ class InscripcionModel {
     }
 
     /**
-     * Adjunta o reemplaza el comprobante de pago de una inscripción ya
-     * existente. Pensado para el flujo de "pre-inscripción sin pago": el
-     * socio llena el formulario primero y sube el comprobante despues,
-     * sin volver a diligenciar sus datos.
+     * Busca una inscripción para el portal público "Buscar mi inscripción".
+     * Exige documento + email (segundo factor) para que nadie pueda consultar
+     * o modificar el registro de otra persona solo adivinando un número de
+     * documento. Devuelve un DTO reducido: nunca expone comprobante_contenido
+     * (el binario del archivo) ni datos de contacto de emergencia.
      * @param {string} documento
-     * @param {{nombreArchivo:string, mime:string, tamanoBytes:number, contenido:Buffer}} archivo
-     * @returns {Promise<Object|null>} Inscripción actualizada o null si no existe
+     * @param {string} email
+     * @returns {Promise<Object|null>}
      */
-    static async actualizarComprobante(documento, archivo) {
+    static async buscarConVerificacion(documento, email) {
         try {
             await this.asegurarColumnasExtendidas();
             const pool = await getPool();
             const request = pool.request();
             request.input('documento', sql.VarChar(30), String(documento).trim());
+            request.input('email', sql.VarChar(150), String(email).trim().toLowerCase());
+
+            const result = await request.query(`
+                SELECT TOP 1
+                    nombre_completo, documento_numero, tipo_participante, capitulo,
+                    capitulo_otro, fecha_registro, estado_validacion, adquiere_jersey,
+                    talla_jersey, asiste_con_acompanante, nombre_acompanante,
+                    merchandising_json, total_merchandising, valor_base, valor_jersey,
+                    comprobante_nombre_archivo
+                FROM InscripcionesCampeonato
+                WHERE documento_numero = @documento
+                  AND LOWER(LTRIM(RTRIM(email))) = @email
+                ORDER BY fecha_registro DESC
+            `);
+
+            if (result.recordset.length === 0) return null;
+
+            const inscripcion = result.recordset[0];
+            return {
+                ...this.normalizarInscripcionSalida(inscripcion),
+                tiene_comprobante: Boolean(inscripcion.comprobante_nombre_archivo)
+            };
+        } catch (error) {
+            logger.error('Error en InscripcionModel.buscarConVerificacion', { error });
+            throw error;
+        }
+    }
+
+    /**
+     * Adjunta o reemplaza el comprobante de pago de una inscripción ya
+     * existente. Pensado para el flujo de "pre-inscripción sin pago": el
+     * socio llena el formulario primero y sube el comprobante despues,
+     * sin volver a diligenciar sus datos. Exige el mismo segundo factor
+     * (email) que buscarConVerificacion para que nadie pueda sobrescribir
+     * el comprobante de otra persona solo con su número de documento.
+     * @param {string} documento
+     * @param {string} email
+     * @param {{nombreArchivo:string, mime:string, tamanoBytes:number, contenido:Buffer}} archivo
+     * @returns {Promise<Object|null>} Inscripción actualizada o null si no existe/no coincide el email
+     */
+    static async actualizarComprobante(documento, email, archivo) {
+        try {
+            await this.asegurarColumnasExtendidas();
+            const pool = await getPool();
+            const request = pool.request();
+            request.input('documento', sql.VarChar(30), String(documento).trim());
+            request.input('email', sql.VarChar(150), String(email).trim().toLowerCase());
             request.input('comprobante_nombre_archivo', sql.NVarChar(260), archivo.nombreArchivo || null);
             request.input('comprobante_mime', sql.NVarChar(120), archivo.mime || null);
             request.input('comprobante_tamano_bytes', sql.Int, Number.isFinite(archivo.tamanoBytes) ? archivo.tamanoBytes : null);
@@ -749,6 +797,7 @@ class InscripcionModel {
                     comprobante_contenido = @comprobante_contenido
                 OUTPUT INSERTED.id_inscripcion
                 WHERE documento_numero = @documento
+                  AND LOWER(LTRIM(RTRIM(email))) = @email
             `);
 
             return result.recordset.length > 0 ? result.recordset[0] : null;

@@ -13,6 +13,7 @@ const { apiKeyAuth } = require('../middleware/authMiddleware');
 const PdfFormularioNacionalService = require('../services/pdfFormularioNacionalService');
 const PdfRegistroStorageService = require('../services/pdfRegistroStorageService');
 const UbicacionController = require('../controllers/ubicacionController');
+const ConsultaInscripcionController = require('../controllers/consultaInscripcionController');
 
 const uploadMemoria = multer({
     storage: multer.memoryStorage(),
@@ -217,6 +218,23 @@ router.get('/check-documento/:documento', async (req, res) => {
         });
     }
 });
+
+// Portal público "Buscar mi inscripción": documento + email como segundo
+// factor, para que nadie pueda consultar o modificar el registro de otra
+// persona solo adivinando un número de documento.
+router.post('/mi-inscripcion/buscar', ConsultaInscripcionController.buscarInscripcion);
+
+router.post('/mi-inscripcion/comprobante', (req, res, next) => {
+    ConsultaInscripcionController.uploadComprobanteMiddleware(req, res, (error) => {
+        if (error) {
+            return res.status(400).json({
+                success: false,
+                message: error.message || 'Error al procesar el comprobante de pago'
+            });
+        }
+        next();
+    });
+}, ConsultaInscripcionController.subirComprobante);
 
 /**
  * GET /api/inscripciones

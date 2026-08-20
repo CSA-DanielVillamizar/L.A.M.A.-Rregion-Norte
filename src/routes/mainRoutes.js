@@ -23,6 +23,10 @@ router.get('/registro', mainController.getRegistro);
 // Ruta de inscripción al V Campeonato Regional
 router.get('/registro-campeonato', mainController.getRegistroCampeonato);
 
+// Portal público para consultar el estado de una inscripción y adjuntar
+// el comprobante de pago más tarde
+router.get('/mi-inscripcion', mainController.getMiInscripcion);
+
 // Ruta del mapa interactivo
 router.get('/itinerario', mainController.getItinerario);
 

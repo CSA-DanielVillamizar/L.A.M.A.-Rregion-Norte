@@ -63,7 +63,7 @@ const limiterAuth = rateLimit({
     legacyHeaders: false,
     message: { success: false, message: 'Demasiadas peticiones. Intenta de nuevo en unos minutos.' }
 });
-app.use(['/admin', '/checkin'], limiterAuth);
+app.use(['/admin', '/checkin', '/api/mi-inscripcion'], limiterAuth);
 
 // Límite para los envíos reales de los formularios públicos (no las páginas
 // que los muestran), evita spam de inscripciones/registros.

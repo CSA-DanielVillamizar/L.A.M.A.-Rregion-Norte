@@ -110,6 +110,15 @@ exports.getRegistroCampeonato = (req, res) => {
 };
 
 /**
+ * Renderiza el portal público "Buscar mi inscripción"
+ */
+exports.getMiInscripcion = (req, res) => {
+    res.render('mi-inscripcion', {
+        title: 'Buscar mi Inscripción'
+    });
+};
+
+/**
  * Renderiza mapa interactivo del evento
  */
 exports.getItinerario = (req, res) => {

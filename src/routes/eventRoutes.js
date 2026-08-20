@@ -13,7 +13,8 @@ router.get('/', eventController.getAllEvents);
 // Detalle de evento específico
 router.get('/:id', eventController.getEventById);
 
-// Registro a evento (multipart/form-data: incluye el comprobante de pago obligatorio)
+// Registro a evento (multipart/form-data: el comprobante de pago es opcional,
+// puede adjuntarse después desde /mi-inscripcion)
 router.post('/:id/registro', (req, res, next) => {
     eventController.uploadComprobanteMiddleware(req, res, (error) => {
         if (error) {
