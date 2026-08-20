@@ -202,13 +202,6 @@ exports.registerToEvent = async (req, res) => {
             });
         }
 
-        if (!req.file) {
-            return res.status(400).json({
-                success: false,
-                message: 'El comprobante de pago es obligatorio'
-            });
-        }
-
         const existente = await InscripcionModel.findByDocumento(String(documento).trim());
         if (existente) {
             return res.status(409).json({
@@ -252,10 +245,10 @@ exports.registerToEvent = async (req, res) => {
             merchandising,
             total_merchandising: Number.isFinite(totalMerchandising) ? totalMerchandising : 0,
             estado_validacion: 'Pendiente_Validacion_Tesoreria',
-            comprobante_nombre_archivo: req.file.originalname,
-            comprobante_mime: req.file.mimetype,
-            comprobante_tamano_bytes: req.file.size,
-            comprobante_contenido: req.file.buffer
+            comprobante_nombre_archivo: req.file ? req.file.originalname : null,
+            comprobante_mime: req.file ? req.file.mimetype : null,
+            comprobante_tamano_bytes: req.file ? req.file.size : null,
+            comprobante_contenido: req.file ? req.file.buffer : null
         };
 
         const result = await InscripcionModel.create(inscripcionPayload);

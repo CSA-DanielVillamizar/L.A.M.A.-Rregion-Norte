@@ -2167,9 +2167,7 @@
             if (!capituloSelect.value) errors.push('Capítulo es obligatorio');
 
             const comprobanteFile = comprobanteInput.files && comprobanteInput.files[0];
-            if (!comprobanteFile) {
-                errors.push('El comprobante de pago es obligatorio');
-            } else if (comprobanteFile.size > 5 * 1024 * 1024) {
+            if (comprobanteFile && comprobanteFile.size > 5 * 1024 * 1024) {
                 errors.push('El comprobante supera 5MB. Por favor adjunta uno más liviano.');
             }
 
