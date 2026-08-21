@@ -7,7 +7,6 @@ const { InscripcionModel } = require('../models/inscripcionModel');
 const capitulosService = require('../services/capitulosService');
 const eventService = require('../services/eventService');
 const serviciosPremiumService = require('../services/serviciosPremiumService');
-const RegistroCampeonatoSyncService = require('../services/registroCampeonatoSyncService');
 const QrService = require('../services/qrService');
 const logger = require('../utils/logger');
 const multer = require('multer');
@@ -20,7 +19,6 @@ class AdminController {
      */
     static async showDashboard(req, res) {
         try {
-            await RegistroCampeonatoSyncService.sincronizarRegistrosCampeonatoAInscripciones('vnorte-2026');
             const inscripciones = await InscripcionModel.getAll();
             const stats = await InscripcionModel.getStats();
 
@@ -46,7 +44,6 @@ class AdminController {
      */
     static async getAllInscripciones(req, res) {
         try {
-            await RegistroCampeonatoSyncService.sincronizarRegistrosCampeonatoAInscripciones('vnorte-2026');
             const inscripciones = await InscripcionModel.getAll();
 
             res.json({
@@ -170,7 +167,6 @@ class AdminController {
      */
     static async getEstadisticas(req, res) {
         try {
-            await RegistroCampeonatoSyncService.sincronizarRegistrosCampeonatoAInscripciones('vnorte-2026');
             const stats = await InscripcionModel.getStats();
 
             res.json({
