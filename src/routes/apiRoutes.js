@@ -202,7 +202,7 @@ router.get('/check-documento/:documento', async (req, res) => {
             });
         }
 
-        const existente = await InscripcionModel.findByDocumento(String(documento).trim());
+        const existente = await InscripcionModel.findByDocumento(String(documento).trim(), req.query.evento_id || null);
         const existe = Boolean(existente);
 
         return res.status(200).json({

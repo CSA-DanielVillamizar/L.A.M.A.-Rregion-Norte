@@ -6,6 +6,8 @@
 const mainService = require('../services/mainService');
 const logger = require('../utils/logger');
 const capitulosService = require('../services/capitulosService');
+const eventService = require('../services/eventService');
+const { formatearRangoFechas } = require('../utils/fechas');
 const { PAISES_CAPITULOS } = require('../data/paisesCapitulos');
 
 /**
@@ -100,13 +102,58 @@ exports.getRegistro = (req, res) => {
 };
 
 /**
- * Renderiza formulario de inscripción al V Campeonato Regional
+ * Renderiza el formulario de inscripción a un evento especifico. Usado
+ * tanto por /registro-campeonato (alias de conveniencia al evento
+ * "destacado" del momento, para no romper enlaces ya compartidos) como
+ * por /eventos/:id/registro-formulario (genérico, para cualquier evento).
  */
-exports.getRegistroCampeonato = (req, res) => {
+async function renderizarFormularioEvento(evento, res) {
+    if (!evento || !evento.activo) {
+        return res.status(404).render('404', {
+            title: 'Evento No Encontrado',
+            message: 'El evento que buscas no existe o ya no está disponible para inscripciones'
+        });
+    }
+
     res.render('registro-campeonato', {
-        title: 'Inscripción V Campeonato Regional',
+        title: `Inscripción ${evento.nombre}`,
+        event: evento,
+        rangoFechas: formatearRangoFechas(evento.fecha, evento.fechaFin),
         paisesCapitulos: PAISES_CAPITULOS
     });
+}
+
+/**
+ * Renderiza formulario de inscripción al evento actualmente destacado
+ * (alias de conveniencia; mantiene funcionando los enlaces existentes a
+ * /registro-campeonato).
+ */
+exports.getRegistroCampeonato = async (req, res) => {
+    try {
+        const eventos = await eventService.getAllEvents();
+        const eventoDestacado = eventos.find((e) => e.destacado) || eventos[0] || null;
+        await renderizarFormularioEvento(eventoDestacado, res);
+    } catch (error) {
+        logger.error('Error en getRegistroCampeonato', { error });
+        res.status(500).render('error', {
+            message: 'Error al cargar el formulario de inscripción'
+        });
+    }
+};
+
+/**
+ * Renderiza formulario de inscripción a un evento especifico por su id.
+ */
+exports.getRegistroEvento = async (req, res) => {
+    try {
+        const evento = await eventService.getEventById(req.params.id);
+        await renderizarFormularioEvento(evento, res);
+    } catch (error) {
+        logger.error('Error en getRegistroEvento', { error });
+        res.status(500).render('error', {
+            message: 'Error al cargar el formulario de inscripción'
+        });
+    }
 };
 
 /**

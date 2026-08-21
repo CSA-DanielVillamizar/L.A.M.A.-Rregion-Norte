@@ -1048,10 +1048,9 @@
         <div class="max-w-7xl mx-auto">
             <div class="text-center mb-12">
                 <h1 class="text-4xl md:text-6xl font-headings text-lamaGold tracking-widest mb-3">
-                    INSCRIPCIÓN V CAMPEONATO REGIONAL
+                    INSCRIPCIÓN <%= event.nombre.toUpperCase() %>
                 </h1>
-                <p class="text-lamaNeon neon-text text-lg">Costa Caribe Continental ( Golfo de Morrosquillo - Coveñas) • Septiembre
-                    12-13, 2026</p>
+                <p class="text-lamaNeon neon-text text-lg"><%= event.ubicacion %> • <%= rangoFechas %></p>
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -1199,10 +1198,10 @@
                             <h2 class="form-section-title font-headings">LOGÍSTICA</h2>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
-                                    <label class="form-label">Fecha de llegada a la ruta continental *</label>
+                                    <label class="form-label">Fecha de llegada al evento *</label>
                                     <input type="date" name="fecha_llegada" id="fechaLlegada"
-                                        class="form-input w-full px-4 py-3 rounded" min="2026-09-11"
-                                        max="2026-09-13" value="2026-09-12" required>
+                                        class="form-input w-full px-4 py-3 rounded" min="<%= event.fecha %>"
+                                        max="<%= event.fechaFin %>" value="<%= event.fecha %>" required>
                                 </div>
                                 <div>
                                     <label class="form-label">Condición médica</label>
@@ -1332,7 +1331,7 @@
                         <div class="space-y-3 text-lamaBone text-sm">
                             <div class="flex justify-between">
                                 <span>Inscripción</span>
-                                <span id="resInscripcion">$100.000</span>
+                                <span id="resInscripcion">$<%= Number(event.precio || 100000).toLocaleString('es-CO') %></span>
                             </div>
                             <div class="flex justify-between" id="resAcompanantesRow" style="display: none;">
                                 <span id="resAcompanantesLabel">Acompañantes</span>
@@ -1348,7 +1347,7 @@
                             </div>
                             <div class="border-t border-gray-700 pt-3 flex justify-between font-bold text-lamaGold">
                                 <span>Total a transferir</span>
-                                <span id="resTotal">$100.000</span>
+                                <span id="resTotal">$<%= Number(event.precio || 100000).toLocaleString('es-CO') %></span>
                             </div>
                         </div>
                     </div>
@@ -1477,7 +1476,7 @@
                         </svg>
                     </div>
                     <h1 class="success-title">¡FORMULARIO ENVIADO CON ÉXITO!</h1>
-                    <p class="success-subtitle">V Campeonato de Mototurismo Región Norte</p>
+                    <p class="success-subtitle"><%= event.nombre %></p>
                 </header>
 
                 <!-- Summary Card -->
@@ -1519,7 +1518,7 @@
                                 <div class="service-item">
                                     <span class="service-name">Inscripción Base<span
                                             class="service-tag">(OBLIGATORIO)</span></span>
-                                    <span class="service-price">$100.000</span>
+                                    <span class="service-price">$<%= Number(event.precio || 100000).toLocaleString('es-CO') %></span>
                                 </div>
                                 <div class="service-item" id="modal-acomp-insc-item" style="display: none;">
                                     <span class="service-name" id="modal-acomp-insc-label">Acompañantes</span>
@@ -1537,7 +1536,7 @@
 
                             <div class="total-box">
                                 <p class="total-label">Total a Pagar</p>
-                                <p class="total-amount" id="modal-total">$100.000</p>
+                                <p class="total-amount" id="modal-total">$<%= Number(event.precio || 100000).toLocaleString('es-CO') %></p>
                             </div>
                         </div>
                     </div>
@@ -1639,10 +1638,10 @@
                     <tbody>
                         <tr>
                             <td>
-                                <p class="pdf-item-title">Inscripción Base al Campeonato</p>
+                                <p class="pdf-item-title">Inscripción Base</p>
                                 <p class="pdf-item-subtitle">CATEGORÍA: <span id="pdf-categoria"></span></p>
                             </td>
-                            <td>$100.000</td>
+                            <td>$<%= Number(event.precio || 100000).toLocaleString('es-CO') %></td>
                         </tr>
                         <tr id="pdf-jersey-row" style="display: none;">
                             <td>
@@ -1883,7 +1882,10 @@
             });
         }
 
-        const BASE_PRICE = 100000;
+        const EVENT_ID = '<%= event.id %>';
+        const EVENT_NAME = '<%- JSON.stringify(event.nombre).slice(1, -1) %>';
+        const EVENT_LOCATION = '<%- JSON.stringify(event.ubicacion || '').slice(1, -1) %>';
+        const BASE_PRICE = <%= Number(event.precio) || 100000 %>;
         const JERSEY_PRICE = 65000;
         let registroActual = {};
 
@@ -2110,7 +2112,7 @@
             resInscripcion.textContent = `$${BASE_PRICE.toLocaleString('es-CO')}`;
             if (acompanantesCount > 0) {
                 resAcompanantesRow.style.display = 'flex';
-                resAcompanantesLabel.textContent = `Acompañantes (${acompanantesCount} x $100.000)`;
+                resAcompanantesLabel.textContent = `Acompañantes (${acompanantesCount} x $${BASE_PRICE.toLocaleString('es-CO')})`;
                 resAcompanantes.textContent = `$${(BASE_PRICE * acompanantesCount).toLocaleString('es-CO')}`;
             } else {
                 resAcompanantesRow.style.display = 'none';
@@ -2208,9 +2210,9 @@
          */
         function construirMensajeWhatsApp(data, numeroInscripcion, total, merchandising = []) {
             let mensaje = '';
-            mensaje += 'V CAMPEONATO REGIONAL DE MOTOTURISMO\n';
-            mensaje += 'L.A.M.A. REGIÓN NORTE - COLOMBIA\n\n';
-            mensaje += 'Registro para el evento en la ruta continental Coveñas - San Antero\n\n';
+            mensaje += `${EVENT_NAME.toUpperCase()}\n`;
+            mensaje += 'L.A.M.A. - COLOMBIA\n\n';
+            mensaje += `Registro para el evento en ${EVENT_LOCATION}\n\n`;
 
             // DATOS DEL PARTICIPANTE
             mensaje += `Participante: ${data.nombre}\n`;
@@ -2253,15 +2255,15 @@
                 ? data.acompanantes.filter(item => item.jersey).length
                 : 0;
             const jerseysCount = (data.jersey ? 1 : 0) + acompanantesJerseyCount;
-            const inscripcionTotal = 100000 * (1 + acompanantesCount);
-            const jerseyTotal = 65000 * jerseysCount;
+            const inscripcionTotal = BASE_PRICE * (1 + acompanantesCount);
+            const jerseyTotal = JERSEY_PRICE * jerseysCount;
 
             mensaje += 'Inscripción Base (OBLIGATORIO)\n';
             mensaje += `$${inscripcionTotal.toLocaleString('es-CO')}\n`;
 
             if (acompanantesCount > 0) {
-                mensaje += `Acompañantes (${acompanantesCount} x $100.000)\n`;
-                mensaje += `$${(100000 * acompanantesCount).toLocaleString('es-CO')}\n`;
+                mensaje += `Acompañantes (${acompanantesCount} x $${BASE_PRICE.toLocaleString('es-CO')})\n`;
+                mensaje += `$${(BASE_PRICE * acompanantesCount).toLocaleString('es-CO')}\n`;
             }
 
             if (jerseysCount > 0) {
@@ -2406,7 +2408,7 @@
                     formData.append('comprobante', comprobanteFile);
                 }
 
-                const response = await fetch('/eventos/vnorte-2026/registro', {
+                const response = await fetch(`/eventos/${EVENT_ID}/registro`, {
                     method: 'POST',
                     body: formData
                 });
@@ -2452,7 +2454,7 @@
             // Acompañantes en el modal
             if (acompanantesCount > 0) {
                 document.getElementById('modal-acomp-insc-item').style.display = 'flex';
-                document.getElementById('modal-acomp-insc-label').textContent = `Acompañantes (${acompanantesCount} x $100.000)`;
+                document.getElementById('modal-acomp-insc-label').textContent = `Acompañantes (${acompanantesCount} x $${BASE_PRICE.toLocaleString('es-CO')})`;
                 document.getElementById('modal-acomp-insc-total').textContent = `$${(BASE_PRICE * acompanantesCount).toLocaleString('es-CO')}`;
             } else {
                 document.getElementById('modal-acomp-insc-item').style.display = 'none';
@@ -2534,7 +2536,7 @@
             // Acompañantes
             if (acompanantesCount > 0) {
                 document.getElementById('pdf-acompanante-row').style.display = 'table-row';
-                document.getElementById('pdf-acomp-count').textContent = `${acompanantesCount} x $100.000`;
+                document.getElementById('pdf-acomp-count').textContent = `${acompanantesCount} x $${BASE_PRICE.toLocaleString('es-CO')}`;
                 document.getElementById('pdf-acomp-total').textContent = `$${(BASE_PRICE * acompanantesCount).toLocaleString('es-CO')}`;
             } else {
                 document.getElementById('pdf-acompanante-row').style.display = 'none';
@@ -2670,7 +2672,7 @@
             }
 
             try {
-                const response = await fetch(`/api/check-documento/${documento}`);
+                const response = await fetch(`/api/check-documento/${documento}?evento_id=${encodeURIComponent(EVENT_ID)}`);
                 const data = await response.json();
 
                 if (data.existe) {
@@ -2702,7 +2704,7 @@
                         text-align: center;
                     ">
                         <span class="icon-symbol" style="vertical-align:middle;" aria-hidden="true">warning</span>
-                        Este documento ya está registrado para el V Campeonato Regional.
+                        Este documento ya está registrado para ${EVENT_NAME}.
                         <br>
                         <small style="display: block; margin-top: 8px; font-weight: normal;">
                             Si crees que es un error, contacta con nosotros.

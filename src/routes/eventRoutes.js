@@ -6,9 +6,13 @@
 const express = require('express');
 const router = express.Router();
 const eventController = require('../controllers/eventController');
+const mainController = require('../controllers/mainController');
 
 // Listado de eventos
 router.get('/', eventController.getAllEvents);
+
+// Formulario de inscripción a un evento especifico (generico, cualquier evento)
+router.get('/:id/registro-formulario', mainController.getRegistroEvento);
 
 // Detalle de evento específico
 router.get('/:id', eventController.getEventById);

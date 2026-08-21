@@ -7,22 +7,8 @@ const formularioService = require('./formularioService');
 const capitulosService = require('./capitulosService');
 const ContenidoTuristicoModel = require('../models/contenidoTuristicoModel');
 const eventService = require('./eventService');
+const { formatearRangoFechas } = require('../utils/fechas');
 const logger = require('../utils/logger');
-
-const MESES_ES = ['ENE', 'FEB', 'MAR', 'ABR', 'MAY', 'JUN', 'JUL', 'AGO', 'SEP', 'OCT', 'NOV', 'DIC'];
-
-function formatearRangoFechas(fecha, fechaFin) {
-    if (!fecha) return '';
-    const inicio = new Date(`${fecha}T12:00:00`);
-    const fin = fechaFin ? new Date(`${fechaFin}T12:00:00`) : inicio;
-    const mes = MESES_ES[inicio.getMonth()];
-    const anio = inicio.getFullYear();
-
-    if (inicio.getDate() === fin.getDate()) {
-        return `${mes} ${inicio.getDate()}, ${anio}`;
-    }
-    return `${mes} ${inicio.getDate()}-${fin.getDate()}, ${anio}`;
-}
 
 /**
  * Obtiene los datos para la página principal, centrados en el evento

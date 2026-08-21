@@ -47,8 +47,13 @@ describe('inscripcionValidator (esquema real de POST /eventos/vnorte-2026/regist
         expect(error).toBeDefined();
     });
 
-    test('rechaza fechas de llegada fuera del rango del evento (11-13 sept. 2026)', () => {
+    test('acepta cualquier fecha de llegada valida (el rango min/max ahora se valida dinamicamente contra el evento en eventController, no aqui - el schema es compartido por cualquier evento)', () => {
         const { error } = validateInscripcion(datosValidos({ fecha_llegada: '2026-09-20' }));
+        expect(error).toBeUndefined();
+    });
+
+    test('rechaza una fecha de llegada invalida', () => {
+        const { error } = validateInscripcion(datosValidos({ fecha_llegada: 'no-es-una-fecha' }));
         expect(error).toBeDefined();
     });
 

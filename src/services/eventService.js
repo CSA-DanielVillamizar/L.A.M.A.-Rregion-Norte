@@ -438,7 +438,10 @@ const mapearFilaEvento = (fila) => ({
     hospedajeOficial: parsearJSONSeguro(fila.hospedajeJson, null),
     disponibilidad: fila.capacidad - fila.registrados,
     porcentajeOcupacion: fila.capacidad > 0 ? Math.round((fila.registrados / fila.capacidad) * 100) : 0,
-    lleno: fila.registrados >= fila.capacidad
+    lleno: fila.registrados >= fila.capacidad,
+    // getAllEvents/getEventById ya filtran WHERE activo = 1 en SQL, así que
+    // toda fila que llega aquí es por definición un evento activo.
+    activo: true
 });
 
 const mapearEventoMemoria = (evento) => ({
@@ -454,7 +457,8 @@ const mapearEventoMemoria = (evento) => ({
     hospedajeOficial: evento.hospedajeOficial || null,
     disponibilidad: evento.capacidad - evento.registrados,
     porcentajeOcupacion: evento.capacidad > 0 ? Math.round((evento.registrados / evento.capacidad) * 100) : 0,
-    lleno: evento.registrados >= evento.capacidad
+    lleno: evento.registrados >= evento.capacidad,
+    activo: evento.activo !== false
 });
 
 const asegurarTablaEventos = async () => {
@@ -672,6 +676,7 @@ exports.getEventById = async (eventId) => {
         SELECT TOP 1
             id_evento AS id,
             nombre,
+            capitulo,
             CONVERT(VARCHAR(10), fecha_inicio, 23) AS fecha,
             CONVERT(VARCHAR(10), fecha_fin, 23) AS fechaFin,
             ubicacion,

@@ -157,14 +157,14 @@ const inscripcionSchema = Joi.object({
             'any.only': 'Cargo no válido'
         }),
 
+    // El rango valido (min/max) depende de las fechas del evento al que se
+    // registra, no es fijo - se valida dinamicamente en el controller
+    // (eventController.registerToEvent) contra evento.fecha/fechaFin, ya
+    // que este schema es compartido por cualquier evento.
     fecha_llegada: Joi.date()
-        .min('2026-09-11')
-        .max('2026-09-13')
         .required()
         .messages({
-            'any.required': 'La fecha de llegada es obligatoria',
-            'date.min': 'La fecha de llegada debe ser entre el 11 y el 13 de septiembre de 2026',
-            'date.max': 'La fecha de llegada debe ser entre el 11 y el 13 de septiembre de 2026'
+            'any.required': 'La fecha de llegada es obligatoria'
         }),
 
     condicion_medica: Joi.string().max(1000).trim().allow(null, '').optional().messages({

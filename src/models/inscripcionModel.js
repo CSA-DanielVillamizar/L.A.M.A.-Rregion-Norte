@@ -700,18 +700,22 @@ class InscripcionModel {
      * @param {string} documento - Número de documento
      * @returns {Promise<Object|null>} Inscripción encontrada o null
      */
-    static async findByDocumento(documento) {
+    static async findByDocumento(documento, eventoId = null) {
         try {
             await this.asegurarColumnasExtendidas();
             const pool = await getPool();
             const request = pool.request();
             request.input('documento', sql.VarChar(30), documento);
 
-            const query = `
+            let query = `
                 SELECT * FROM InscripcionesCampeonato
                 WHERE documento_numero = @documento
-                ORDER BY fecha_registro DESC
             `;
+            if (eventoId) {
+                request.input('evento_id', sql.VarChar(120), eventoId);
+                query += ' AND evento_id = @evento_id';
+            }
+            query += ' ORDER BY fecha_registro DESC';
 
             const result = await request.query(query);
             return result.recordset.length > 0

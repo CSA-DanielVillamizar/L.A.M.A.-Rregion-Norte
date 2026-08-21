@@ -209,7 +209,24 @@ exports.registerToEvent = async (req, res) => {
             });
         }
 
-        const existente = await InscripcionModel.findByDocumento(String(documento).trim());
+        // El rango valido de fecha_llegada depende de las fechas propias del
+        // evento (evento.fecha / evento.fechaFin), no de una fecha fija -
+        // cada evento tiene su propia ventana de llegada.
+        if (evento.fecha && evento.fechaFin) {
+            const fechaLlegadaDate = new Date(`${fecha_llegada}T12:00:00`);
+            const fechaInicioEvento = new Date(`${evento.fecha}T00:00:00`);
+            const fechaFinEvento = new Date(`${evento.fechaFin}T23:59:59`);
+
+            if (fechaLlegadaDate < fechaInicioEvento || fechaLlegadaDate > fechaFinEvento) {
+                return res.status(400).json({
+                    success: false,
+                    message: `La fecha de llegada debe estar entre el ${evento.fecha} y el ${evento.fechaFin}`,
+                    errors: [{ field: 'fecha_llegada', message: `Debe estar entre ${evento.fecha} y ${evento.fechaFin}` }]
+                });
+            }
+        }
+
+        const existente = await InscripcionModel.findByDocumento(String(documento).trim(), eventId);
         if (existente) {
             return res.status(409).json({
                 success: false,
