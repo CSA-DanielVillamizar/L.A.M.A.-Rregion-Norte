@@ -5,19 +5,27 @@
  */
 
 const ContenidoTuristicoModel = require('../models/contenidoTuristicoModel');
+const eventService = require('../services/eventService');
 const logger = require('../utils/logger');
 
 exports.mostrarPanel = async (req, res) => {
     try {
+        const eventos = await eventService.getAllEvents();
+        const eventoIdSolicitado = req.query.evento_id;
+        const eventoSeleccionado = eventos.find((e) => e.id === eventoIdSolicitado) || eventos[0] || null;
+        const eventoId = eventoSeleccionado ? eventoSeleccionado.id : null;
+
         const [hoteles, destinos] = await Promise.all([
-            ContenidoTuristicoModel.getHoteles(),
-            ContenidoTuristicoModel.getDestinos()
+            eventoId ? ContenidoTuristicoModel.getHoteles({ eventoId }) : [],
+            eventoId ? ContenidoTuristicoModel.getDestinos({ eventoId }) : []
         ]);
 
         res.render('admin/contenido-turistico', {
             title: 'Alojamiento y Turismo - Panel de Administración',
             hoteles,
-            destinos
+            destinos,
+            eventos,
+            eventoSeleccionado
         });
     } catch (error) {
         logger.error('Error en ContenidoTuristicoController.mostrarPanel', { error });
@@ -33,7 +41,7 @@ exports.mostrarPanel = async (req, res) => {
 
 exports.getAllHoteles = async (req, res) => {
     try {
-        const hoteles = await ContenidoTuristicoModel.getHoteles();
+        const hoteles = await ContenidoTuristicoModel.getHoteles({ eventoId: req.query.evento_id || null });
         res.json({ success: true, data: hoteles });
     } catch (error) {
         logger.error('Error en ContenidoTuristicoController.getAllHoteles', { error });
@@ -84,7 +92,7 @@ exports.deleteHotel = async (req, res) => {
 
 exports.getAllDestinos = async (req, res) => {
     try {
-        const destinos = await ContenidoTuristicoModel.getDestinos();
+        const destinos = await ContenidoTuristicoModel.getDestinos({ eventoId: req.query.evento_id || null });
         res.json({ success: true, data: destinos });
     } catch (error) {
         logger.error('Error en ContenidoTuristicoController.getAllDestinos', { error });

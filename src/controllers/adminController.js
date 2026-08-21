@@ -21,11 +21,13 @@ class AdminController {
         try {
             const inscripciones = await InscripcionModel.getAll();
             const stats = await InscripcionModel.getStats();
+            const capitulos = capitulosService.getAllCapitulos();
 
             res.render('admin/dashboard', {
                 title: 'Panel de Administración - L.A.M.A.',
                 inscripciones,
                 stats,
+                capitulos,
                 user: req.user
             });
         } catch (error) {

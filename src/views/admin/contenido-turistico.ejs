@@ -1,15 +1,39 @@
 <%- include('../partials/header') %>
 
+    <nav class="bg-lamaDark border-b-2 border-lamaGold py-4">
+        <div class="container mx-auto px-4 flex flex-wrap gap-3 text-sm font-bold">
+            <a href="/admin/dashboard" class="text-lamaBone hover:text-lamaNeon transition-colors pb-1">Inscripciones
+                y Eventos</a>
+            <a href="/admin/contenido-turistico" class="text-lamaGold border-b-2 border-lamaGold pb-1">Alojamiento y
+                Turismo</a>
+            <a href="/checkin" class="text-lamaBone hover:text-lamaNeon transition-colors pb-1">Check-in MTO</a>
+        </div>
+    </nav>
+
     <section class="container mx-auto px-4 py-12 max-w-5xl">
-        <div class="flex items-center justify-between mb-8">
+        <div class="flex items-center justify-between mb-8 gap-4 flex-wrap">
             <div>
                 <h1 class="text-3xl font-headings text-lamaGold">ALOJAMIENTO Y TURISMO</h1>
-                <p class="text-sm text-gray-400">Edita los hoteles y destinos turísticos que se muestran en la
-                    página principal.</p>
+                <p class="text-sm text-gray-400">Edita los hoteles y destinos turísticos propios de cada evento.</p>
             </div>
-            <a href="/admin/dashboard" class="text-sm font-bold text-lamaNeon hover:text-lamaGold transition-colors">←
-                Volver al dashboard</a>
+            <div>
+                <label class="text-xs text-gray-400 block mb-1">Evento</label>
+                <select id="selectorEvento"
+                    class="px-3 py-2 rounded bg-lamaBlack border border-gray-700 text-lamaBone text-sm min-w-[220px]">
+                    <% eventos.forEach(function(evento) { %>
+                        <option value="<%= evento.id %>" <%=eventoSeleccionado && eventoSeleccionado.id===evento.id
+                            ? 'selected' : '' %>>
+                            <%= evento.nombre %>
+                        </option>
+                    <% }); %>
+                </select>
+            </div>
         </div>
+
+        <% if (!eventoSeleccionado) { %>
+            <p class="text-lamaBone">No hay eventos creados todavía. Crea uno primero desde <a href="/admin/dashboard"
+                    class="text-lamaNeon hover:text-lamaGold">Inscripciones y Eventos</a>.</p>
+        <% } else { %>
 
         <!-- HOTELES -->
         <div class="mb-16">
@@ -86,11 +110,20 @@
                 <% }); %>
             </div>
         </div>
+        <% } %>
     </section>
 
     <script>
         const HOTELES = <%- JSON.stringify(hoteles) %>;
         const DESTINOS = <%- JSON.stringify(destinos) %>;
+        const EVENTO_SELECCIONADO_ID = <%- JSON.stringify(eventoSeleccionado ? eventoSeleccionado.id : null) %>;
+
+        const selectorEvento = document.getElementById('selectorEvento');
+        if (selectorEvento) {
+            selectorEvento.addEventListener('change', () => {
+                window.location.href = `/admin/contenido-turistico?evento_id=${encodeURIComponent(selectorEvento.value)}`;
+            });
+        }
 
         function campoTexto(label, name, valor, tipo) {
             const v = (valor === undefined || valor === null) ? '' : String(valor).replace(/"/g, '&quot;');
@@ -195,6 +228,11 @@
             return data;
         }
 
+        // Todo lo que sigue asume que hay un evento seleccionado (ver
+        // condicional !eventoSeleccionado en la plantilla, que ni siquiera
+        // renderiza estos botones si no hay eventos creados todavía).
+        if (EVENTO_SELECCIONADO_ID) {
+
         // ---- Hoteles ----
         document.getElementById('btnNuevoHotel').addEventListener('click', () => {
             const contenedor = document.getElementById('formNuevoHotel');
@@ -203,6 +241,7 @@
             contenedor.querySelector('.btn-cancelar').addEventListener('click', () => contenedor.classList.add('hidden'));
             contenedor.querySelector('.btn-guardar-hotel').addEventListener('click', async () => {
                 const data = leerFormularioHotel(contenedor);
+                data.evento_id = EVENTO_SELECCIONADO_ID;
                 const respuesta = await fetch('/admin/api/hoteles', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -228,6 +267,7 @@
                 contenedor.querySelector('.btn-cancelar').addEventListener('click', () => contenedor.classList.add('hidden'));
                 contenedor.querySelector('.btn-guardar-hotel').addEventListener('click', async () => {
                     const data = leerFormularioHotel(contenedor);
+                    data.evento_id = hotel.evento_id;
                     const respuesta = await fetch(`/admin/api/hoteles/${id}`, {
                         method: 'PUT',
                         headers: { 'Content-Type': 'application/json' },
@@ -265,6 +305,7 @@
             contenedor.querySelector('.btn-cancelar').addEventListener('click', () => contenedor.classList.add('hidden'));
             contenedor.querySelector('.btn-guardar-destino').addEventListener('click', async () => {
                 const data = leerFormulario(contenedor);
+                data.evento_id = EVENTO_SELECCIONADO_ID;
                 const respuesta = await fetch('/admin/api/destinos-turisticos', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -290,6 +331,7 @@
                 contenedor.querySelector('.btn-cancelar').addEventListener('click', () => contenedor.classList.add('hidden'));
                 contenedor.querySelector('.btn-guardar-destino').addEventListener('click', async () => {
                     const data = leerFormulario(contenedor);
+                    data.evento_id = destino.evento_id;
                     const respuesta = await fetch(`/admin/api/destinos-turisticos/${id}`, {
                         method: 'PUT',
                         headers: { 'Content-Type': 'application/json' },
@@ -318,6 +360,8 @@
                 }
             });
         });
+
+        } // fin if (EVENTO_SELECCIONADO_ID)
     </script>
 
     <%- include('../partials/footer') %>

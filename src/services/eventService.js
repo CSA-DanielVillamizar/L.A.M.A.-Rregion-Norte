@@ -417,6 +417,7 @@ const parsearJSONSeguro = (texto, valorDefecto) => {
 const mapearFilaEvento = (fila) => ({
     id: fila.id,
     nombre: fila.nombre,
+    capitulo: fila.capitulo || null,
     fecha: fila.fecha,
     fechaFin: fila.fechaFin,
     ubicacion: fila.ubicacion,
@@ -442,6 +443,7 @@ const mapearFilaEvento = (fila) => ({
 
 const mapearEventoMemoria = (evento) => ({
     ...evento,
+    capitulo: evento.capitulo || null,
     moneda: evento.moneda || 'COP',
     ordenVisual: evento.ordenVisual || 1,
     agenda: Array.isArray(evento.agenda) ? evento.agenda : [],
@@ -618,6 +620,7 @@ exports.getAllEvents = async () => {
         SELECT
             id_evento AS id,
             nombre,
+            capitulo,
             CONVERT(VARCHAR(10), fecha_inicio, 23) AS fecha,
             CONVERT(VARCHAR(10), fecha_fin, 23) AS fechaFin,
             ubicacion,
@@ -790,6 +793,7 @@ exports.createEvent = async (data) => {
     const request = pool.request();
     request.input('id_evento', sql.VarChar(120), id);
     request.input('nombre', sql.NVarChar(200), data.nombre || 'Nuevo Evento');
+    request.input('capitulo', sql.VarChar(100), data.capitulo || null);
     request.input('fecha_inicio', sql.Date, data.fecha || new Date().toISOString().split('T')[0]);
     request.input('fecha_fin', sql.Date, data.fechaFin || data.fecha || new Date().toISOString().split('T')[0]);
     request.input('ubicacion', sql.NVarChar(250), data.ubicacion || 'Por definir');
@@ -810,7 +814,7 @@ exports.createEvent = async (data) => {
 
     const result = await request.query(`
         INSERT INTO EventosLama (
-            id_evento, nombre, fecha_inicio, fecha_fin, ubicacion, hotel, descripcion,
+            id_evento, nombre, capitulo, fecha_inicio, fecha_fin, ubicacion, hotel, descripcion,
             capacidad, registrados, precio, moneda, imagen, destacado, orden_visual,
             agenda_json, paquete_json, costos_json, contactos_json, recomendaciones_json,
             hospedaje_json, activo
@@ -818,6 +822,7 @@ exports.createEvent = async (data) => {
         OUTPUT
             INSERTED.id_evento AS id,
             INSERTED.nombre,
+            INSERTED.capitulo,
             CONVERT(VARCHAR(10), INSERTED.fecha_inicio, 23) AS fecha,
             CONVERT(VARCHAR(10), INSERTED.fecha_fin, 23) AS fechaFin,
             INSERTED.ubicacion,
@@ -837,7 +842,7 @@ exports.createEvent = async (data) => {
             INSERTED.recomendaciones_json AS recomendacionesJson,
             INSERTED.hospedaje_json AS hospedajeJson
         VALUES (
-            @id_evento, @nombre, @fecha_inicio, @fecha_fin, @ubicacion, @hotel, @descripcion,
+            @id_evento, @nombre, @capitulo, @fecha_inicio, @fecha_fin, @ubicacion, @hotel, @descripcion,
             @capacidad, @registrados, @precio, @moneda, @imagen, @destacado,
             ISNULL((SELECT MAX(orden_visual) + 1 FROM EventosLama WHERE activo = 1), 1),
             @agenda_json, @paquete_json, @costos_json, @contactos_json, @recomendaciones_json,
@@ -866,6 +871,7 @@ exports.updateEvent = async (eventId, data) => {
     const request = pool.request();
     request.input('id_evento', sql.VarChar(120), eventId);
     request.input('nombre', sql.NVarChar(200), data.nombre ?? actual.nombre);
+    request.input('capitulo', sql.VarChar(100), data.capitulo ?? actual.capitulo ?? null);
     request.input('fecha_inicio', sql.Date, data.fecha ?? actual.fecha);
     request.input('fecha_fin', sql.Date, data.fechaFin ?? actual.fechaFin);
     request.input('ubicacion', sql.NVarChar(250), data.ubicacion ?? actual.ubicacion);
@@ -888,6 +894,7 @@ exports.updateEvent = async (eventId, data) => {
         UPDATE EventosLama
         SET
             nombre = @nombre,
+            capitulo = @capitulo,
             fecha_inicio = @fecha_inicio,
             fecha_fin = @fecha_fin,
             ubicacion = @ubicacion,
@@ -909,6 +916,7 @@ exports.updateEvent = async (eventId, data) => {
         OUTPUT
             INSERTED.id_evento AS id,
             INSERTED.nombre,
+            INSERTED.capitulo,
             CONVERT(VARCHAR(10), INSERTED.fecha_inicio, 23) AS fecha,
             CONVERT(VARCHAR(10), INSERTED.fecha_fin, 23) AS fechaFin,
             INSERTED.ubicacion,

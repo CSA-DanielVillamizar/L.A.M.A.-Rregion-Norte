@@ -5,6 +5,7 @@
 
 const eventService = require('../services/eventService');
 const { InscripcionModel } = require('../models/inscripcionModel');
+const ContenidoTuristicoModel = require('../models/contenidoTuristicoModel');
 const multer = require('multer');
 const { esParPaisCapituloValido } = require('../data/paisesCapitulos');
 const { validateInscripcion } = require('../validators/inscripcionValidator');
@@ -80,10 +81,9 @@ function normalizarTipoParticipante(categoria) {
  */
 exports.getAllEvents = async (req, res) => {
     try {
-        const todosLosEventos = await eventService.getAllEvents();
-        // Solo se publica el V Campeonato: el resto son eventos semilla/placeholder
-        // sin flujo de inscripcion real, y saturaban el listado a los visitantes.
-        const events = todosLosEventos.filter((evento) => evento.id === 'vnorte-2026');
+        // eventService.getAllEvents() ya filtra por activo = 1; el admin
+        // controla qué eventos son públicos marcándolos como inactivos.
+        const events = await eventService.getAllEvents();
         res.render('events/list', {
             title: 'Eventos L.A.M.A.',
             events
@@ -111,9 +111,16 @@ exports.getEventById = async (req, res) => {
             });
         }
 
+        const [hoteles, destinosTuristicos] = await Promise.all([
+            ContenidoTuristicoModel.getHoteles({ eventoId: eventId, soloActivos: true }),
+            ContenidoTuristicoModel.getDestinos({ eventoId: eventId, soloActivos: true })
+        ]);
+
         res.render('events/detail', {
             title: event.nombre,
-            event
+            event,
+            hoteles,
+            destinosTuristicos
         });
     } catch (error) {
         logger.error('Error en getEventById', { error });

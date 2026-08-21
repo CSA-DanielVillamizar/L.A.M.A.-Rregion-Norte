@@ -1,8 +1,9 @@
 /**
  * CAPA DE DOMINIO: Modelo de contenido de Alojamiento y Turismo
- * CRUD sobre dbo.Hoteles y dbo.DestinosTuristicos (ver
- * database/migrations/001_hoteles_y_destinos_turisticos.sql), editables
- * desde el panel admin en vez de vivir hardcodeados en home.ejs.
+ * CRUD sobre dbo.Hoteles y dbo.DestinosTuristicos, cada uno vinculado a un
+ * evento_id (ver database/migrations/002_evento_id_en_contenido_turistico.sql):
+ * cada evento se celebra en una sede distinta con sus propios hoteles y
+ * atracciones turísticas.
  */
 
 const { getPool, sql } = require('../config/database');
@@ -19,15 +20,26 @@ class ContenidoTuristicoModel {
         };
     }
 
-    static async getHoteles({ soloActivos = false } = {}) {
+    static async getHoteles({ eventoId = null, soloActivos = false } = {}) {
         try {
             const pool = await getPool();
+            const request = pool.request();
+            const condiciones = [];
+
+            if (eventoId) {
+                request.input('evento_id', sql.VarChar(120), eventoId);
+                condiciones.push('evento_id = @evento_id');
+            }
+            if (soloActivos) {
+                condiciones.push('activo = 1');
+            }
+
             const query = `
                 SELECT * FROM dbo.Hoteles
-                ${soloActivos ? 'WHERE activo = 1' : ''}
+                ${condiciones.length > 0 ? `WHERE ${condiciones.join(' AND ')}` : ''}
                 ORDER BY es_sede_oficial DESC, orden ASC
             `;
-            const result = await pool.request().query(query);
+            const result = await request.query(query);
             return result.recordset.map((fila) => this.normalizarHotelSalida(fila));
         } catch (error) {
             logger.error('Error en ContenidoTuristicoModel.getHoteles', { error });
@@ -56,13 +68,13 @@ class ContenidoTuristicoModel {
 
             const result = await request.query(`
                 INSERT INTO dbo.Hoteles (
-                    nombre, etiqueta, es_sede_oficial, icono, ubicacion, descripcion,
+                    evento_id, nombre, etiqueta, es_sede_oficial, icono, ubicacion, descripcion,
                     imagenes_json, tarifas_json, nota, google_maps_url,
                     whatsapp_telefono, whatsapp_mensaje, orden, activo
                 )
                 OUTPUT INSERTED.id_hotel
                 VALUES (
-                    @nombre, @etiqueta, @es_sede_oficial, @icono, @ubicacion, @descripcion,
+                    @evento_id, @nombre, @etiqueta, @es_sede_oficial, @icono, @ubicacion, @descripcion,
                     @imagenes_json, @tarifas_json, @nota, @google_maps_url,
                     @whatsapp_telefono, @whatsapp_mensaje, @orden, @activo
                 )
@@ -83,6 +95,7 @@ class ContenidoTuristicoModel {
 
             await request.query(`
                 UPDATE dbo.Hoteles SET
+                    evento_id = @evento_id,
                     nombre = @nombre, etiqueta = @etiqueta, es_sede_oficial = @es_sede_oficial,
                     icono = @icono, ubicacion = @ubicacion, descripcion = @descripcion,
                     imagenes_json = @imagenes_json, tarifas_json = @tarifas_json, nota = @nota,
@@ -99,6 +112,7 @@ class ContenidoTuristicoModel {
     }
 
     static bindHotelInputs(request, data) {
+        request.input('evento_id', sql.VarChar(120), data.evento_id || null);
         request.input('nombre', sql.VarChar(200), data.nombre);
         request.input('etiqueta', sql.VarChar(100), data.etiqueta || null);
         request.input('es_sede_oficial', sql.Bit, data.es_sede_oficial ? 1 : 0);
@@ -128,15 +142,26 @@ class ContenidoTuristicoModel {
         }
     }
 
-    static async getDestinos({ soloActivos = false } = {}) {
+    static async getDestinos({ eventoId = null, soloActivos = false } = {}) {
         try {
             const pool = await getPool();
+            const request = pool.request();
+            const condiciones = [];
+
+            if (eventoId) {
+                request.input('evento_id', sql.VarChar(120), eventoId);
+                condiciones.push('evento_id = @evento_id');
+            }
+            if (soloActivos) {
+                condiciones.push('activo = 1');
+            }
+
             const query = `
                 SELECT * FROM dbo.DestinosTuristicos
-                ${soloActivos ? 'WHERE activo = 1' : ''}
+                ${condiciones.length > 0 ? `WHERE ${condiciones.join(' AND ')}` : ''}
                 ORDER BY orden ASC
             `;
-            const result = await pool.request().query(query);
+            const result = await request.query(query);
             return result.recordset.map((fila) => ({ ...fila, activo: Boolean(fila.activo) }));
         } catch (error) {
             logger.error('Error en ContenidoTuristicoModel.getDestinos', { error });
@@ -158,6 +183,7 @@ class ContenidoTuristicoModel {
     }
 
     static bindDestinoInputs(request, data) {
+        request.input('evento_id', sql.VarChar(120), data.evento_id || null);
         request.input('nombre', sql.VarChar(200), data.nombre);
         request.input('icono', sql.VarChar(50), data.icono || null);
         request.input('color_icono', sql.VarChar(20), data.color_icono || 'lamaNeon');
@@ -173,9 +199,9 @@ class ContenidoTuristicoModel {
             this.bindDestinoInputs(request, data);
 
             const result = await request.query(`
-                INSERT INTO dbo.DestinosTuristicos (nombre, icono, color_icono, descripcion, orden, activo)
+                INSERT INTO dbo.DestinosTuristicos (evento_id, nombre, icono, color_icono, descripcion, orden, activo)
                 OUTPUT INSERTED.id_destino
-                VALUES (@nombre, @icono, @color_icono, @descripcion, @orden, @activo)
+                VALUES (@evento_id, @nombre, @icono, @color_icono, @descripcion, @orden, @activo)
             `);
             return result.recordset[0].id_destino;
         } catch (error) {
@@ -193,6 +219,7 @@ class ContenidoTuristicoModel {
 
             await request.query(`
                 UPDATE dbo.DestinosTuristicos SET
+                    evento_id = @evento_id,
                     nombre = @nombre, icono = @icono, color_icono = @color_icono,
                     descripcion = @descripcion, orden = @orden, activo = @activo,
                     fecha_actualizacion = GETDATE()

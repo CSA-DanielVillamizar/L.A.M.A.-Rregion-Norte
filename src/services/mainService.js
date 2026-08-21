@@ -6,34 +6,56 @@
 const formularioService = require('./formularioService');
 const capitulosService = require('./capitulosService');
 const ContenidoTuristicoModel = require('../models/contenidoTuristicoModel');
+const eventService = require('./eventService');
 const logger = require('../utils/logger');
 
+const MESES_ES = ['ENE', 'FEB', 'MAR', 'ABR', 'MAY', 'JUN', 'JUL', 'AGO', 'SEP', 'OCT', 'NOV', 'DIC'];
+
+function formatearRangoFechas(fecha, fechaFin) {
+    if (!fecha) return '';
+    const inicio = new Date(`${fecha}T12:00:00`);
+    const fin = fechaFin ? new Date(`${fechaFin}T12:00:00`) : inicio;
+    const mes = MESES_ES[inicio.getMonth()];
+    const anio = inicio.getFullYear();
+
+    if (inicio.getDate() === fin.getDate()) {
+        return `${mes} ${inicio.getDate()}, ${anio}`;
+    }
+    return `${mes} ${inicio.getDate()}-${fin.getDate()}, ${anio}`;
+}
+
 /**
- * Obtiene los datos para la página principal
+ * Obtiene los datos para la página principal, centrados en el evento
+ * marcado como "destacado" en el panel admin (el que se muestra al
+ * público como el evento activo del momento).
  * @returns {Promise<Object>} Datos estructurados para la vista home
  */
 exports.getHomeData = async () => {
+    let eventoActivo = null;
     let hoteles = [];
     let destinosTuristicos = [];
     try {
-        [hoteles, destinosTuristicos] = await Promise.all([
-            ContenidoTuristicoModel.getHoteles({ soloActivos: true }),
-            ContenidoTuristicoModel.getDestinos({ soloActivos: true })
-        ]);
+        const eventos = await eventService.getAllEvents();
+        eventoActivo = eventos.find((evento) => evento.destacado) || eventos[0] || null;
+
+        if (eventoActivo) {
+            [hoteles, destinosTuristicos] = await Promise.all([
+                ContenidoTuristicoModel.getHoteles({ eventoId: eventoActivo.id, soloActivos: true }),
+                ContenidoTuristicoModel.getDestinos({ eventoId: eventoActivo.id, soloActivos: true })
+            ]);
+        }
     } catch (error) {
-        logger.error('Error al cargar hoteles/destinos para home', { error });
+        logger.error('Error al cargar el evento activo/hoteles/destinos para home', { error });
     }
 
     return {
+        eventoActivo,
         hoteles,
         destinosTuristicos,
         hero: {
-            title: 'V CAMPEONATO REGION NORTE',
-            subtitle: 'Costa Caribe Continental',
-            tagline: 'EJE COVEÑAS - SAN ANTERO',
-            description: 'Rodada oficial de hermandad con turismo de carretera, agenda costera y logistica optimizada para los socios.',
-            eventDate: 'SEPT 12-13, 2026',
-            location: 'COSTA CARIBE CONTINENTAL (COVEÑAS - SAN ANTERO)'
+            title: eventoActivo ? eventoActivo.nombre : 'V CAMPEONATO REGION NORTE',
+            location: eventoActivo ? eventoActivo.ubicacion : 'COSTA CARIBE CONTINENTAL (COVEÑAS - SAN ANTERO)',
+            eventDate: eventoActivo ? formatearRangoFechas(eventoActivo.fecha, eventoActivo.fechaFin) : 'SEPT 12-13, 2026'
         },
         features: [
             {
