@@ -8,6 +8,7 @@
         "dev": "nodemon server.js",
         "test": "jest",
         "db:bootstrap": "node scripts/ops/bootstrap-db.js",
+        "migrate": "node scripts/ops/migrate.js",
         "smoke": "node scripts/smoke-tests-post-deploy.js",
         "reseed:municipios": "node scripts/reseed_municipios_catalogo.js --confirmar",
         "cleanup:ids": "node scripts/cleanup_records_by_id.js",
