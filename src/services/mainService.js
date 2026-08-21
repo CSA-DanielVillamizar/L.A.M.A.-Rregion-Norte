@@ -5,13 +5,28 @@
 
 const formularioService = require('./formularioService');
 const capitulosService = require('./capitulosService');
+const ContenidoTuristicoModel = require('../models/contenidoTuristicoModel');
+const logger = require('../utils/logger');
 
 /**
  * Obtiene los datos para la página principal
- * @returns {Object} Datos estructurados para la vista home
+ * @returns {Promise<Object>} Datos estructurados para la vista home
  */
-exports.getHomeData = () => {
+exports.getHomeData = async () => {
+    let hoteles = [];
+    let destinosTuristicos = [];
+    try {
+        [hoteles, destinosTuristicos] = await Promise.all([
+            ContenidoTuristicoModel.getHoteles({ soloActivos: true }),
+            ContenidoTuristicoModel.getDestinos({ soloActivos: true })
+        ]);
+    } catch (error) {
+        logger.error('Error al cargar hoteles/destinos para home', { error });
+    }
+
     return {
+        hoteles,
+        destinosTuristicos,
         hero: {
             title: 'V CAMPEONATO REGION NORTE',
             subtitle: 'Costa Caribe Continental',

@@ -100,94 +100,74 @@
         </p>
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <div class="bg-lamaDark p-6 rounded-lg border border-lamaGold/40 hover:border-lamaNeon transition-all shadow-xl">
-                <p class="text-xs font-bold text-lamaBlack bg-lamaGold inline-block px-3 py-1 rounded-full mb-3">HOTEL SEDE OFICIAL</p>
-                <h3 class="text-xl font-headings text-lamaGold mb-2 flex items-center gap-2"><span
-                        class="icon-symbol text-lamaNeon" aria-hidden="true">hotel</span> Hotel Playa Coveñas</h3>
-                <p class="text-sm text-gray-400 mb-3">Segunda Ensenada de Coveñas, frente a la playa · a 300 m del
-                    nuevo Malecón</p>
-                <div class="grid grid-cols-3 gap-2 mb-4">
-                    <img src="/img/hoteles/exterior.jpg" alt="Fachada Hotel Playa Coveñas frente al mar"
-                        class="w-full h-20 object-cover rounded border border-lamaGold/30">
-                    <img src="/img/hoteles/habitaciones.jpg" alt="Habitación del Hotel Playa Coveñas"
-                        class="w-full h-20 object-cover rounded border border-lamaGold/30">
-                    <img src="/img/hoteles/zonascomunes.jpg" alt="Piscina y zonas comunes del Hotel Playa Coveñas"
-                        class="w-full h-20 object-cover rounded border border-lamaGold/30">
-                </div>
-                <p class="text-lamaBone text-sm leading-relaxed mb-4">Alojamiento con piscina (9:30 AM - 7:00 PM),
-                    quioscos frente al mar y parqueadero interno gratuito.</p>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
-                    <div class="bg-lamaBlack p-3 rounded border border-gray-700">
-                        <p class="text-lamaNeon text-xs font-bold uppercase mb-1">Tarifa Doble</p>
-                        <p class="text-lg font-bold text-lamaGold">$280.000</p>
-                        <p class="text-xs text-gray-400">por pareja/noche</p>
+            <% (hoteles || []).forEach(function(hotel) { %>
+                <div
+                    class="bg-lamaDark p-6 rounded-lg border border-lamaGold/40 hover:border-lamaNeon transition-all shadow-xl">
+                    <% if (hotel.etiqueta) { %>
+                        <p
+                            class="text-xs font-bold text-lamaBlack bg-lamaGold inline-block px-3 py-1 rounded-full mb-3">
+                            <%= hotel.etiqueta %>
+                        </p>
+                    <% } %>
+                    <h3 class="text-xl font-headings text-lamaGold mb-2 flex items-center gap-2"><span
+                            class="icon-symbol text-lamaNeon" aria-hidden="true"><%= hotel.icono || 'hotel' %></span>
+                        <%= hotel.nombre %>
+                    </h3>
+                    <% if (hotel.ubicacion) { %>
+                        <p class="text-sm text-gray-400 mb-3">
+                            <%= hotel.ubicacion %>
+                        </p>
+                    <% } %>
+                    <% if (hotel.imagenes && hotel.imagenes.length> 0) { %>
+                        <div class="grid grid-cols-3 gap-2 mb-4">
+                            <% hotel.imagenes.forEach(function(src) { %>
+                                <img src="<%= src %>" alt="<%= hotel.nombre %>"
+                                    class="w-full h-20 object-cover rounded border border-lamaGold/30">
+                            <% }); %>
+                        </div>
+                    <% } %>
+                    <% if (hotel.descripcion) { %>
+                        <p class="text-lamaBone text-sm leading-relaxed mb-4">
+                            <%= hotel.descripcion %>
+                        </p>
+                    <% } %>
+                    <% if (hotel.tarifas && hotel.tarifas.length> 0) { %>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
+                            <% hotel.tarifas.forEach(function(tarifa) { %>
+                                <div class="bg-lamaBlack p-3 rounded border border-gray-700">
+                                    <p class="text-lamaNeon text-xs font-bold uppercase mb-1">
+                                        <%= tarifa.nombre %>
+                                    </p>
+                                    <p class="text-lg font-bold text-lamaGold">
+                                        <%= tarifa.valor %>
+                                    </p>
+                                    <p class="text-xs text-gray-400">
+                                        <%= tarifa.unidad %>
+                                    </p>
+                                </div>
+                            <% }); %>
+                        </div>
+                    <% } %>
+                    <% if (hotel.nota) { %>
+                        <p class="text-xs text-gray-500 mb-4">
+                            <%= hotel.nota %>
+                        </p>
+                    <% } %>
+                    <div class="flex flex-wrap gap-x-4 gap-y-2">
+                        <% if (hotel.google_maps_url) { %>
+                            <a href="<%= hotel.google_maps_url %>" target="_blank" rel="noopener"
+                                class="inline-block text-sm font-bold text-lamaNeon hover:text-lamaGold transition-colors">Ver
+                                en Google Maps →</a>
+                        <% } %>
+                        <% if (hotel.whatsapp_telefono) { %>
+                            <a href="https://wa.me/<%= hotel.whatsapp_telefono %>?text=<%= encodeURIComponent(hotel.whatsapp_mensaje || ('Hola, quiero consultar disponibilidad en ' + hotel.nombre + ' para el V Campeonato')) %>"
+                                target="_blank" rel="noopener"
+                                class="inline-block text-sm font-bold text-lamaNeon hover:text-lamaGold transition-colors">Consultar
+                                disponibilidad →</a>
+                        <% } %>
                     </div>
-                    <div class="bg-lamaBlack p-3 rounded border border-gray-700">
-                        <p class="text-lamaNeon text-xs font-bold uppercase mb-1">Tarifa Familiar</p>
-                        <p class="text-lg font-bold text-lamaGold">$130.000</p>
-                        <p class="text-xs text-gray-400">por persona/noche</p>
-                    </div>
                 </div>
-                <p class="text-xs text-gray-500 mb-4">Incluye desayuno y almuerzo por noche de estadía. Tienda y
-                    coctelería con cargo adicional.</p>
-                <div class="flex flex-wrap gap-x-4 gap-y-2">
-                    <a href="https://maps.google.com/maps/search/Hotel%20Playa%20Cove%C3%B1as/@9.42020034790039,-75.64330291748047,17z?hl=es"
-                        target="_blank" rel="noopener"
-                        class="inline-block text-sm font-bold text-lamaNeon hover:text-lamaGold transition-colors">Ver en Google Maps →</a>
-                    <a href="https://wa.me/573186991222?text=Hola%2C%20quiero%20consultar%20disponibilidad%20en%20Hotel%20Playa%20Cove%C3%B1as%20para%20el%20V%20Campeonato"
-                        target="_blank" rel="noopener"
-                        class="inline-block text-sm font-bold text-lamaNeon hover:text-lamaGold transition-colors">Consultar disponibilidad →</a>
-                </div>
-            </div>
-
-            <div class="bg-lamaDark p-6 rounded-lg border border-lamaGold/40 hover:border-lamaNeon transition-all shadow-xl">
-                <p class="text-xs font-bold text-lamaBlack bg-lamaGold inline-block px-3 py-1 rounded-full mb-3">ALTA DENSIDAD · SEGURIDAD TÁCTICA</p>
-                <h3 class="text-xl font-headings text-lamaGold mb-2 flex items-center gap-2"><span
-                        class="icon-symbol text-lamaNeon" aria-hidden="true">security</span> Hotel Poblado Coveñas</h3>
-                <p class="text-sm text-gray-400 mb-3">Coveñas</p>
-                <p class="text-lamaBone text-sm leading-relaxed mb-4">Parqueadero de altísima capacidad y
-                    acomodaciones desde 2 hasta 10 personas para optimizar tu presupuesto. Ideal para binomios y
-                    escuadrones de capítulos numerosos.</p>
-                <a href="https://wa.me/573138984956?text=Hola%2C%20quiero%20consultar%20disponibilidad%20en%20Hotel%20Poblado%20Covenas%20para%20el%20V%20Campeonato"
-                    target="_blank" rel="noopener"
-                    class="inline-block text-sm font-bold text-lamaNeon hover:text-lamaGold transition-colors">Consultar disponibilidad →</a>
-            </div>
-
-            <div class="bg-lamaDark p-6 rounded-lg border border-lamaGold/40 hover:border-lamaNeon transition-all shadow-xl">
-                <p class="text-xs font-bold text-lamaBlack bg-lamaGold inline-block px-3 py-1 rounded-full mb-3">SATÉLITE · PROXIMIDAD TÁCTICA</p>
-                <h3 class="text-xl font-headings text-lamaGold mb-2 flex items-center gap-2"><span
-                        class="icon-symbol text-lamaNeon" aria-hidden="true">near_me</span> Hotel Playa Blanca</h3>
-                <p class="text-sm text-gray-400 mb-3">Coveñas (0,2 km del Hotel Playa Coveñas)</p>
-                <p class="text-lamaBone text-sm leading-relaxed mb-4">Proximidad táctica a la sede principal, ideal
-                    para presupuestos ajustados sin alejarse del comando central.</p>
-                <a href="https://wa.me/573153538994?text=Hola%2C%20quiero%20consultar%20disponibilidad%20en%20Hotel%20Playa%20Blanca%20para%20el%20V%20Campeonato"
-                    target="_blank" rel="noopener"
-                    class="inline-block text-sm font-bold text-lamaNeon hover:text-lamaGold transition-colors">Consultar disponibilidad →</a>
-            </div>
-
-            <div class="bg-lamaDark p-6 rounded-lg border border-lamaGold/40 hover:border-lamaNeon transition-all shadow-xl">
-                <p class="text-xs font-bold text-lamaBlack bg-lamaGold inline-block px-3 py-1 rounded-full mb-3">ALTA GAMA</p>
-                <h3 class="text-xl font-headings text-lamaGold mb-2 flex items-center gap-2"><span
-                        class="icon-symbol text-lamaNeon" aria-hidden="true">star</span> Ciela Hotel &amp; Beach Club</h3>
-                <p class="text-sm text-gray-400 mb-3">Coveñas</p>
-                <p class="text-lamaBone text-sm leading-relaxed mb-4">El vértice del lujo. Club de playa sofisticado,
-                    restaurantes de autor y política dog-friendly.</p>
-                <a href="https://wa.me/573103709860?text=Hola%2C%20quiero%20consultar%20disponibilidad%20en%20Ciela%20Hotel%20%26%20Beach%20Club%20para%20el%20V%20Campeonato"
-                    target="_blank" rel="noopener"
-                    class="inline-block text-sm font-bold text-lamaNeon hover:text-lamaGold transition-colors">Consultar disponibilidad →</a>
-            </div>
-
-            <div class="bg-lamaDark p-6 rounded-lg border border-lamaGold/40 hover:border-lamaNeon transition-all shadow-xl">
-                <p class="text-xs font-bold text-lamaBlack bg-lamaGold inline-block px-3 py-1 rounded-full mb-3">BASE URBANA · EQUIPO DE AVANZADA</p>
-                <h3 class="text-xl font-headings text-lamaGold mb-2 flex items-center gap-2"><span
-                        class="icon-symbol text-lamaNeon" aria-hidden="true">location_city</span> Hotel Semar</h3>
-                <p class="text-sm text-gray-400 mb-3">San Antero</p>
-                <p class="text-lamaBone text-sm leading-relaxed mb-4">Base urbana eficiente, pulcra y económica en el
-                    corazón del municipio, ideal para el equipo de avanzada (MTO).</p>
-                <a href="https://wa.me/573105882315?text=Hola%2C%20quiero%20consultar%20disponibilidad%20en%20Hotel%20Semar%20para%20el%20V%20Campeonato"
-                    target="_blank" rel="noopener"
-                    class="inline-block text-sm font-bold text-lamaNeon hover:text-lamaGold transition-colors">Consultar disponibilidad →</a>
-            </div>
+            <% }); %>
         </div>
     </section>
 
@@ -203,27 +183,20 @@
             </p>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div class="bg-lamaBlack p-8 rounded-lg border border-gray-800 hover:border-lamaNeon transition-all text-center">
-                    <div class="text-4xl mb-4"><span class="icon-symbol text-lamaNeon" style="font-size: 2.5rem;"
-                            aria-hidden="true">kayaking</span></div>
-                    <h3 class="text-xl font-headings text-lamaGold mb-3">Ciénaga de la Caimanera</h3>
-                    <p class="text-lamaBone text-sm leading-relaxed">Navegación a remo, avistamiento de fauna y
-                        silencio terapéutico a minutos de Coveñas.</p>
-                </div>
-                <div class="bg-lamaBlack p-8 rounded-lg border border-gray-800 hover:border-lamaNeon transition-all text-center">
-                    <div class="text-4xl mb-4"><span class="icon-symbol text-lamaGold" style="font-size: 2.5rem;"
-                            aria-hidden="true">volcano</span></div>
-                    <h3 class="text-xl font-headings text-lamaGold mb-3">Volcán de Lodo El Tesoro</h3>
-                    <p class="text-lamaBone text-sm leading-relaxed">Geotermia pasiva en San Antero. El barro
-                        sulfuroso es ideal para la recuperación muscular lumbar y cervical post-rodada.</p>
-                </div>
-                <div class="bg-lamaBlack p-8 rounded-lg border border-gray-800 hover:border-lamaNeon transition-all text-center">
-                    <div class="text-4xl mb-4"><span class="icon-symbol text-lamaNeon" style="font-size: 2.5rem;"
-                            aria-hidden="true">sailing</span></div>
-                    <h3 class="text-xl font-headings text-lamaGold mb-3">Archipiélago de San Bernardo</h3>
-                    <p class="text-lamaBone text-sm leading-relaxed">Pasadías offshore hacia Isla Múcura y Tintipán,
-                        opción ideal para los acompañantes de los pilotos.</p>
-                </div>
+                <% (destinosTuristicos || []).forEach(function(destino) { %>
+                    <div
+                        class="bg-lamaBlack p-8 rounded-lg border border-gray-800 hover:border-lamaNeon transition-all text-center">
+                        <div class="text-4xl mb-4"><span class="icon-symbol text-<%= destino.color_icono || 'lamaNeon' %>"
+                                style="font-size: 2.5rem;" aria-hidden="true"><%= destino.icono || 'place' %></span>
+                        </div>
+                        <h3 class="text-xl font-headings text-lamaGold mb-3">
+                            <%= destino.nombre %>
+                        </h3>
+                        <p class="text-lamaBone text-sm leading-relaxed">
+                            <%= destino.descripcion %>
+                        </p>
+                    </div>
+                <% }); %>
             </div>
         </div>
     </section>

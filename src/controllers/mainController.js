@@ -11,9 +11,9 @@ const { PAISES_CAPITULOS } = require('../data/paisesCapitulos');
 /**
  * Renderiza la página principal (Home)
  */
-exports.getHome = (req, res) => {
+exports.getHome = async (req, res) => {
     try {
-        const homeData = mainService.getHomeData();
+        const homeData = await mainService.getHomeData();
         res.render('home', {
             title: 'L.A.M.A. | Hardcore Tropical',
             ...homeData

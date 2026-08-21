@@ -6,6 +6,7 @@
 const express = require('express');
 const router = express.Router();
 const AdminController = require('../controllers/adminController');
+const ContenidoTuristicoController = require('../controllers/contenidoTuristicoController');
 const { basicAuth, adminApiAuth } = require('../middleware/authMiddleware');
 
 /**
@@ -13,6 +14,7 @@ const { basicAuth, adminApiAuth } = require('../middleware/authMiddleware');
  * Requiere autenticación básica (usuario/contraseña)
  */
 router.get('/dashboard', basicAuth, AdminController.showDashboard);
+router.get('/contenido-turistico', basicAuth, ContenidoTuristicoController.mostrarPanel);
 
 /**
  * API DE ADMINISTRACIÓN
@@ -74,5 +76,19 @@ router.get('/api/servicios', adminApiAuth, AdminController.getAllServicios);
 router.post('/api/servicios', adminApiAuth, AdminController.createServicio);
 router.put('/api/servicios/:id', adminApiAuth, AdminController.updateServicio);
 router.delete('/api/servicios/:id', adminApiAuth, AdminController.deleteServicio);
+
+/**
+ * API DE GESTIÓN DE ALOJAMIENTO Y TURISMO
+ * Requiere API Key en headers: x-api-key
+ */
+router.get('/api/hoteles', adminApiAuth, ContenidoTuristicoController.getAllHoteles);
+router.post('/api/hoteles', adminApiAuth, ContenidoTuristicoController.createHotel);
+router.put('/api/hoteles/:id', adminApiAuth, ContenidoTuristicoController.updateHotel);
+router.delete('/api/hoteles/:id', adminApiAuth, ContenidoTuristicoController.deleteHotel);
+
+router.get('/api/destinos-turisticos', adminApiAuth, ContenidoTuristicoController.getAllDestinos);
+router.post('/api/destinos-turisticos', adminApiAuth, ContenidoTuristicoController.createDestino);
+router.put('/api/destinos-turisticos/:id', adminApiAuth, ContenidoTuristicoController.updateDestino);
+router.delete('/api/destinos-turisticos/:id', adminApiAuth, ContenidoTuristicoController.deleteDestino);
 
 module.exports = router;

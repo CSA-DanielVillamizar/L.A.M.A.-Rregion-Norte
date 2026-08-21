@@ -1,0 +1,323 @@
+<%- include('../partials/header') %>
+
+    <section class="container mx-auto px-4 py-12 max-w-5xl">
+        <div class="flex items-center justify-between mb-8">
+            <div>
+                <h1 class="text-3xl font-headings text-lamaGold">ALOJAMIENTO Y TURISMO</h1>
+                <p class="text-sm text-gray-400">Edita los hoteles y destinos turísticos que se muestran en la
+                    página principal.</p>
+            </div>
+            <a href="/admin/dashboard" class="text-sm font-bold text-lamaNeon hover:text-lamaGold transition-colors">←
+                Volver al dashboard</a>
+        </div>
+
+        <!-- HOTELES -->
+        <div class="mb-16">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-2xl font-headings text-lamaGold">Hoteles</h2>
+                <button id="btnNuevoHotel"
+                    class="bg-lamaGold text-lamaBlack font-bold text-sm px-4 py-2 rounded hover:bg-lamaNeon transition-colors">+
+                    Nuevo hotel</button>
+            </div>
+            <div id="formNuevoHotel" class="hidden bg-lamaDark border border-lamaGold/40 rounded-lg p-5 mb-4"></div>
+            <div id="listaHoteles" class="space-y-4">
+                <% hoteles.forEach(function(hotel) { %>
+                    <div class="hotel-item bg-lamaDark border border-gray-800 rounded-lg p-5" data-id="<%= hotel.id_hotel %>">
+                        <div class="flex items-start justify-between gap-4">
+                            <div>
+                                <p class="text-xs font-bold text-lamaGold uppercase">
+                                    <%= hotel.etiqueta || (hotel.es_sede_oficial ? 'Sede oficial' : '') %>
+                                    <%= hotel.activo ? '' : ' · INACTIVO' %>
+                                </p>
+                                <h3 class="text-lg font-headings text-lamaBone">
+                                    <%= hotel.nombre %>
+                                </h3>
+                                <p class="text-sm text-gray-400">
+                                    <%= hotel.ubicacion %>
+                                </p>
+                            </div>
+                            <div class="flex gap-2 shrink-0">
+                                <button class="btn-editar-hotel text-lamaNeon text-sm font-bold hover:text-lamaGold"
+                                    data-id="<%= hotel.id_hotel %>">Editar</button>
+                                <button class="btn-eliminar-hotel text-red-400 text-sm font-bold hover:text-red-300"
+                                    data-id="<%= hotel.id_hotel %>">Eliminar</button>
+                            </div>
+                        </div>
+                        <div class="form-editar-hotel hidden mt-4"></div>
+                    </div>
+                <% }); %>
+            </div>
+        </div>
+
+        <!-- DESTINOS TURÍSTICOS -->
+        <div>
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-2xl font-headings text-lamaGold">Destinos turísticos</h2>
+                <button id="btnNuevoDestino"
+                    class="bg-lamaGold text-lamaBlack font-bold text-sm px-4 py-2 rounded hover:bg-lamaNeon transition-colors">+
+                    Nuevo destino</button>
+            </div>
+            <div id="formNuevoDestino" class="hidden bg-lamaDark border border-lamaGold/40 rounded-lg p-5 mb-4"></div>
+            <div id="listaDestinos" class="space-y-4">
+                <% destinos.forEach(function(destino) { %>
+                    <div class="destino-item bg-lamaDark border border-gray-800 rounded-lg p-5" data-id="<%= destino.id_destino %>">
+                        <div class="flex items-start justify-between gap-4">
+                            <div>
+                                <p class="text-xs font-bold text-lamaGold uppercase">
+                                    <%= destino.icono %>
+                                    <%= destino.activo ? '' : ' · INACTIVO' %>
+                                </p>
+                                <h3 class="text-lg font-headings text-lamaBone">
+                                    <%= destino.nombre %>
+                                </h3>
+                                <p class="text-sm text-gray-400">
+                                    <%= destino.descripcion %>
+                                </p>
+                            </div>
+                            <div class="flex gap-2 shrink-0">
+                                <button class="btn-editar-destino text-lamaNeon text-sm font-bold hover:text-lamaGold"
+                                    data-id="<%= destino.id_destino %>">Editar</button>
+                                <button class="btn-eliminar-destino text-red-400 text-sm font-bold hover:text-red-300"
+                                    data-id="<%= destino.id_destino %>">Eliminar</button>
+                            </div>
+                        </div>
+                        <div class="form-editar-destino hidden mt-4"></div>
+                    </div>
+                <% }); %>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        const HOTELES = <%- JSON.stringify(hoteles) %>;
+        const DESTINOS = <%- JSON.stringify(destinos) %>;
+
+        function campoTexto(label, name, valor, tipo) {
+            const v = (valor === undefined || valor === null) ? '' : String(valor).replace(/"/g, '&quot;');
+            return `<div class="mb-3"><label class="text-xs text-gray-400 block mb-1">${label}</label>
+                <input type="${tipo || 'text'}" name="${name}" value="${v}"
+                    class="w-full px-3 py-2 rounded bg-lamaBlack border border-gray-700 text-lamaBone text-sm focus:outline-none focus:border-lamaNeon">
+            </div>`;
+        }
+
+        function campoTextarea(label, name, valor) {
+            const v = (valor === undefined || valor === null) ? '' : String(valor);
+            return `<div class="mb-3"><label class="text-xs text-gray-400 block mb-1">${label}</label>
+                <textarea name="${name}" rows="3"
+                    class="w-full px-3 py-2 rounded bg-lamaBlack border border-gray-700 text-lamaBone text-sm focus:outline-none focus:border-lamaNeon">${v}</textarea>
+            </div>`;
+        }
+
+        function campoCheckbox(label, name, checked) {
+            return `<div class="mb-3 flex items-center gap-2">
+                <input type="checkbox" name="${name}" ${checked ? 'checked' : ''} class="w-4 h-4">
+                <label class="text-sm text-lamaBone">${label}</label>
+            </div>`;
+        }
+
+        function formularioHotel(hotel) {
+            const h = hotel || {};
+            return `
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-4">
+                    ${campoTexto('Nombre *', 'nombre', h.nombre)}
+                    ${campoTexto('Etiqueta (ej: ALTA GAMA)', 'etiqueta', h.etiqueta)}
+                    ${campoTexto('Icono (Material Symbols, ej: hotel)', 'icono', h.icono)}
+                    ${campoTexto('Ubicación', 'ubicacion', h.ubicacion)}
+                    ${campoTexto('Teléfono WhatsApp (57...)', 'whatsapp_telefono', h.whatsapp_telefono)}
+                    ${campoTexto('Orden', 'orden', h.orden, 'number')}
+                </div>
+                ${campoTextarea('Descripción', 'descripcion', h.descripcion)}
+                ${campoTexto('Mensaje de WhatsApp', 'whatsapp_mensaje', h.whatsapp_mensaje)}
+                ${campoTexto('URL Google Maps', 'google_maps_url', h.google_maps_url)}
+                ${campoTexto('Nota (texto pequeño, opcional)', 'nota', h.nota)}
+                ${campoTextarea('Imágenes (una URL por línea, opcional)', '__imagenes', (h.imagenes || []).join('\n'))}
+                ${campoTextarea('Tarifas (Nombre | Valor | Unidad, una por línea, opcional)', '__tarifas', (h.tarifas || []).map(t => `${t.nombre} | ${t.valor} | ${t.unidad}`).join('\n'))}
+                ${campoCheckbox('Es sede oficial', 'es_sede_oficial', h.es_sede_oficial)}
+                ${campoCheckbox('Activo (visible en el sitio)', 'activo', h.activo === undefined ? true : h.activo)}
+                <div class="flex gap-3 mt-3">
+                    <button type="button" class="btn-guardar-hotel bg-lamaGold text-lamaBlack font-bold text-sm px-4 py-2 rounded hover:bg-lamaNeon">Guardar</button>
+                    <button type="button" class="btn-cancelar text-gray-400 text-sm hover:text-lamaBone">Cancelar</button>
+                </div>
+            `;
+        }
+
+        function formularioDestino(destino) {
+            const d = destino || {};
+            return `
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-4">
+                    ${campoTexto('Nombre *', 'nombre', d.nombre)}
+                    ${campoTexto('Icono (Material Symbols)', 'icono', d.icono)}
+                    ${campoTexto('Color (lamaNeon o lamaGold)', 'color_icono', d.color_icono || 'lamaNeon')}
+                    ${campoTexto('Orden', 'orden', d.orden, 'number')}
+                </div>
+                ${campoTextarea('Descripción', 'descripcion', d.descripcion)}
+                ${campoCheckbox('Activo (visible en el sitio)', 'activo', d.activo === undefined ? true : d.activo)}
+                <div class="flex gap-3 mt-3">
+                    <button type="button" class="btn-guardar-destino bg-lamaGold text-lamaBlack font-bold text-sm px-4 py-2 rounded hover:bg-lamaNeon">Guardar</button>
+                    <button type="button" class="btn-cancelar text-gray-400 text-sm hover:text-lamaBone">Cancelar</button>
+                </div>
+            `;
+        }
+
+        function leerFormulario(container) {
+            const data = {};
+            container.querySelectorAll('input, textarea').forEach((el) => {
+                if (el.type === 'checkbox') {
+                    data[el.name] = el.checked;
+                } else if (el.type === 'number') {
+                    data[el.name] = Number(el.value) || 0;
+                } else {
+                    data[el.name] = el.value.trim();
+                }
+            });
+            return data;
+        }
+
+        function leerFormularioHotel(container) {
+            const data = leerFormulario(container);
+
+            data.imagenes = (data.__imagenes || '')
+                .split('\n')
+                .map((linea) => linea.trim())
+                .filter(Boolean);
+            delete data.__imagenes;
+
+            data.tarifas = (data.__tarifas || '')
+                .split('\n')
+                .map((linea) => linea.trim())
+                .filter(Boolean)
+                .map((linea) => {
+                    const [nombre, valor, unidad] = linea.split('|').map((parte) => (parte || '').trim());
+                    return { nombre: nombre || '', valor: valor || '', unidad: unidad || '' };
+                });
+            delete data.__tarifas;
+
+            return data;
+        }
+
+        // ---- Hoteles ----
+        document.getElementById('btnNuevoHotel').addEventListener('click', () => {
+            const contenedor = document.getElementById('formNuevoHotel');
+            contenedor.innerHTML = formularioHotel({});
+            contenedor.classList.remove('hidden');
+            contenedor.querySelector('.btn-cancelar').addEventListener('click', () => contenedor.classList.add('hidden'));
+            contenedor.querySelector('.btn-guardar-hotel').addEventListener('click', async () => {
+                const data = leerFormularioHotel(contenedor);
+                const respuesta = await fetch('/admin/api/hoteles', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                const resultado = await respuesta.json();
+                if (resultado.success) {
+                    window.location.reload();
+                } else {
+                    alert(resultado.message || 'Error al crear el hotel');
+                }
+            });
+        });
+
+        document.querySelectorAll('.btn-editar-hotel').forEach((btn) => {
+            btn.addEventListener('click', () => {
+                const id = btn.dataset.id;
+                const hotel = HOTELES.find((h) => String(h.id_hotel) === id);
+                const item = document.querySelector(`.hotel-item[data-id="${id}"]`);
+                const contenedor = item.querySelector('.form-editar-hotel');
+                contenedor.innerHTML = formularioHotel(hotel);
+                contenedor.classList.remove('hidden');
+                contenedor.querySelector('.btn-cancelar').addEventListener('click', () => contenedor.classList.add('hidden'));
+                contenedor.querySelector('.btn-guardar-hotel').addEventListener('click', async () => {
+                    const data = leerFormularioHotel(contenedor);
+                    const respuesta = await fetch(`/admin/api/hoteles/${id}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(data)
+                    });
+                    const resultado = await respuesta.json();
+                    if (resultado.success) {
+                        window.location.reload();
+                    } else {
+                        alert(resultado.message || 'Error al actualizar el hotel');
+                    }
+                });
+            });
+        });
+
+        document.querySelectorAll('.btn-eliminar-hotel').forEach((btn) => {
+            btn.addEventListener('click', async () => {
+                if (!confirm('¿Eliminar este hotel? Esta acción no se puede deshacer.')) return;
+                const id = btn.dataset.id;
+                const respuesta = await fetch(`/admin/api/hoteles/${id}`, { method: 'DELETE' });
+                const resultado = await respuesta.json();
+                if (resultado.success) {
+                    window.location.reload();
+                } else {
+                    alert(resultado.message || 'Error al eliminar el hotel');
+                }
+            });
+        });
+
+        // ---- Destinos turísticos ----
+        document.getElementById('btnNuevoDestino').addEventListener('click', () => {
+            const contenedor = document.getElementById('formNuevoDestino');
+            contenedor.innerHTML = formularioDestino({});
+            contenedor.classList.remove('hidden');
+            contenedor.querySelector('.btn-cancelar').addEventListener('click', () => contenedor.classList.add('hidden'));
+            contenedor.querySelector('.btn-guardar-destino').addEventListener('click', async () => {
+                const data = leerFormulario(contenedor);
+                const respuesta = await fetch('/admin/api/destinos-turisticos', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                const resultado = await respuesta.json();
+                if (resultado.success) {
+                    window.location.reload();
+                } else {
+                    alert(resultado.message || 'Error al crear el destino');
+                }
+            });
+        });
+
+        document.querySelectorAll('.btn-editar-destino').forEach((btn) => {
+            btn.addEventListener('click', () => {
+                const id = btn.dataset.id;
+                const destino = DESTINOS.find((d) => String(d.id_destino) === id);
+                const item = document.querySelector(`.destino-item[data-id="${id}"]`);
+                const contenedor = item.querySelector('.form-editar-destino');
+                contenedor.innerHTML = formularioDestino(destino);
+                contenedor.classList.remove('hidden');
+                contenedor.querySelector('.btn-cancelar').addEventListener('click', () => contenedor.classList.add('hidden'));
+                contenedor.querySelector('.btn-guardar-destino').addEventListener('click', async () => {
+                    const data = leerFormulario(contenedor);
+                    const respuesta = await fetch(`/admin/api/destinos-turisticos/${id}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(data)
+                    });
+                    const resultado = await respuesta.json();
+                    if (resultado.success) {
+                        window.location.reload();
+                    } else {
+                        alert(resultado.message || 'Error al actualizar el destino');
+                    }
+                });
+            });
+        });
+
+        document.querySelectorAll('.btn-eliminar-destino').forEach((btn) => {
+            btn.addEventListener('click', async () => {
+                if (!confirm('¿Eliminar este destino? Esta acción no se puede deshacer.')) return;
+                const id = btn.dataset.id;
+                const respuesta = await fetch(`/admin/api/destinos-turisticos/${id}`, { method: 'DELETE' });
+                const resultado = await respuesta.json();
+                if (resultado.success) {
+                    window.location.reload();
+                } else {
+                    alert(resultado.message || 'Error al eliminar el destino');
+                }
+            });
+        });
+    </script>
+
+    <%- include('../partials/footer') %>
