@@ -2300,32 +2300,12 @@
         }
 
         /**
-         * Obtiene registros almacenados en localStorage.
-         * @returns {Array<Object>} Lista de registros guardados.
-         */
-        function obtenerRegistrosLocales() {
-            const raw = localStorage.getItem('registro_campeonato');
-            if (!raw) return [];
-            try {
-                const parsed = JSON.parse(raw);
-                return Array.isArray(parsed) ? parsed : [parsed];
-            } catch (error) {
-                return [];
-            }
-        }
-
-        /**
-         * Verifica si ya existe un registro con el documento indicado.
-         * @param {string} documento Documento a validar.
-         * @returns {boolean} True si ya existe.
-         */
-        function existeRegistroPorDocumento(documento) {
-            const registros = obtenerRegistrosLocales();
-            return registros.some(item => String(item.documento || '').trim() === documento);
-        }
-
-        /**
-         * Convierte el formulario en JSON y lo guarda en localStorage.
+         * Convierte el formulario en JSON. La verificación de duplicados la
+         * hace exclusivamente el servidor (InscripcionModel.findByDocumento,
+         * respuesta 409) — antes había además un chequeo contra localStorage
+         * que quedaba "recordando" intentos de envío que nunca llegaron a
+         * guardarse en el servidor (p. ej. si el envío falló por cualquier
+         * motivo), bloqueando permanentemente reintentos legítimos.
          * @returns {Object} Datos capturados.
          */
         function capturarDatos() {
@@ -2363,9 +2343,6 @@
             // Guardar en variable global para el PDF
             registroActual = data;
 
-            const registros = obtenerRegistrosLocales();
-            registros.push(data);
-            localStorage.setItem('registro_campeonato', JSON.stringify(registros));
             return data;
         }
 
@@ -2379,12 +2356,6 @@
             const errors = validarFormulario();
             if (errors.length > 0) {
                 alert(errors.join('\n'));
-                return;
-            }
-
-            const documento = document.getElementById('documento').value.trim();
-            if (existeRegistroPorDocumento(documento)) {
-                alert('Este documento ya tiene un registro previo.');
                 return;
             }
 
