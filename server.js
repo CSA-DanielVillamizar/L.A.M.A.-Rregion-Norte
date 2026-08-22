@@ -55,10 +55,13 @@ app.use(rateLimit({
 }));
 
 // Límite más estricto para el panel admin y el punto de control MTO,
-// complementa el bloqueo por intentos fallidos de authMiddleware.js
+// complementa el bloqueo por intentos fallidos de authMiddleware.js.
+// 20/15min se quedaba corto para uso real: una sola pantalla del panel
+// admin (eventos + hoteles + destinos + estadísticas) ya dispara varias
+// peticiones, y navegar unas pocas páginas agotaba el límite de inmediato.
 const limiterAuth = rateLimit({
     windowMs: 15 * 60 * 1000,
-    limit: 20,
+    limit: 300,
     standardHeaders: true,
     legacyHeaders: false,
     message: { success: false, message: 'Demasiadas peticiones. Intenta de nuevo en unos minutos.' }
