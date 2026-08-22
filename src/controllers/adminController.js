@@ -8,6 +8,9 @@ const capitulosService = require('../services/capitulosService');
 const eventService = require('../services/eventService');
 const serviciosPremiumService = require('../services/serviciosPremiumService');
 const QrService = require('../services/qrService');
+const { CapituloModel, CARGOS_OFICIALES } = require('../models/capituloModel');
+const planillaAsistenciaService = require('../services/planillaAsistenciaService');
+const pdfPlanillaService = require('../services/pdfPlanillaService');
 const logger = require('../utils/logger');
 const multer = require('multer');
 const path = require('path');
@@ -1054,6 +1057,116 @@ class AdminController {
                 success: false,
                 message: `Error al descargar ${etiqueta}`,
                 error: error.message
+            });
+        }
+    }
+
+    /**
+     * Lista todos los capítulos con datos operativos guardados (coordenadas + oficiales)
+     * GET /admin/api/capitulos
+     */
+    static async listarCapitulosDatos(req, res) {
+        try {
+            const capitulos = await CapituloModel.getAll();
+            res.json({ success: true, data: capitulos });
+        } catch (error) {
+            logger.error('Error en AdminController.listarCapitulosDatos', { error });
+            res.status(500).json({ success: false, message: 'Error al listar capítulos' });
+        }
+    }
+
+    /**
+     * Obtiene un capítulo con su roster de oficiales
+     * GET /admin/api/capitulos/detalle?nombre=...&pais=...
+     */
+    static async obtenerCapituloDatos(req, res) {
+        try {
+            const { nombre, pais } = req.query;
+            if (!nombre || !pais) {
+                return res.status(400).json({ success: false, message: 'nombre y pais son obligatorios' });
+            }
+
+            const capitulo = await CapituloModel.getByNombrePais(nombre, pais);
+            res.json({
+                success: true,
+                data: capitulo || { nombre, pais, latitud: null, longitud: null, oficiales: CARGOS_OFICIALES.map((cargo) => ({ cargo, nombre_completo: null, documento_numero: null })) }
+            });
+        } catch (error) {
+            logger.error('Error en AdminController.obtenerCapituloDatos', { error });
+            res.status(500).json({ success: false, message: 'Error al obtener el capítulo' });
+        }
+    }
+
+    /**
+     * Guarda (crea o actualiza) coordenadas y oficiales de un capítulo
+     * POST /admin/api/capitulos
+     */
+    static async guardarCapituloDatos(req, res) {
+        try {
+            const { nombre, pais, latitud, longitud, oficiales } = req.body;
+            if (!nombre || !pais) {
+                return res.status(400).json({ success: false, message: 'nombre y pais son obligatorios' });
+            }
+
+            const idCapitulo = await CapituloModel.upsert({
+                nombre,
+                pais,
+                latitud: Number.isFinite(parseFloat(latitud)) ? parseFloat(latitud) : null,
+                longitud: Number.isFinite(parseFloat(longitud)) ? parseFloat(longitud) : null
+            });
+
+            if (Array.isArray(oficiales)) {
+                await CapituloModel.guardarOficiales(idCapitulo, oficiales);
+            }
+
+            res.json({ success: true, message: 'Capítulo guardado correctamente', data: { id_capitulo: idCapitulo } });
+        } catch (error) {
+            logger.error('Error en AdminController.guardarCapituloDatos', { error });
+            res.status(500).json({ success: false, message: 'Error al guardar el capítulo' });
+        }
+    }
+
+    /**
+     * Lista los capítulos con asistencia validada (check-in) en un evento,
+     * para el panel de generación de planillas.
+     * GET /admin/api/eventos/:id/capitulos-asistencia
+     */
+    static async listarCapitulosConAsistenciaEvento(req, res) {
+        try {
+            const capitulos = await planillaAsistenciaService.listarCapitulosConAsistencia(req.params.id);
+            res.json({ success: true, data: capitulos });
+        } catch (error) {
+            logger.error('Error en AdminController.listarCapitulosConAsistenciaEvento', { error });
+            res.status(500).json({ success: false, message: 'Error al listar capítulos con asistencia' });
+        }
+    }
+
+    /**
+     * Genera y descarga el PDF de la planilla de asistencia de un capítulo
+     * en un evento.
+     * GET /admin/eventos/:id/planilla/:capitulo/pdf?pais=...
+     */
+    static async descargarPlanillaPdf(req, res) {
+        try {
+            const { id: eventoId, capitulo } = req.params;
+            const { pais } = req.query;
+
+            const datos = await planillaAsistenciaService.generarDatosPlanilla({
+                eventoId,
+                capitulo: decodeURIComponent(capitulo),
+                pais
+            });
+            const pdfBuffer = await pdfPlanillaService.generarPdfPlanilla(datos);
+
+            const nombreArchivo = `Planilla-${datos.capitulo}-${eventoId}.pdf`.replace(/[^\w\-.]+/g, '_');
+            res.setHeader('Content-Type', 'application/pdf');
+            res.setHeader('Content-Disposition', `attachment; filename="${nombreArchivo}"`);
+            return res.status(200).send(pdfBuffer);
+        } catch (error) {
+            logger.error('Error en AdminController.descargarPlanillaPdf', { error });
+            return res.status(500).json({
+                success: false,
+                message: error.message || 'Error al generar la planilla'
             });
         }
     }

@@ -430,6 +430,9 @@ const mapearFilaEvento = (fila) => ({
     imagen: fila.imagen,
     destacado: Boolean(fila.destacado),
     ordenVisual: fila.ordenVisual,
+    latitud: fila.latitud !== null && fila.latitud !== undefined ? Number(fila.latitud) : null,
+    longitud: fila.longitud !== null && fila.longitud !== undefined ? Number(fila.longitud) : null,
+    pais: fila.pais || null,
     agenda: parsearJSONSeguro(fila.agendaJson, []),
     paqueteOficial: parsearJSONSeguro(fila.paqueteJson, null),
     costos_adicionales: parsearJSONSeguro(fila.costosJson, []),
@@ -636,6 +639,9 @@ exports.getAllEvents = async () => {
             moneda,
             imagen,
             destacado,
+            latitud,
+            longitud,
+            pais,
             orden_visual AS ordenVisual,
             agenda_json AS agendaJson,
             paquete_json AS paqueteJson,
@@ -688,6 +694,9 @@ exports.getEventById = async (eventId) => {
             moneda,
             imagen,
             destacado,
+            latitud,
+            longitud,
+            pais,
             orden_visual AS ordenVisual,
             agenda_json AS agendaJson,
             paquete_json AS paqueteJson,
@@ -810,6 +819,9 @@ exports.createEvent = async (data) => {
     request.input('moneda', sql.VarChar(10), data.moneda || 'COP');
     request.input('imagen', sql.NVarChar(300), data.imagen || '/images/events/default.jpg');
     request.input('destacado', sql.Bit, data.destacado ? 1 : 0);
+    request.input('latitud', sql.Decimal(10, 7), Number.isFinite(data.latitud) ? data.latitud : null);
+    request.input('longitud', sql.Decimal(10, 7), Number.isFinite(data.longitud) ? data.longitud : null);
+    request.input('pais', sql.NVarChar(100), data.pais || null);
     request.input('agenda_json', sql.NVarChar(sql.MAX), JSON.stringify(Array.isArray(data.agenda) ? data.agenda : []));
     request.input('paquete_json', sql.NVarChar(sql.MAX), data.paqueteOficial ? JSON.stringify(data.paqueteOficial) : null);
     request.input('costos_json', sql.NVarChar(sql.MAX), JSON.stringify(data.costos_adicionales || []));
@@ -820,7 +832,7 @@ exports.createEvent = async (data) => {
     const result = await request.query(`
         INSERT INTO EventosLama (
             id_evento, nombre, capitulo, fecha_inicio, fecha_fin, ubicacion, hotel, descripcion,
-            capacidad, registrados, precio, moneda, imagen, destacado, orden_visual,
+            capacidad, registrados, precio, moneda, imagen, destacado, latitud, longitud, pais, orden_visual,
             agenda_json, paquete_json, costos_json, contactos_json, recomendaciones_json,
             hospedaje_json, activo
         )
@@ -839,6 +851,9 @@ exports.createEvent = async (data) => {
             INSERTED.moneda,
             INSERTED.imagen,
             INSERTED.destacado,
+            INSERTED.latitud,
+            INSERTED.longitud,
+            INSERTED.pais,
             INSERTED.orden_visual AS ordenVisual,
             INSERTED.agenda_json AS agendaJson,
             INSERTED.paquete_json AS paqueteJson,
@@ -848,7 +863,7 @@ exports.createEvent = async (data) => {
             INSERTED.hospedaje_json AS hospedajeJson
         VALUES (
             @id_evento, @nombre, @capitulo, @fecha_inicio, @fecha_fin, @ubicacion, @hotel, @descripcion,
-            @capacidad, @registrados, @precio, @moneda, @imagen, @destacado,
+            @capacidad, @registrados, @precio, @moneda, @imagen, @destacado, @latitud, @longitud, @pais,
             ISNULL((SELECT MAX(orden_visual) + 1 FROM EventosLama WHERE activo = 1), 1),
             @agenda_json, @paquete_json, @costos_json, @contactos_json, @recomendaciones_json,
             @hospedaje_json, 1
@@ -888,6 +903,9 @@ exports.updateEvent = async (eventId, data) => {
     request.input('moneda', sql.VarChar(10), data.moneda ?? actual.moneda ?? 'COP');
     request.input('imagen', sql.NVarChar(300), data.imagen ?? actual.imagen ?? '/images/events/default.jpg');
     request.input('destacado', sql.Bit, data.destacado !== undefined ? (data.destacado ? 1 : 0) : (actual.destacado ? 1 : 0));
+    request.input('latitud', sql.Decimal(10, 7), data.latitud !== undefined ? data.latitud : (actual.latitud ?? null));
+    request.input('longitud', sql.Decimal(10, 7), data.longitud !== undefined ? data.longitud : (actual.longitud ?? null));
+    request.input('pais', sql.NVarChar(100), data.pais ?? actual.pais ?? null);
     request.input('agenda_json', sql.NVarChar(sql.MAX), JSON.stringify(Array.isArray(data.agenda) ? data.agenda : (actual.agenda || [])));
     request.input('paquete_json', sql.NVarChar(sql.MAX), data.paqueteOficial ? JSON.stringify(data.paqueteOficial) : (actual.paqueteOficial ? JSON.stringify(actual.paqueteOficial) : null));
     request.input('costos_json', sql.NVarChar(sql.MAX), JSON.stringify(data.costos_adicionales || actual.costos_adicionales || []));
@@ -911,6 +929,9 @@ exports.updateEvent = async (eventId, data) => {
             moneda = @moneda,
             imagen = @imagen,
             destacado = @destacado,
+            latitud = @latitud,
+            longitud = @longitud,
+            pais = @pais,
             agenda_json = @agenda_json,
             paquete_json = @paquete_json,
             costos_json = @costos_json,
@@ -933,6 +954,9 @@ exports.updateEvent = async (eventId, data) => {
             INSERTED.moneda,
             INSERTED.imagen,
             INSERTED.destacado,
+            INSERTED.latitud,
+            INSERTED.longitud,
+            INSERTED.pais,
             INSERTED.orden_visual AS ordenVisual,
             INSERTED.agenda_json AS agendaJson,
             INSERTED.paquete_json AS paqueteJson,

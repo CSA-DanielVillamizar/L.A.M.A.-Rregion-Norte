@@ -25,7 +25,7 @@ describe('InscripcionModel — normalización y cálculos (funciones puras, sin 
             expect(InscripcionModel.normalizarTipoParticipante('prospecto')).toBe('PROSPECTO (P)');
             expect(InscripcionModel.normalizarTipoParticipante('asociado')).toBe('ASOCIADO (A) (ASC)');
             expect(InscripcionModel.normalizarTipoParticipante('honorario')).toBe('MIEMBRO HONORARIO (HNR)');
-            expect(InscripcionModel.normalizarTipoParticipante('retirado')).toBe('MIEMBRO RETIRADO (PTR)');
+            expect(InscripcionModel.normalizarTipoParticipante('retirado')).toBe('MIEMBRO RETIRADO (RTR)');
             expect(InscripcionModel.normalizarTipoParticipante('hijo')).toBe('HIJO (A) (H)');
             expect(InscripcionModel.normalizarTipoParticipante('')).toBe('INVITADO (A) (I)');
         });

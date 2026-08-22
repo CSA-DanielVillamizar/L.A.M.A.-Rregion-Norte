@@ -12,7 +12,7 @@ const TIPOS_PARTICIPANTE_PERMITIDOS = [
     'PROSPECTO (P)',
     'ASOCIADO (A) (ASC)',
     'MIEMBRO HONORARIO (HNR)',
-    'MIEMBRO RETIRADO (PTR)',
+    'MIEMBRO RETIRADO (RTR)',
     'HIJO (A) (H)',
     'INVITADO (A) (I)',
     'ESPOSA (O)',
@@ -61,7 +61,7 @@ BEGIN
         -- Información del Participante
         tipo_participante VARCHAR(50) NOT NULL CHECK (tipo_participante IN (
             'MIEMBRO FULL COLOR (FCM)', 'PROSPECTO (P)', 'ASOCIADO (A) (ASC)',
-            'MIEMBRO HONORARIO (HNR)', 'MIEMBRO RETIRADO (PTR)', 'HIJO (A) (H)',
+            'MIEMBRO HONORARIO (HNR)', 'MIEMBRO RETIRADO (RTR)', 'HIJO (A) (H)',
             'INVITADO (A) (I)', 'ESPOSA (O)', 'DAMA L.A.M.A. - FULL COLOR (FCM)',
             'DAMA L.A.M.A. - PROSPECTO (P)'
         )),
@@ -283,7 +283,7 @@ class InscripcionModel {
         }
         if (texto.includes('full color') || texto.includes('fcm')) return 'MIEMBRO FULL COLOR (FCM)';
         if (texto.includes('honorari') || texto.includes('hnr')) return 'MIEMBRO HONORARIO (HNR)';
-        if (texto.includes('retirad') || texto.includes('ptr')) return 'MIEMBRO RETIRADO (PTR)';
+        if (texto.includes('retirad') || texto.includes('rtr')) return 'MIEMBRO RETIRADO (RTR)';
         if (texto.includes('asociad') || texto.includes('asc')) return 'ASOCIADO (A) (ASC)';
         if (esProspecto) return 'PROSPECTO (P)';
         if (texto.includes('esposa') || texto.includes('conyug') || texto.includes('pareja')) return 'ESPOSA (O)';
@@ -524,7 +524,7 @@ class InscripcionModel {
                         'PROSPECTO (P)',
                         'ASOCIADO (A) (ASC)',
                         'MIEMBRO HONORARIO (HNR)',
-                        'MIEMBRO RETIRADO (PTR)',
+                        'MIEMBRO RETIRADO (RTR)',
                         'HIJO (A) (H)',
                         'INVITADO (A) (I)',
                         'ESPOSA (O)',
@@ -1048,6 +1048,36 @@ class InscripcionModel {
             return result.recordset.length > 0 ? result.recordset[0] : null;
         } catch (error) {
             logger.error('Error en InscripcionModel.confirmarCheckin', { error });
+            throw error;
+        }
+    }
+
+    /**
+     * Inscripciones con asistencia validada (check-in confirmado por el MTO)
+     * para un evento, usadas para armar las planillas de asistencia. Se
+     * agrupan por capítulo del lado del servicio, no aquí, para poder
+     * generar de una vez el listado de capítulos con asistentes.
+     * @param {string} eventoId
+     * @returns {Promise<Array>}
+     */
+    static async obtenerCheckinValidadoPorEvento(eventoId) {
+        try {
+            await this.asegurarColumnasExtendidas();
+            const pool = await getPool();
+            const result = await pool.request()
+                .input('evento_id', sql.VarChar(80), eventoId)
+                .query(`
+                    SELECT
+                        id_inscripcion, nombre_completo, documento_numero, tipo_participante,
+                        tipo_vehiculo, pais, capitulo, capitulo_otro, asiste_con_acompanante,
+                        cargo_directivo, checkin_realizado, checkin_fecha
+                    FROM InscripcionesCampeonato
+                    WHERE evento_id = @evento_id AND checkin_realizado = 1
+                    ORDER BY capitulo ASC, nombre_completo ASC
+                `);
+            return result.recordset;
+        } catch (error) {
+            logger.error('Error en InscripcionModel.obtenerCheckinValidadoPorEvento', { error });
             throw error;
         }
     }

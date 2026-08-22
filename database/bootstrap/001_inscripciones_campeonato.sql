@@ -170,7 +170,7 @@ BEGIN
             'PROSPECTO (P)',
             'ASOCIADO (A) (ASC)',
             'MIEMBRO HONORARIO (HNR)',
-            'MIEMBRO RETIRADO (PTR)',
+            'MIEMBRO RETIRADO (RTR)',
             'HIJO (A) (H)',
             'INVITADO (A) (I)',
             'ESPOSA (O)',

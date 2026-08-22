@@ -15,6 +15,11 @@ const { basicAuth, adminApiAuth } = require('../middleware/authMiddleware');
  */
 router.get('/dashboard', basicAuth, AdminController.showDashboard);
 router.get('/contenido-turistico', basicAuth, ContenidoTuristicoController.mostrarPanel);
+router.get('/capitulos-datos', basicAuth, (req, res) => {
+    const { PAISES_CAPITULOS } = require('../data/paisesCapitulos');
+    res.render('admin/capitulos-datos', { title: 'Datos de Capítulos - L.A.M.A.', paisesCapitulos: PAISES_CAPITULOS });
+});
+router.get('/planillas', basicAuth, (req, res) => res.render('admin/planillas', { title: 'Planillas de Asistencia - L.A.M.A.' }));
 
 /**
  * API DE ADMINISTRACIÓN
@@ -46,6 +51,24 @@ router.post('/capitulos', adminApiAuth, AdminController.createCapitulo);
 router.put('/capitulos/:id', adminApiAuth, AdminController.updateCapitulo);
 router.delete('/capitulos/:id', adminApiAuth, AdminController.deleteCapitulo);
 router.post('/capitulos/:id/imagen', adminApiAuth, AdminController.uploadMiddleware, AdminController.uploadCapituloImagen);
+
+/**
+ * API DE DATOS OPERATIVOS DE CAPÍTULOS (coordenadas + oficiales)
+ * Distinto del catálogo anterior /capitulos (contenido de marketing en
+ * memoria, solo Colombia): esta cubre el catálogo internacional completo y
+ * alimenta el cálculo de distancia + tabla de oficiales de las planillas.
+ * Requiere API Key en headers: x-api-key
+ */
+router.get('/api/capitulos-datos', adminApiAuth, AdminController.listarCapitulosDatos);
+router.get('/api/capitulos-datos/detalle', adminApiAuth, AdminController.obtenerCapituloDatos);
+router.post('/api/capitulos-datos', adminApiAuth, AdminController.guardarCapituloDatos);
+
+/**
+ * API DE PLANILLAS DE ASISTENCIA
+ * Requiere API Key en headers: x-api-key
+ */
+router.get('/api/eventos/:id/capitulos-asistencia', adminApiAuth, AdminController.listarCapitulosConAsistenciaEvento);
+router.get('/eventos/:id/planilla/:capitulo/pdf', adminApiAuth, AdminController.descargarPlanillaPdf);
 
 /**
  * API DE GESTIÓN DE TICKER

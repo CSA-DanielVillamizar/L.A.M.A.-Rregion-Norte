@@ -1,0 +1,179 @@
+<%- include('../partials/header') %>
+
+    <nav class="bg-lamaDark border-b-2 border-lamaGold py-4">
+        <div class="container mx-auto px-4 flex flex-wrap gap-3 text-sm font-bold">
+            <a href="/admin/dashboard" class="text-lamaBone hover:text-lamaNeon transition-colors pb-1">Inscripciones
+                y Eventos</a>
+            <a href="/admin/contenido-turistico" class="text-lamaBone hover:text-lamaNeon transition-colors pb-1">Alojamiento y
+                Turismo</a>
+            <a href="/admin/capitulos-datos" class="text-lamaGold border-b-2 border-lamaGold pb-1">Capítulos (Coord. y Oficiales)</a>
+            <a href="/admin/planillas" class="text-lamaBone hover:text-lamaNeon transition-colors pb-1">Planillas de Asistencia</a>
+            <a href="/checkin" class="text-lamaBone hover:text-lamaNeon transition-colors pb-1">Check-in MTO</a>
+        </div>
+    </nav>
+
+    <section class="container mx-auto px-4 py-12 max-w-4xl">
+        <div class="mb-8">
+            <h1 class="text-3xl font-headings text-lamaGold">CAPÍTULOS: COORDENADAS Y OFICIALES</h1>
+            <p class="text-sm text-gray-400 mt-2">
+                Carga una sola vez, por capítulo: las coordenadas de su sede (para calcular la distancia de las
+                planillas de asistencia) y quién ocupa cada cargo oficial. Búscalas en Google Maps: click derecho
+                sobre el punto exacto → copia los dos números que aparecen arriba.
+            </p>
+        </div>
+
+        <div class="bg-lamaDark border border-gray-800 rounded-lg p-5 mb-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="text-xs text-gray-400 block mb-1">País</label>
+                    <select id="selectorPais" class="w-full px-3 py-2 rounded bg-lamaBlack border border-gray-700 text-lamaBone text-sm">
+                        <option value="">Seleccione...</option>
+                        <% Object.keys(paisesCapitulos).sort().forEach(function(pais) { %>
+                            <option value="<%= pais %>"><%= pais %></option>
+                        <% }); %>
+                    </select>
+                </div>
+                <div>
+                    <label class="text-xs text-gray-400 block mb-1">Capítulo</label>
+                    <select id="selectorCapitulo" class="w-full px-3 py-2 rounded bg-lamaBlack border border-gray-700 text-lamaBone text-sm" disabled>
+                        <option value="">Seleccione un país primero...</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div id="panelCapitulo" class="hidden">
+            <div class="bg-lamaDark border border-gray-800 rounded-lg p-5 mb-6">
+                <h2 class="text-lg font-headings text-lamaGold mb-4">Coordenadas de la sede</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="text-xs text-gray-400 block mb-1">Latitud</label>
+                        <input type="number" step="any" id="inputLatitud" placeholder="Ej: 6.2442"
+                            class="w-full px-3 py-2 rounded bg-lamaBlack border border-gray-700 text-lamaBone text-sm">
+                    </div>
+                    <div>
+                        <label class="text-xs text-gray-400 block mb-1">Longitud</label>
+                        <input type="number" step="any" id="inputLongitud" placeholder="Ej: -75.5812"
+                            class="w-full px-3 py-2 rounded bg-lamaBlack border border-gray-700 text-lamaBone text-sm">
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-lamaDark border border-gray-800 rounded-lg p-5 mb-6">
+                <h2 class="text-lg font-headings text-lamaGold mb-4">Oficiales del capítulo</h2>
+                <div id="listaOficiales" class="space-y-3"></div>
+            </div>
+
+            <button id="btnGuardarCapitulo"
+                class="bg-lamaGold text-lamaBlack font-bold text-sm px-6 py-3 rounded hover:bg-lamaNeon transition-colors">
+                Guardar
+            </button>
+            <p id="mensajeGuardado" class="text-sm text-lamaNeon mt-2 hidden">Guardado correctamente.</p>
+        </div>
+    </section>
+
+    <script>
+        const PAISES_CAPITULOS = <%- JSON.stringify(paisesCapitulos) %>;
+        const CARGOS_OFICIALES = [
+            'Oficial Regional', 'Oficial Int/Cont/Nac/Reg', 'Presidente', 'Vice Presidente',
+            'Tesorero', 'Gerente Negocios', 'Secretario', 'Oficial de Mototurismo'
+        ];
+
+        const selectorPais = document.getElementById('selectorPais');
+        const selectorCapitulo = document.getElementById('selectorCapitulo');
+        const panelCapitulo = document.getElementById('panelCapitulo');
+        const listaOficiales = document.getElementById('listaOficiales');
+
+        selectorPais.addEventListener('change', () => {
+            const pais = selectorPais.value;
+            panelCapitulo.classList.add('hidden');
+            if (!pais) {
+                selectorCapitulo.disabled = true;
+                selectorCapitulo.innerHTML = '<option value="">Seleccione un país primero...</option>';
+                return;
+            }
+            const capitulos = PAISES_CAPITULOS[pais] || [];
+            selectorCapitulo.disabled = false;
+            selectorCapitulo.innerHTML = '<option value="">Seleccione...</option>' +
+                capitulos.map(c => `<option value="${c}">${c}</option>`).join('');
+        });
+
+        selectorCapitulo.addEventListener('change', async () => {
+            const nombre = selectorCapitulo.value;
+            const pais = selectorPais.value;
+            if (!nombre) {
+                panelCapitulo.classList.add('hidden');
+                return;
+            }
+            await cargarCapitulo(nombre, pais);
+        });
+
+        async function cargarCapitulo(nombre, pais) {
+            document.getElementById('mensajeGuardado').classList.add('hidden');
+            const respuesta = await fetch(`/admin/api/capitulos-datos/detalle?nombre=${encodeURIComponent(nombre)}&pais=${encodeURIComponent(pais)}`);
+            const datos = await respuesta.json();
+            const capitulo = datos.data;
+
+            document.getElementById('inputLatitud').value = capitulo.latitud ?? '';
+            document.getElementById('inputLongitud').value = capitulo.longitud ?? '';
+
+            listaOficiales.innerHTML = CARGOS_OFICIALES.map(cargo => {
+                const oficial = (capitulo.oficiales || []).find(o => o.cargo === cargo) || {};
+                return `
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-2 items-center">
+                        <label class="text-sm text-lamaBone font-bold">${cargo}</label>
+                        <input type="text" data-cargo="${cargo}" data-campo="nombre_completo" placeholder="Nombre completo"
+                            value="${oficial.nombre_completo || ''}"
+                            class="px-3 py-2 rounded bg-lamaBlack border border-gray-700 text-lamaBone text-sm oficial-input">
+                        <input type="text" data-cargo="${cargo}" data-campo="documento_numero" placeholder="Documento"
+                            value="${oficial.documento_numero || ''}"
+                            class="px-3 py-2 rounded bg-lamaBlack border border-gray-700 text-lamaBone text-sm oficial-input">
+                    </div>
+                `;
+            }).join('');
+
+            panelCapitulo.classList.remove('hidden');
+        }
+
+        document.getElementById('btnGuardarCapitulo').addEventListener('click', async () => {
+            const nombre = selectorCapitulo.value;
+            const pais = selectorPais.value;
+            if (!nombre || !pais) return;
+
+            const oficialesPorCargo = {};
+            document.querySelectorAll('.oficial-input').forEach(input => {
+                const cargo = input.dataset.cargo;
+                const campo = input.dataset.campo;
+                oficialesPorCargo[cargo] = oficialesPorCargo[cargo] || { cargo };
+                oficialesPorCargo[cargo][campo] = input.value.trim() || null;
+            });
+
+            const body = {
+                nombre,
+                pais,
+                latitud: document.getElementById('inputLatitud').value || null,
+                longitud: document.getElementById('inputLongitud').value || null,
+                oficiales: Object.values(oficialesPorCargo)
+            };
+
+            const respuesta = await fetch('/admin/api/capitulos-datos', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(body)
+            });
+
+            const resultado = await respuesta.json();
+            const mensaje = document.getElementById('mensajeGuardado');
+            if (resultado.success) {
+                mensaje.textContent = 'Guardado correctamente.';
+                mensaje.classList.remove('hidden', 'text-red-400');
+                mensaje.classList.add('text-lamaNeon');
+            } else {
+                mensaje.textContent = resultado.message || 'Error al guardar.';
+                mensaje.classList.remove('hidden', 'text-lamaNeon');
+                mensaje.classList.add('text-red-400');
+            }
+        });
+    </script>
+
+<%- include('../partials/footer') %>

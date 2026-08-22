@@ -52,7 +52,7 @@ const TIPOS_PARTICIPANTE_VALIDOS = [
     'PROSPECTO (P)',
     'ASOCIADO (A) (ASC)',
     'MIEMBRO HONORARIO (HNR)',
-    'MIEMBRO RETIRADO (PTR)',
+    'MIEMBRO RETIRADO (RTR)',
     'HIJO (A) (H)',
     'INVITADO (A) (I)',
     'ESPOSA (O)',
@@ -77,7 +77,7 @@ function normalizarTipoParticipante(categoria) {
     }
     if (texto.includes('full color') || texto.includes('fcm')) return 'MIEMBRO FULL COLOR (FCM)';
     if (texto.includes('honorari') || texto.includes('hnr')) return 'MIEMBRO HONORARIO (HNR)';
-    if (texto.includes('retirad') || texto.includes('ptr')) return 'MIEMBRO RETIRADO (PTR)';
+    if (texto.includes('retirad') || texto.includes('rtr')) return 'MIEMBRO RETIRADO (RTR)';
     if (texto.includes('asociad') || texto.includes('asc')) return 'ASOCIADO (A) (ASC)';
     if (esProspecto) return 'PROSPECTO (P)';
     if (texto.includes('esposa') || texto.includes('conyug') || texto.includes('pareja')) return 'ESPOSA (O)';
