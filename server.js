@@ -46,10 +46,12 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Límite general de peticiones por IP, como protección base contra abuso/DoS
+// Límite general de peticiones por IP, como protección base contra abuso/DoS.
+// 300/15min se agotaba con uso normal del sitio (cada pantalla dispara varias
+// peticiones) combinado con verificación de despliegues desde la misma IP.
 app.use(rateLimit({
     windowMs: 15 * 60 * 1000,
-    limit: 300,
+    limit: 1000,
     standardHeaders: true,
     legacyHeaders: false
 }));
