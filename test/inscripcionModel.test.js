@@ -2,21 +2,52 @@ const { InscripcionModel } = require('../src/models/inscripcionModel');
 
 describe('InscripcionModel — normalización y cálculos (funciones puras, sin BD)', () => {
     describe('normalizarTipoParticipante', () => {
-        test('acepta los valores exactos permitidos, incluyendo ESPOSA (o)', () => {
-            expect(InscripcionModel.normalizarTipoParticipante('ESPOSA (o)')).toBe('ESPOSA (o)');
-            expect(InscripcionModel.normalizarTipoParticipante('FULL COLOR MEMBER')).toBe('FULL COLOR MEMBER');
+        test('acepta los valores exactos permitidos del catálogo oficial L.A.M.A.', () => {
+            expect(InscripcionModel.normalizarTipoParticipante('ESPOSA (O)')).toBe('ESPOSA (O)');
+            expect(InscripcionModel.normalizarTipoParticipante('MIEMBRO FULL COLOR (FCM)')).toBe('MIEMBRO FULL COLOR (FCM)');
+            expect(InscripcionModel.normalizarTipoParticipante('DAMA L.A.M.A. - FULL COLOR (FCM)')).toBe('DAMA L.A.M.A. - FULL COLOR (FCM)');
+            expect(InscripcionModel.normalizarTipoParticipante('DAMA L.A.M.A. - PROSPECTO (P)')).toBe('DAMA L.A.M.A. - PROSPECTO (P)');
         });
 
-        test('ya no reconoce la forma antigua "ESPOSA (a)" como valor exacto', () => {
-            // Se corrige al vuelo por heurística de texto ("esposa" -> ESPOSA (o)),
-            // pero ya no debe existir como valor permitido de salida.
-            expect(InscripcionModel.normalizarTipoParticipante('ESPOSA (a)')).toBe('ESPOSA (o)');
+        test('ya no reconoce las formas antiguas consolidadas (CONYUGUE, PAREJA) como valores exactos', () => {
+            // Se corrigen al vuelo por heurística de texto ("esposa"/"conyuge"/"pareja" -> ESPOSA (O)),
+            // pero ya no deben existir como valores permitidos de salida.
+            expect(InscripcionModel.normalizarTipoParticipante('CONYUGUE')).toBe('ESPOSA (O)');
+            expect(InscripcionModel.normalizarTipoParticipante('PAREJA')).toBe('ESPOSA (O)');
+        });
+
+        test('distingue DAMA L.A.M.A. Full Color de DAMA L.A.M.A. Prospecto por heurística de texto', () => {
+            expect(InscripcionModel.normalizarTipoParticipante('dama full color')).toBe('DAMA L.A.M.A. - FULL COLOR (FCM)');
+            expect(InscripcionModel.normalizarTipoParticipante('dama prospecto')).toBe('DAMA L.A.M.A. - PROSPECTO (P)');
         });
 
         test('normaliza variantes de texto libre por heurística', () => {
-            expect(InscripcionModel.normalizarTipoParticipante('prospecto')).toBe('PROSPECT');
-            expect(InscripcionModel.normalizarTipoParticipante('hijo')).toBe('HIJA (o)');
-            expect(InscripcionModel.normalizarTipoParticipante('')).toBe('INVITADA (O)');
+            expect(InscripcionModel.normalizarTipoParticipante('prospecto')).toBe('PROSPECTO (P)');
+            expect(InscripcionModel.normalizarTipoParticipante('asociado')).toBe('ASOCIADO (A) (ASC)');
+            expect(InscripcionModel.normalizarTipoParticipante('honorario')).toBe('MIEMBRO HONORARIO (HNR)');
+            expect(InscripcionModel.normalizarTipoParticipante('retirado')).toBe('MIEMBRO RETIRADO (PTR)');
+            expect(InscripcionModel.normalizarTipoParticipante('hijo')).toBe('HIJO (A) (H)');
+            expect(InscripcionModel.normalizarTipoParticipante('')).toBe('INVITADO (A) (I)');
+        });
+    });
+
+    describe('normalizarTipoVehiculo', () => {
+        test('acepta los valores exactos permitidos', () => {
+            expect(InscripcionModel.normalizarTipoVehiculo('MOTO (M)')).toBe('MOTO (M)');
+            expect(InscripcionModel.normalizarTipoVehiculo('CARRO (C)')).toBe('CARRO (C)');
+            expect(InscripcionModel.normalizarTipoVehiculo('AVIÓN (A)')).toBe('AVIÓN (A)');
+        });
+
+        test('normaliza variantes de texto libre por heurística', () => {
+            expect(InscripcionModel.normalizarTipoVehiculo('moto')).toBe('MOTO (M)');
+            expect(InscripcionModel.normalizarTipoVehiculo('carro')).toBe('CARRO (C)');
+            expect(InscripcionModel.normalizarTipoVehiculo('avion')).toBe('AVIÓN (A)');
+        });
+
+        test('devuelve null si no hay valor o no se reconoce', () => {
+            expect(InscripcionModel.normalizarTipoVehiculo('')).toBeNull();
+            expect(InscripcionModel.normalizarTipoVehiculo(null)).toBeNull();
+            expect(InscripcionModel.normalizarTipoVehiculo('bicicleta')).toBeNull();
         });
     });
 

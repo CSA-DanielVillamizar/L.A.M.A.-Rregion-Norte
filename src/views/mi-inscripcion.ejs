@@ -61,6 +61,18 @@
                     </div>
                 </div>
 
+                <!-- QR DE CHECK-IN -->
+                <div id="qrSection" class="hidden bg-lamaBlack/60 border-2 border-lamaNeon rounded-lg p-5 mb-6 text-center">
+                    <h3 class="text-lamaNeon font-headings text-xl tracking-wide mb-3">TU CÓDIGO QR DE CHECK-IN</h3>
+                    <img id="qrImg" src="" alt="Código QR de check-in" class="mx-auto rounded bg-lamaBone p-2" width="200" height="200">
+                    <p id="qrMensaje" class="text-sm text-lamaBone mt-3"></p>
+                    <a id="qrDownload" href="" download="qr-checkin.png"
+                        class="inline-flex items-center gap-2 mt-3 bg-lamaGold text-lamaBlack font-bold py-2 px-4 rounded hover:bg-lamaNeon transition-colors">
+                        <span class="icon-symbol" aria-hidden="true">download</span>
+                        Descargar QR
+                    </a>
+                </div>
+
                 <!-- COMPROBANTE: ya adjunto -->
                 <div id="comprobanteOk"
                     class="hidden bg-lamaBlack/60 border border-lamaNeon/40 rounded p-4 flex items-center gap-3">
@@ -190,6 +202,20 @@
 
             document.getElementById('comprobanteOk').classList.toggle('hidden', !inscripcion.tiene_comprobante);
             document.getElementById('comprobantePendiente').classList.toggle('hidden', Boolean(inscripcion.tiene_comprobante));
+
+            const qrSection = document.getElementById('qrSection');
+            if (inscripcion.qr_data_url) {
+                document.getElementById('qrImg').src = inscripcion.qr_data_url;
+                document.getElementById('qrDownload').href = inscripcion.qr_data_url;
+                document.getElementById('qrMensaje').textContent = inscripcion.checkin_realizado
+                    ? 'Ya hiciste check-in en el evento. ¡Nos vemos en la ruta!'
+                    : inscripcion.estado_validacion === 'Aprobado'
+                        ? 'Guarda esta imagen en tu celular y muéstrala en el punto de control MTO para marcar tu asistencia y recibir tu kit.'
+                        : 'Guarda esta imagen en tu celular y muéstrala en el punto de control MTO: como tu pago aún está pendiente, te indicarán pasar por tesorería antes de marcar tu asistencia.';
+                qrSection.classList.remove('hidden');
+            } else {
+                qrSection.classList.add('hidden');
+            }
 
             resultadoPanel.classList.remove('hidden');
             resultadoPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });

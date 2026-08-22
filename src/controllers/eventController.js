@@ -6,6 +6,7 @@
 const eventService = require('../services/eventService');
 const { InscripcionModel } = require('../models/inscripcionModel');
 const ContenidoTuristicoModel = require('../models/contenidoTuristicoModel');
+const QrService = require('../services/qrService');
 const multer = require('multer');
 const { esParPaisCapituloValido } = require('../data/paisesCapitulos');
 const { validateInscripcion } = require('../validators/inscripcionValidator');
@@ -47,16 +48,19 @@ function parsearBooleanoFormData(valor) {
 }
 
 const TIPOS_PARTICIPANTE_VALIDOS = [
-    'DAMA L.A.M.A.',
-    'FULL COLOR MEMBER',
-    'ROCKET PROSPECT',
-    'PROSPECT',
-    'ESPOSA (o)',
-    'CONYUGUE',
-    'PAREJA',
-    'HIJA (o)',
-    'INVITADA (O)'
+    'MIEMBRO FULL COLOR (FCM)',
+    'PROSPECTO (P)',
+    'ASOCIADO (A) (ASC)',
+    'MIEMBRO HONORARIO (HNR)',
+    'MIEMBRO RETIRADO (PTR)',
+    'HIJO (A) (H)',
+    'INVITADO (A) (I)',
+    'ESPOSA (O)',
+    'DAMA L.A.M.A. - FULL COLOR (FCM)',
+    'DAMA L.A.M.A. - PROSPECTO (P)'
 ];
+
+const TIPOS_VEHICULO_VALIDOS = ['MOTO (M)', 'CARRO (C)', 'AVIÓN (A)'];
 
 function normalizarTipoParticipante(categoria) {
     const categoriaNormalizada = String(categoria || '').trim();
@@ -65,15 +69,33 @@ function normalizarTipoParticipante(categoria) {
     }
 
     const texto = categoriaNormalizada.toLowerCase();
-    if (texto.includes('dama')) return 'DAMA L.A.M.A.';
-    if (texto.includes('full color')) return 'FULL COLOR MEMBER';
-    if (texto.includes('rocket')) return 'ROCKET PROSPECT';
-    if (texto.includes('prospect') || texto.includes('prosp')) return 'PROSPECT';
-    if (texto.includes('esposa')) return 'ESPOSA (o)';
-    if (texto.includes('conyuge')) return 'CONYUGUE';
-    if (texto.includes('pareja')) return 'PAREJA';
-    if (texto.includes('hija') || texto.includes('hijo')) return 'HIJA (o)';
-    return 'INVITADA (O)';
+    const esDama = texto.includes('dama');
+    const esProspecto = texto.includes('prospect') || texto.includes('prosp') || texto.includes('(p)');
+
+    if (esDama) {
+        return esProspecto ? 'DAMA L.A.M.A. - PROSPECTO (P)' : 'DAMA L.A.M.A. - FULL COLOR (FCM)';
+    }
+    if (texto.includes('full color') || texto.includes('fcm')) return 'MIEMBRO FULL COLOR (FCM)';
+    if (texto.includes('honorari') || texto.includes('hnr')) return 'MIEMBRO HONORARIO (HNR)';
+    if (texto.includes('retirad') || texto.includes('ptr')) return 'MIEMBRO RETIRADO (PTR)';
+    if (texto.includes('asociad') || texto.includes('asc')) return 'ASOCIADO (A) (ASC)';
+    if (esProspecto) return 'PROSPECTO (P)';
+    if (texto.includes('esposa') || texto.includes('conyug') || texto.includes('pareja')) return 'ESPOSA (O)';
+    if (texto.includes('hij')) return 'HIJO (A) (H)';
+    return 'INVITADO (A) (I)';
+}
+
+function normalizarTipoVehiculo(vehiculo) {
+    const vehiculoNormalizado = String(vehiculo || '').trim();
+    if (TIPOS_VEHICULO_VALIDOS.includes(vehiculoNormalizado)) {
+        return vehiculoNormalizado;
+    }
+
+    const texto = vehiculoNormalizado.toLowerCase();
+    if (texto.includes('moto') || texto === 'm') return 'MOTO (M)';
+    if (texto.includes('carro') || texto.includes('auto') || texto === 'c') return 'CARRO (C)';
+    if (texto.includes('avi') || texto === 'a') return 'AVIÓN (A)';
+    return null;
 }
 
 /**
@@ -169,7 +191,8 @@ exports.registerToEvent = async (req, res) => {
             emergencia_nombre,
             emergencia_telefono,
             email,
-            fecha_nacimiento
+            fecha_nacimiento,
+            vehiculo
         } = req.body;
 
         const paisNormalizado = String(pais || '').trim();
@@ -178,6 +201,7 @@ exports.registerToEvent = async (req, res) => {
 
         const { error: errorValidacion } = validateInscripcion({
             categoria: req.body.categoria,
+            vehiculo,
             nombre,
             documento,
             eps,
@@ -242,6 +266,7 @@ exports.registerToEvent = async (req, res) => {
 
         const inscripcionPayload = {
             tipo_participante: normalizarTipoParticipante(req.body.categoria),
+            tipo_vehiculo: normalizarTipoVehiculo(vehiculo),
             nombre_completo: nombre,
             documento_numero: String(documento).trim(),
             eps: eps || 'No especificada',
@@ -283,12 +308,27 @@ exports.registerToEvent = async (req, res) => {
             capitulo: capituloNormalizado
         });
 
+        // El QR de check-in se asigna desde el momento del registro (no solo
+        // al aprobar el pago) para que el piloto ya lo tenga consigo cuando
+        // el MTO lo escanee por primera vez: si el pago aún no está aprobado,
+        // el escáner le indicará que pase por tesorería antes de continuar.
+        let qrDataUrl = null;
+        try {
+            const qrToken = await InscripcionModel.asignarQrToken(result.id);
+            if (qrToken) {
+                qrDataUrl = await QrService.generarImagenQrDataUrl(QrService.construirUrlValidacion(req, qrToken));
+            }
+        } catch (qrError) {
+            logger.error('No fue posible generar el QR de check-in tras el registro', { error: qrError });
+        }
+
         res.json({
             success: true,
             message: 'Registro exitoso',
             data: {
                 id_registro: result.id,
-                fecha_registro: result.fecha_registro
+                fecha_registro: result.fecha_registro,
+                qr_data_url: qrDataUrl
             }
         });
     } catch (error) {

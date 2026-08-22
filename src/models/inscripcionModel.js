@@ -8,16 +8,19 @@ const { getPool, sql } = require('../config/database');
 const logger = require('../utils/logger');
 
 const TIPOS_PARTICIPANTE_PERMITIDOS = [
-    'DAMA L.A.M.A.',
-    'FULL COLOR MEMBER',
-    'ROCKET PROSPECT',
-    'PROSPECT',
-    'ESPOSA (o)',
-    'CONYUGUE',
-    'PAREJA',
-    'HIJA (o)',
-    'INVITADA (O)'
+    'MIEMBRO FULL COLOR (FCM)',
+    'PROSPECTO (P)',
+    'ASOCIADO (A) (ASC)',
+    'MIEMBRO HONORARIO (HNR)',
+    'MIEMBRO RETIRADO (PTR)',
+    'HIJO (A) (H)',
+    'INVITADO (A) (I)',
+    'ESPOSA (O)',
+    'DAMA L.A.M.A. - FULL COLOR (FCM)',
+    'DAMA L.A.M.A. - PROSPECTO (P)'
 ];
+
+const TIPOS_VEHICULO_PERMITIDOS = ['MOTO (M)', 'CARRO (C)', 'AVIÓN (A)'];
 
 /**
  * Estructura del modelo Inscripción
@@ -57,8 +60,10 @@ BEGIN
 
         -- Información del Participante
         tipo_participante VARCHAR(50) NOT NULL CHECK (tipo_participante IN (
-            'DAMA L.A.M.A.', 'FULL COLOR MEMBER', 'ROCKET PROSPECT', 'PROSPECT',
-            'ESPOSA (o)', 'CONYUGUE', 'PAREJA', 'HIJA (o)', 'INVITADA (O)'
+            'MIEMBRO FULL COLOR (FCM)', 'PROSPECTO (P)', 'ASOCIADO (A) (ASC)',
+            'MIEMBRO HONORARIO (HNR)', 'MIEMBRO RETIRADO (PTR)', 'HIJO (A) (H)',
+            'INVITADO (A) (I)', 'ESPOSA (O)', 'DAMA L.A.M.A. - FULL COLOR (FCM)',
+            'DAMA L.A.M.A. - PROSPECTO (P)'
         )),
         nombre_completo VARCHAR(200) NOT NULL,
         documento_numero VARCHAR(30) NOT NULL UNIQUE, -- Evita inscripciones dobles
@@ -270,15 +275,34 @@ class InscripcionModel {
         }
 
         const texto = tipo.toLowerCase();
-        if (texto.includes('dama')) return 'DAMA L.A.M.A.';
-        if (texto.includes('full color')) return 'FULL COLOR MEMBER';
-        if (texto.includes('rocket')) return 'ROCKET PROSPECT';
-        if (texto.includes('prosp') || texto.includes('prospect')) return 'PROSPECT';
-        if (texto.includes('esposa')) return 'ESPOSA (o)';
-        if (texto.includes('conyuge')) return 'CONYUGUE';
-        if (texto.includes('pareja')) return 'PAREJA';
-        if (texto.includes('hija') || texto.includes('hijo')) return 'HIJA (o)';
-        return 'INVITADA (O)';
+        const esDama = texto.includes('dama');
+        const esProspecto = texto.includes('prospect') || texto.includes('prosp') || texto.includes('(p)');
+
+        if (esDama) {
+            return esProspecto ? 'DAMA L.A.M.A. - PROSPECTO (P)' : 'DAMA L.A.M.A. - FULL COLOR (FCM)';
+        }
+        if (texto.includes('full color') || texto.includes('fcm')) return 'MIEMBRO FULL COLOR (FCM)';
+        if (texto.includes('honorari') || texto.includes('hnr')) return 'MIEMBRO HONORARIO (HNR)';
+        if (texto.includes('retirad') || texto.includes('ptr')) return 'MIEMBRO RETIRADO (PTR)';
+        if (texto.includes('asociad') || texto.includes('asc')) return 'ASOCIADO (A) (ASC)';
+        if (esProspecto) return 'PROSPECTO (P)';
+        if (texto.includes('esposa') || texto.includes('conyug') || texto.includes('pareja')) return 'ESPOSA (O)';
+        if (texto.includes('hij')) return 'HIJO (A) (H)';
+        return 'INVITADO (A) (I)';
+    }
+
+    static normalizarTipoVehiculo(valor) {
+        if (!valor) return null;
+        const tipo = String(valor).trim();
+        if (TIPOS_VEHICULO_PERMITIDOS.includes(tipo)) {
+            return tipo;
+        }
+
+        const texto = tipo.toLowerCase();
+        if (texto.includes('moto') || texto === 'm') return 'MOTO (M)';
+        if (texto.includes('carro') || texto.includes('auto') || texto === 'c') return 'CARRO (C)';
+        if (texto.includes('avi') || texto === 'a') return 'AVIÓN (A)';
+        return null;
     }
 
     /**
@@ -459,12 +483,28 @@ class InscripcionModel {
             END
 
             UPDATE InscripcionesCampeonato
-            SET tipo_participante = 'FULL COLOR MEMBER'
-            WHERE tipo_participante = 'DAMA L.A.M.A. FULL COLOR MEMBER';
+            SET tipo_participante = 'MIEMBRO FULL COLOR (FCM)'
+            WHERE tipo_participante IN ('DAMA L.A.M.A. FULL COLOR MEMBER', 'FULL COLOR MEMBER');
 
             UPDATE InscripcionesCampeonato
-            SET tipo_participante = 'PROSPECT'
-            WHERE tipo_participante = 'PROSP';
+            SET tipo_participante = 'PROSPECTO (P)'
+            WHERE tipo_participante IN ('PROSP', 'PROSPECT', 'ROCKET PROSPECT');
+
+            UPDATE InscripcionesCampeonato
+            SET tipo_participante = 'ESPOSA (O)'
+            WHERE tipo_participante IN ('ESPOSA (o)', 'CONYUGUE', 'PAREJA');
+
+            UPDATE InscripcionesCampeonato
+            SET tipo_participante = 'HIJO (A) (H)'
+            WHERE tipo_participante = 'HIJA (o)';
+
+            UPDATE InscripcionesCampeonato
+            SET tipo_participante = 'INVITADO (A) (I)'
+            WHERE tipo_participante = 'INVITADA (O)';
+
+            UPDATE InscripcionesCampeonato
+            SET tipo_participante = 'DAMA L.A.M.A. - FULL COLOR (FCM)'
+            WHERE tipo_participante = 'DAMA L.A.M.A.';
 
             IF NOT EXISTS (
                 SELECT 1
@@ -480,15 +520,16 @@ class InscripcionModel {
                 ADD CONSTRAINT CK_InscripcionesCampeonato_tipo_participante
                 CHECK (
                     tipo_participante IN (
-                        'DAMA L.A.M.A.',
-                        'FULL COLOR MEMBER',
-                        'ROCKET PROSPECT',
-                        'PROSPECT',
-                        'ESPOSA (o)',
-                        'CONYUGUE',
-                        'PAREJA',
-                        'HIJA (o)',
-                        'INVITADA (O)'
+                        'MIEMBRO FULL COLOR (FCM)',
+                        'PROSPECTO (P)',
+                        'ASOCIADO (A) (ASC)',
+                        'MIEMBRO HONORARIO (HNR)',
+                        'MIEMBRO RETIRADO (PTR)',
+                        'HIJO (A) (H)',
+                        'INVITADO (A) (I)',
+                        'ESPOSA (O)',
+                        'DAMA L.A.M.A. - FULL COLOR (FCM)',
+                        'DAMA L.A.M.A. - PROSPECTO (P)'
                     )
                 );
             END
@@ -620,10 +661,12 @@ class InscripcionModel {
             const request = pool.request();
 
             const tipoParticipante = this.normalizarTipoParticipante(inscripcionData.tipo_participante);
+            const tipoVehiculo = this.normalizarTipoVehiculo(inscripcionData.tipo_vehiculo);
             const capituloNormalizado = this.normalizarCapitulo(inscripcionData.capitulo);
 
             // Parámetros de entrada con tipos específicos
             request.input('tipo_participante', sql.VarChar(50), tipoParticipante);
+            request.input('tipo_vehiculo', sql.VarChar(20), tipoVehiculo);
             request.input('nombre_completo', sql.VarChar(200), inscripcionData.nombre_completo);
             request.input('documento_numero', sql.VarChar(30), inscripcionData.documento_numero);
             request.input('eps', sql.VarChar(100), inscripcionData.eps);
@@ -658,7 +701,7 @@ class InscripcionModel {
 
             const query = `
                 INSERT INTO InscripcionesCampeonato (
-                    tipo_participante, nombre_completo, documento_numero, eps,
+                    tipo_participante, tipo_vehiculo, nombre_completo, documento_numero, eps,
                     emergencia_nombre, emergencia_telefono, capitulo, capitulo_otro,
                     cargo_directivo, fecha_llegada_isla, condicion_medica,
                     adquiere_jersey, talla_jersey, asiste_con_acompanante, nombre_acompanante,
@@ -670,7 +713,7 @@ class InscripcionModel {
                 )
                 OUTPUT INSERTED.id_inscripcion, INSERTED.fecha_registro
                 VALUES (
-                    @tipo_participante, @nombre_completo, @documento_numero, @eps,
+                    @tipo_participante, @tipo_vehiculo, @nombre_completo, @documento_numero, @eps,
                     @emergencia_nombre, @emergencia_telefono, @capitulo, @capitulo_otro,
                     @cargo_directivo, @fecha_llegada_isla, @condicion_medica,
                     @adquiere_jersey, @talla_jersey, @asiste_con_acompanante, @nombre_acompanante,
@@ -745,11 +788,11 @@ class InscripcionModel {
 
             const result = await request.query(`
                 SELECT TOP 1
-                    nombre_completo, documento_numero, tipo_participante, capitulo,
+                    id_inscripcion, nombre_completo, documento_numero, tipo_participante, capitulo,
                     capitulo_otro, fecha_registro, estado_validacion, adquiere_jersey,
                     talla_jersey, asiste_con_acompanante, nombre_acompanante,
                     merchandising_json, total_merchandising, valor_base, valor_jersey,
-                    comprobante_nombre_archivo
+                    comprobante_nombre_archivo, checkin_realizado, checkin_fecha
                 FROM InscripcionesCampeonato
                 WHERE LOWER(LTRIM(RTRIM(documento_numero))) = @identificador
                    OR LOWER(LTRIM(RTRIM(email))) = @identificador

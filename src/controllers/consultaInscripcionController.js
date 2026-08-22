@@ -6,6 +6,7 @@
 
 const multer = require('multer');
 const { InscripcionModel } = require('../models/inscripcionModel');
+const QrService = require('../services/qrService');
 const logger = require('../utils/logger');
 
 const COMPROBANTE_MIME_PERMITIDOS = ['application/pdf', 'image/jpeg', 'image/png'];
@@ -46,9 +47,24 @@ exports.buscarInscripcion = async (req, res) => {
             });
         }
 
+        // El socio ve y descarga su propio QR aquí mismo desde el momento del
+        // registro (sin depender de que un admin se lo envíe): con pago aún
+        // pendiente, el mismo QR le sirve para que el MTO lo identifique y lo
+        // dirija a tesorería; una vez aprobado, ese QR marca su asistencia.
+        const { id_inscripcion: idInscripcion, ...inscripcionPublica } = inscripcion;
+        let qrDataUrl = null;
+        const token = await InscripcionModel.asignarQrToken(idInscripcion);
+        if (token) {
+            const urlValidacion = QrService.construirUrlValidacion(req, token);
+            qrDataUrl = await QrService.generarImagenQrDataUrl(urlValidacion);
+        }
+
         return res.status(200).json({
             success: true,
-            inscripcion
+            inscripcion: {
+                ...inscripcionPublica,
+                qr_data_url: qrDataUrl
+            }
         });
     } catch (error) {
         logger.error('Error en consultaInscripcionController.buscarInscripcion', { error });

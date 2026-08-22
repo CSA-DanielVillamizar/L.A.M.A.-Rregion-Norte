@@ -2,7 +2,8 @@ const { validateInscripcion } = require('../src/validators/inscripcionValidator'
 
 function datosValidos(overrides = {}) {
     return {
-        categoria: 'FULL COLOR MEMBER',
+        categoria: 'MIEMBRO FULL COLOR (FCM)',
+        vehiculo: 'MOTO (M)',
         nombre: 'Juan Pérez',
         documento: '123456789',
         eps: 'Sura',
@@ -26,15 +27,40 @@ describe('inscripcionValidator (esquema real de POST /eventos/vnorte-2026/regist
         expect(error).toBeUndefined();
     });
 
-    test('acepta "ESPOSA (o)" como categoría válida', () => {
-        const { error } = validateInscripcion(datosValidos({ categoria: 'ESPOSA (o)' }));
+    test('acepta "ESPOSA (O)" como categoría válida (consolida ESPOSA/CONYUGUE/PAREJA)', () => {
+        const { error } = validateInscripcion(datosValidos({ categoria: 'ESPOSA (O)' }));
         expect(error).toBeUndefined();
     });
 
-    test('rechaza la forma antigua "ESPOSA (a)" (regresión: ya no es un valor permitido)', () => {
-        const { error } = validateInscripcion(datosValidos({ categoria: 'ESPOSA (a)' }));
-        expect(error).toBeDefined();
-        expect(error.details.some((d) => d.path.includes('categoria'))).toBe(true);
+    test('acepta las dos variantes de DAMA L.A.M.A. (Full Color y Prospecto)', () => {
+        const fcm = validateInscripcion(datosValidos({ categoria: 'DAMA L.A.M.A. - FULL COLOR (FCM)' }));
+        expect(fcm.error).toBeUndefined();
+
+        const prospecto = validateInscripcion(datosValidos({ categoria: 'DAMA L.A.M.A. - PROSPECTO (P)' }));
+        expect(prospecto.error).toBeUndefined();
+    });
+
+    test('rechaza las categorías retiradas del catálogo (regresión: CONYUGUE, PAREJA, ROCKET PROSPECT y la DAMA sin variante ya no son válidas)', () => {
+        ['CONYUGUE', 'PAREJA', 'ESPOSA (o)', 'ROCKET PROSPECT', 'DAMA L.A.M.A.', 'FULL COLOR MEMBER'].forEach((categoria) => {
+            const { error } = validateInscripcion(datosValidos({ categoria }));
+            expect(error).toBeDefined();
+            expect(error.details.some((d) => d.path.includes('categoria'))).toBe(true);
+        });
+    });
+
+    test('exige el tipo de vehículo y solo acepta Moto, Carro o Avión', () => {
+        const sinVehiculo = validateInscripcion(datosValidos({ vehiculo: '' }));
+        expect(sinVehiculo.error).toBeDefined();
+        expect(sinVehiculo.error.details.some((d) => d.path.includes('vehiculo'))).toBe(true);
+
+        const vehiculoInvalido = validateInscripcion(datosValidos({ vehiculo: 'BICICLETA' }));
+        expect(vehiculoInvalido.error).toBeDefined();
+
+        const carro = validateInscripcion(datosValidos({ vehiculo: 'CARRO (C)' }));
+        expect(carro.error).toBeUndefined();
+
+        const avion = validateInscripcion(datosValidos({ vehiculo: 'AVIÓN (A)' }));
+        expect(avion.error).toBeUndefined();
     });
 
     test('acepta Rionegro como capítulo válido de Colombia (regresión: capítulo agregado hoy)', () => {

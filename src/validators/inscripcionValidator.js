@@ -40,20 +40,29 @@ const acompananteSchema = Joi.object({
 const inscripcionSchema = Joi.object({
     categoria: Joi.string()
         .valid(
-            'DAMA L.A.M.A.',
-            'FULL COLOR MEMBER',
-            'ROCKET PROSPECT',
-            'PROSPECT',
-            'ESPOSA (o)',
-            'CONYUGUE',
-            'PAREJA',
-            'HIJA (o)',
-            'INVITADA (O)'
+            'MIEMBRO FULL COLOR (FCM)',
+            'PROSPECTO (P)',
+            'ASOCIADO (A) (ASC)',
+            'MIEMBRO HONORARIO (HNR)',
+            'MIEMBRO RETIRADO (PTR)',
+            'HIJO (A) (H)',
+            'INVITADO (A) (I)',
+            'ESPOSA (O)',
+            'DAMA L.A.M.A. - FULL COLOR (FCM)',
+            'DAMA L.A.M.A. - PROSPECTO (P)'
         )
         .required()
         .messages({
             'any.required': 'La categoría es obligatoria',
             'any.only': 'Debe seleccionar una categoría válida'
+        }),
+
+    vehiculo: Joi.string()
+        .valid('MOTO (M)', 'CARRO (C)', 'AVIÓN (A)')
+        .required()
+        .messages({
+            'any.required': 'Debe indicar en qué tipo de vehículo asiste',
+            'any.only': 'Debe seleccionar Moto, Carro o Avión'
         }),
 
     nombre: Joi.string().min(3).max(200).trim().required().messages({

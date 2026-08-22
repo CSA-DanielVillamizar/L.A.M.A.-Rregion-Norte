@@ -47,7 +47,7 @@ exports.validarToken = async (req, res) => {
             return res.json({
                 success: true,
                 estado: 'rojo',
-                mensaje: `Pago no aprobado (estado actual: ${inscripcion.estado_validacion}).`,
+                mensaje: `Pago aún no aprobado (estado actual: ${inscripcion.estado_validacion}). Indícale al piloto que pase por tesorería a completar/validar su pago y regrese a escanear el QR.`,
                 participante,
                 puedeConfirmar: false
             });

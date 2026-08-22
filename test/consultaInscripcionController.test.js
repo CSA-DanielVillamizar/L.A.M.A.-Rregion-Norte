@@ -4,8 +4,14 @@
 jest.mock('../src/models/inscripcionModel', () => ({
     InscripcionModel: {
         buscarPorIdentificador: jest.fn(),
-        actualizarComprobante: jest.fn()
+        actualizarComprobante: jest.fn(),
+        asignarQrToken: jest.fn()
     }
+}));
+
+jest.mock('../src/services/qrService', () => ({
+    construirUrlValidacion: jest.fn(() => 'https://ejemplo.test/checkin/validar/token-fake'),
+    generarImagenQrDataUrl: jest.fn(() => Promise.resolve('data:image/png;base64,FAKE'))
 }));
 
 const { InscripcionModel } = require('../src/models/inscripcionModel');
@@ -42,11 +48,14 @@ describe('consultaInscripcionController.buscarInscripcion', () => {
         expect(res.json.mock.calls[0][0].success).toBe(false);
     });
 
-    test('responde 200 con la inscripción cuando el documento coincide', async () => {
+    test('responde 200 con la inscripción y su QR cuando el documento coincide', async () => {
         InscripcionModel.buscarPorIdentificador.mockResolvedValue({
+            id_inscripcion: 7,
             nombre_completo: 'Juan Pérez',
+            estado_validacion: 'Pendiente',
             tiene_comprobante: false
         });
+        InscripcionModel.asignarQrToken.mockResolvedValue('token-fake');
         const req = { body: { identificador: '123456' } };
         const res = crearRes();
 
@@ -54,14 +63,20 @@ describe('consultaInscripcionController.buscarInscripcion', () => {
 
         expect(res.status).toHaveBeenCalledWith(200);
         expect(res.json.mock.calls[0][0].inscripcion.nombre_completo).toBe('Juan Pérez');
+        expect(res.json.mock.calls[0][0].inscripcion.qr_data_url).toBe('data:image/png;base64,FAKE');
+        expect(res.json.mock.calls[0][0].inscripcion.id_inscripcion).toBeUndefined();
         expect(InscripcionModel.buscarPorIdentificador).toHaveBeenCalledWith('123456');
+        expect(InscripcionModel.asignarQrToken).toHaveBeenCalledWith(7);
     });
 
     test('responde 200 con la inscripción cuando el email coincide', async () => {
         InscripcionModel.buscarPorIdentificador.mockResolvedValue({
+            id_inscripcion: 8,
             nombre_completo: 'Juan Pérez',
+            estado_validacion: 'Aprobado',
             tiene_comprobante: true
         });
+        InscripcionModel.asignarQrToken.mockResolvedValue('token-fake-2');
         const req = { body: { identificador: 'juan@test.com' } };
         const res = crearRes();
 

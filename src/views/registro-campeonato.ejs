@@ -353,6 +353,36 @@
             margin: 0;
         }
 
+        .qr-checkin-box {
+            margin: 1.5rem 2rem 0 2rem;
+            padding: 1.5rem;
+            background: rgba(0, 245, 212, 0.05);
+            border: 2px solid #00f5d4;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .qr-checkin-box h3 {
+            font-family: 'Bebas Neue', 'Arial Black', sans-serif;
+            font-size: 1.3rem;
+            letter-spacing: 1px;
+            color: #00f5d4;
+            margin: 0 0 1rem 0;
+        }
+
+        .qr-checkin-box img {
+            display: block;
+            margin: 0 auto 1rem auto;
+            border-radius: 6px;
+            background: #f5f5dc;
+            padding: 0.5rem;
+        }
+
+        .qr-checkin-box .btn-upload {
+            max-width: 260px;
+            margin: 1rem auto 0 auto;
+        }
+
         /* Action Buttons */
         .action-area {
             padding: 1rem 2rem 2rem 2rem;
@@ -1058,21 +1088,34 @@
                     <form id="campeonatoForm" class="space-y-0">
                         <div class="form-section">
                             <h2 class="form-section-title font-headings">TIPO DE PARTICIPANTE</h2>
-                            <div>
-                                <label class="form-label">Categoría *</label>
-                                <select name="categoria" id="categoria" class="form-input w-full px-4 py-3 rounded"
-                                    required>
-                                    <option value="">Seleccione...</option>
-                                    <option value="DAMA L.A.M.A.">DAMA L.A.M.A.</option>
-                                    <option value="FULL COLOR MEMBER">FULL COLOR MEMBER</option>
-                                    <option value="ROCKET PROSPECT">ROCKET PROSPECT</option>
-                                    <option value="PROSPECT">PROSPECT</option>
-                                    <option value="ESPOSA (o)">ESPOSA (o)</option>
-                                    <option value="CONYUGUE">CONYUGUE</option>
-                                    <option value="PAREJA">PAREJA</option>
-                                    <option value="HIJA (o)">HIJA (o)</option>
-                                    <option value="INVITADA (O)">INVITADA (O)</option>
-                                </select>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="form-label">Categoría *</label>
+                                    <select name="categoria" id="categoria" class="form-input w-full px-4 py-3 rounded"
+                                        required>
+                                        <option value="">Seleccione...</option>
+                                        <option value="MIEMBRO FULL COLOR (FCM)">MIEMBRO FULL COLOR (FCM)</option>
+                                        <option value="PROSPECTO (P)">PROSPECTO (P)</option>
+                                        <option value="ASOCIADO (A) (ASC)">ASOCIADO (A) (ASC)</option>
+                                        <option value="MIEMBRO HONORARIO (HNR)">MIEMBRO HONORARIO (HNR)</option>
+                                        <option value="MIEMBRO RETIRADO (PTR)">MIEMBRO RETIRADO (PTR)</option>
+                                        <option value="HIJO (A) (H)">HIJO (A) (H)</option>
+                                        <option value="INVITADO (A) (I)">INVITADO (A) (I)</option>
+                                        <option value="ESPOSA (O)">ESPOSA (O)</option>
+                                        <option value="DAMA L.A.M.A. - FULL COLOR (FCM)">DAMA L.A.M.A. - FULL COLOR (FCM)</option>
+                                        <option value="DAMA L.A.M.A. - PROSPECTO (P)">DAMA L.A.M.A. - PROSPECTO (P)</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="form-label">¿En qué vehículo asiste? *</label>
+                                    <select name="vehiculo" id="vehiculo" class="form-input w-full px-4 py-3 rounded"
+                                        required>
+                                        <option value="">Seleccione...</option>
+                                        <option value="MOTO (M)">MOTO (M)</option>
+                                        <option value="CARRO (C)">CARRO (C)</option>
+                                        <option value="AVIÓN (A)">AVIÓN (A)</option>
+                                    </select>
+                                </div>
                             </div>
                         </div>
 
@@ -1541,6 +1584,20 @@
                         </div>
                     </div>
 
+                    <!-- QR de check-in: se entrega desde ya, aunque el pago siga pendiente -->
+                    <div id="modal-qr-section" class="qr-checkin-box" style="display: none;">
+                        <h3>Tu Código QR de Check-in</h3>
+                        <img id="modal-qr-img" src="" alt="Código QR de check-in" width="200" height="200">
+                        <p class="validation-note">
+                            Guarda esta imagen en tu celular. Muéstrala en el punto de control MTO al llegar al evento:
+                            si tu pago aún está pendiente, te indicarán pasar por tesorería; una vez aprobado, este
+                            mismo QR marca tu asistencia y habilita la entrega de tu kit.
+                        </p>
+                        <a id="modal-qr-download" href="" download="qr-checkin.png" class="btn-upload">
+                            <span>Descargar QR</span>
+                        </a>
+                    </div>
+
                     <!-- Action Area -->
                     <div class="action-area">
                         <button id="printBtn" class="btn-download">
@@ -1640,6 +1697,7 @@
                             <td>
                                 <p class="pdf-item-title">Inscripción Base</p>
                                 <p class="pdf-item-subtitle">CATEGORÍA: <span id="pdf-categoria"></span></p>
+                                <p class="pdf-item-subtitle">VEHÍCULO: <span id="pdf-vehiculo"></span></p>
                             </td>
                             <td>$<%= Number(event.precio || 100000).toLocaleString('es-CO') %></td>
                         </tr>
@@ -2218,6 +2276,7 @@
             mensaje += `Participante: ${data.nombre}\n`;
             mensaje += `Cédula: ${data.documento}\n`;
             mensaje += `Categoría: ${data.categoria}\n`;
+            mensaje += `Vehículo: ${data.vehiculo}\n`;
             mensaje += `EPS: ${data.eps}\n`;
             mensaje += `Correo Electrónico: ${data.email}\n`;
             mensaje += `Fecha de Nacimiento: ${data.fecha_nacimiento}\n`;
@@ -2321,6 +2380,7 @@
             });
             const data = {
                 categoria: document.getElementById('categoria').value,
+                vehiculo: document.getElementById('vehiculo').value,
                 nombre: document.getElementById('nombre').value.trim(),
                 documento: document.getElementById('documento').value.trim(),
                 eps: document.getElementById('eps').value.trim(),
@@ -2383,6 +2443,7 @@
             try {
                 const formData = new FormData();
                 formData.append('categoria', data.categoria);
+                formData.append('vehiculo', data.vehiculo);
                 formData.append('nombre', data.nombre);
                 formData.append('documento', data.documento);
                 formData.append('eps', data.eps);
@@ -2417,6 +2478,16 @@
                 if (!result.success) {
                     alert(result.message || 'Error al registrar la inscripción');
                     return;
+                }
+
+                const qrDataUrl = result.data && result.data.qr_data_url;
+                const qrSection = document.getElementById('modal-qr-section');
+                if (qrDataUrl && qrSection) {
+                    document.getElementById('modal-qr-img').src = qrDataUrl;
+                    document.getElementById('modal-qr-download').href = qrDataUrl;
+                    qrSection.style.display = 'block';
+                } else if (qrSection) {
+                    qrSection.style.display = 'none';
                 }
 
                 const numeroInscripcion = Math.floor(100000 + Math.random() * 900000);
@@ -2496,6 +2567,7 @@
 
             // Información del participante
             document.getElementById('pdf-categoria').textContent = registroActual.categoria || '';
+            document.getElementById('pdf-vehiculo').textContent = registroActual.vehiculo || '';
             document.getElementById('pdf-nombre').textContent = registroActual.nombre || '';
             document.getElementById('pdf-documento').textContent = registroActual.documento || '';
             document.getElementById('pdf-capitulo').textContent = registroActual.capitulo || '';

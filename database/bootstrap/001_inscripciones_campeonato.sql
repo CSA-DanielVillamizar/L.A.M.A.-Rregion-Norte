@@ -123,13 +123,33 @@ END;
 GO
 
 UPDATE dbo.InscripcionesCampeonato
-SET tipo_participante = 'FULL COLOR MEMBER'
-WHERE tipo_participante = 'DAMA L.A.M.A. FULL COLOR MEMBER';
+SET tipo_participante = 'MIEMBRO FULL COLOR (FCM)'
+WHERE tipo_participante IN ('DAMA L.A.M.A. FULL COLOR MEMBER', 'FULL COLOR MEMBER');
 GO
 
 UPDATE dbo.InscripcionesCampeonato
-SET tipo_participante = 'PROSPECT'
-WHERE tipo_participante = 'PROSP';
+SET tipo_participante = 'PROSPECTO (P)'
+WHERE tipo_participante IN ('PROSP', 'PROSPECT', 'ROCKET PROSPECT');
+GO
+
+UPDATE dbo.InscripcionesCampeonato
+SET tipo_participante = 'ESPOSA (O)'
+WHERE tipo_participante IN ('ESPOSA (o)', 'CONYUGUE', 'PAREJA');
+GO
+
+UPDATE dbo.InscripcionesCampeonato
+SET tipo_participante = 'HIJO (A) (H)'
+WHERE tipo_participante = 'HIJA (o)';
+GO
+
+UPDATE dbo.InscripcionesCampeonato
+SET tipo_participante = 'INVITADO (A) (I)'
+WHERE tipo_participante = 'INVITADA (O)';
+GO
+
+UPDATE dbo.InscripcionesCampeonato
+SET tipo_participante = 'DAMA L.A.M.A. - FULL COLOR (FCM)'
+WHERE tipo_participante = 'DAMA L.A.M.A.';
 GO
 
 IF NOT EXISTS (
@@ -146,17 +166,38 @@ BEGIN
     ADD CONSTRAINT CK_InscripcionesCampeonato_tipo_participante
     CHECK (
         tipo_participante IN (
-            'DAMA L.A.M.A.',
-            'FULL COLOR MEMBER',
-            'ROCKET PROSPECT',
-            'PROSPECT',
-            'ESPOSA (o)',
-            'CONYUGUE',
-            'PAREJA',
-            'HIJA (o)',
-            'INVITADA (O)'
+            'MIEMBRO FULL COLOR (FCM)',
+            'PROSPECTO (P)',
+            'ASOCIADO (A) (ASC)',
+            'MIEMBRO HONORARIO (HNR)',
+            'MIEMBRO RETIRADO (PTR)',
+            'HIJO (A) (H)',
+            'INVITADO (A) (I)',
+            'ESPOSA (O)',
+            'DAMA L.A.M.A. - FULL COLOR (FCM)',
+            'DAMA L.A.M.A. - PROSPECTO (P)'
         )
     );
+END;
+GO
+
+IF COL_LENGTH('dbo.InscripcionesCampeonato', 'tipo_vehiculo') IS NULL
+    ALTER TABLE dbo.InscripcionesCampeonato ADD tipo_vehiculo VARCHAR(20) NULL;
+GO
+
+IF NOT EXISTS (
+    SELECT 1
+    FROM sys.check_constraints cc
+    INNER JOIN sys.columns c
+        ON c.object_id = cc.parent_object_id
+       AND c.column_id = cc.parent_column_id
+    WHERE cc.parent_object_id = OBJECT_ID('dbo.InscripcionesCampeonato')
+      AND c.name = 'tipo_vehiculo'
+)
+BEGIN
+    ALTER TABLE dbo.InscripcionesCampeonato
+    ADD CONSTRAINT CK_InscripcionesCampeonato_tipo_vehiculo
+    CHECK (tipo_vehiculo IS NULL OR tipo_vehiculo IN ('MOTO (M)', 'CARRO (C)', 'AVIÓN (A)'));
 END;
 GO
 
