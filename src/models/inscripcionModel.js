@@ -5,6 +5,7 @@
 
 const crypto = require('crypto');
 const { getPool, sql } = require('../config/database');
+const { encrypt, decrypt } = require('../utils/encryption');
 const logger = require('../utils/logger');
 
 const TIPOS_PARTICIPANTE_PERMITIDOS = [
@@ -562,6 +563,11 @@ class InscripcionModel {
     static normalizarInscripcionSalida(inscripcion) {
         return {
             ...inscripcion,
+            eps: decrypt(inscripcion.eps),
+            emergencia_nombre: decrypt(inscripcion.emergencia_nombre),
+            emergencia_telefono: decrypt(inscripcion.emergencia_telefono),
+            condicion_medica: decrypt(inscripcion.condicion_medica),
+            telefono_celular: decrypt(inscripcion.telefono_celular),
             valor_total_pagar: this.calcularTotalReal(inscripcion)
         };
     }
@@ -626,14 +632,14 @@ class InscripcionModel {
             request.input('tipo_vehiculo', sql.VarChar(20), tipoVehiculo);
             request.input('nombre_completo', sql.VarChar(200), inscripcionData.nombre_completo);
             request.input('documento_numero', sql.VarChar(30), inscripcionData.documento_numero);
-            request.input('eps', sql.VarChar(100), inscripcionData.eps);
-            request.input('emergencia_nombre', sql.VarChar(200), inscripcionData.emergencia_nombre);
-            request.input('emergencia_telefono', sql.VarChar(50), inscripcionData.emergencia_telefono);
+            request.input('eps', sql.VarChar(500), encrypt(inscripcionData.eps));
+            request.input('emergencia_nombre', sql.VarChar(500), encrypt(inscripcionData.emergencia_nombre));
+            request.input('emergencia_telefono', sql.VarChar(500), encrypt(inscripcionData.emergencia_telefono));
             request.input('capitulo', sql.VarChar(50), capituloNormalizado.capitulo);
             request.input('capitulo_otro', sql.VarChar(100), inscripcionData.capitulo_otro || capituloNormalizado.capitulo_otro || null);
             request.input('cargo_directivo', sql.VarChar(150), inscripcionData.cargo_directivo || null);
             request.input('fecha_llegada_isla', sql.Date, new Date(inscripcionData.fecha_llegada_isla));
-            request.input('condicion_medica', sql.NVarChar(sql.MAX), inscripcionData.condicion_medica || null);
+            request.input('condicion_medica', sql.NVarChar(sql.MAX), encrypt(inscripcionData.condicion_medica || null));
             request.input('adquiere_jersey', sql.Bit, inscripcionData.adquiere_jersey ? 1 : 0);
             request.input('talla_jersey', sql.VarChar(10), inscripcionData.talla_jersey || null);
             request.input('asiste_con_acompanante', sql.Bit, inscripcionData.asiste_con_acompanante ? 1 : 0);
@@ -654,7 +660,7 @@ class InscripcionModel {
             request.input('comprobante_contenido', sql.VarBinary(sql.MAX), inscripcionData.comprobante_contenido || null);
             request.input('email', sql.VarChar(150), inscripcionData.email || null);
             request.input('fecha_nacimiento', sql.Date, inscripcionData.fecha_nacimiento ? new Date(inscripcionData.fecha_nacimiento) : null);
-            request.input('telefono_celular', sql.VarChar(50), inscripcionData.telefono_celular || null);
+            request.input('telefono_celular', sql.VarChar(500), encrypt(inscripcionData.telefono_celular || null));
 
             const query = `
                 INSERT INTO InscripcionesCampeonato (
