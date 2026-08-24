@@ -79,8 +79,8 @@ jobs:
         env:
           APP_BASE_URL: ${{ secrets.APP_BASE_URL }}
         run: |
-          for i in $(seq 1 12); do
-            sleep 5
+          for i in $(seq 1 24); do
+            sleep 10
             if curl -fsS "$APP_BASE_URL/health" > /dev/null 2>&1; then
               echo "App Service respondiendo tras el deploy."
               exit 0

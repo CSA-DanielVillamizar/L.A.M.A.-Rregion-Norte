@@ -275,7 +275,7 @@
                                             <%= ins.capitulo %>
                                         </td>
                                         <td class="px-4 py-3">
-                                            <% try { const servicios=JSON.parse(ins.servicios_adicionales || '[]' ); if
+                                            <% try { const servicios=JSON.parse(ins.servicios_principal_json || '[]' ); if
                                                 (servicios.length> 0) { %>
                                                 <span
                                                     class="inline-block bg-lamaNeon text-lamaBlack px-2 py-1 rounded text-xs font-bold">
