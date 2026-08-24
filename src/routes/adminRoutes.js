@@ -114,4 +114,9 @@ router.post('/api/destinos-turisticos', adminApiAuth, ContenidoTuristicoControll
 router.put('/api/destinos-turisticos/:id', adminApiAuth, ContenidoTuristicoController.updateDestino);
 router.delete('/api/destinos-turisticos/:id', adminApiAuth, ContenidoTuristicoController.deleteDestino);
 
+router.get('/api/servicios-premium', adminApiAuth, ContenidoTuristicoController.getAllServiciosPremium);
+router.post('/api/servicios-premium', adminApiAuth, ContenidoTuristicoController.createServicioPremium);
+router.put('/api/servicios-premium/:id', adminApiAuth, ContenidoTuristicoController.updateServicioPremium);
+router.delete('/api/servicios-premium/:id', adminApiAuth, ContenidoTuristicoController.deleteServicioPremium);
+
 module.exports = router;

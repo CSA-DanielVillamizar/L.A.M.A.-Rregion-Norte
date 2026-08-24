@@ -244,6 +244,109 @@ class ContenidoTuristicoModel {
             throw error;
         }
     }
+
+    static async getServiciosPremium({ eventoId = null, soloActivos = false } = {}) {
+        try {
+            const pool = await getPool();
+            const request = pool.request();
+            const condiciones = [];
+
+            if (eventoId) {
+                request.input('evento_id', sql.VarChar(120), eventoId);
+                condiciones.push('evento_id = @evento_id');
+            }
+            if (soloActivos) {
+                condiciones.push('activo = 1');
+            }
+
+            const query = `
+                SELECT * FROM dbo.ServiciosPremium
+                ${condiciones.length > 0 ? `WHERE ${condiciones.join(' AND ')}` : ''}
+                ORDER BY orden ASC
+            `;
+            const result = await request.query(query);
+            return result.recordset.map((fila) => ({ ...fila, activo: Boolean(fila.activo) }));
+        } catch (error) {
+            logger.error('Error en ContenidoTuristicoModel.getServiciosPremium', { error });
+            throw error;
+        }
+    }
+
+    static async getServicioPremiumById(id) {
+        try {
+            const pool = await getPool();
+            const result = await pool.request()
+                .input('id', sql.Int, id)
+                .query('SELECT * FROM dbo.ServiciosPremium WHERE id_servicio = @id');
+            return result.recordset.length > 0 ? { ...result.recordset[0], activo: Boolean(result.recordset[0].activo) } : null;
+        } catch (error) {
+            logger.error('Error en ContenidoTuristicoModel.getServicioPremiumById', { error });
+            throw error;
+        }
+    }
+
+    static bindServicioPremiumInputs(request, data) {
+        request.input('evento_id', sql.VarChar(120), data.evento_id || null);
+        request.input('nombre', sql.NVarChar(200), data.nombre);
+        request.input('descripcion', sql.NVarChar(sql.MAX), data.descripcion || null);
+        request.input('precio', sql.Int, Number.isFinite(Number(data.precio)) ? Number(data.precio) : 0);
+        request.input('icono', sql.VarChar(50), data.icono || null);
+        request.input('orden', sql.Int, Number.isFinite(data.orden) ? data.orden : 0);
+        request.input('activo', sql.Bit, data.activo === false ? 0 : 1);
+    }
+
+    static async crearServicioPremium(data) {
+        try {
+            const pool = await getPool();
+            const request = pool.request();
+            this.bindServicioPremiumInputs(request, data);
+
+            const result = await request.query(`
+                INSERT INTO dbo.ServiciosPremium (evento_id, nombre, descripcion, precio, icono, orden, activo)
+                OUTPUT INSERTED.id_servicio
+                VALUES (@evento_id, @nombre, @descripcion, @precio, @icono, @orden, @activo)
+            `);
+            return result.recordset[0].id_servicio;
+        } catch (error) {
+            logger.error('Error en ContenidoTuristicoModel.crearServicioPremium', { error });
+            throw error;
+        }
+    }
+
+    static async actualizarServicioPremium(id, data) {
+        try {
+            const pool = await getPool();
+            const request = pool.request();
+            request.input('id', sql.Int, id);
+            this.bindServicioPremiumInputs(request, data);
+
+            await request.query(`
+                UPDATE dbo.ServiciosPremium SET
+                    evento_id = @evento_id,
+                    nombre = @nombre, descripcion = @descripcion, precio = @precio,
+                    icono = @icono, orden = @orden, activo = @activo,
+                    fecha_actualizacion = GETDATE()
+                WHERE id_servicio = @id
+            `);
+            return true;
+        } catch (error) {
+            logger.error('Error en ContenidoTuristicoModel.actualizarServicioPremium', { error });
+            throw error;
+        }
+    }
+
+    static async eliminarServicioPremium(id) {
+        try {
+            const pool = await getPool();
+            await pool.request()
+                .input('id', sql.Int, id)
+                .query('DELETE FROM dbo.ServiciosPremium WHERE id_servicio = @id');
+            return true;
+        } catch (error) {
+            logger.error('Error en ContenidoTuristicoModel.eliminarServicioPremium', { error });
+            throw error;
+        }
+    }
 }
 
 module.exports = ContenidoTuristicoModel;

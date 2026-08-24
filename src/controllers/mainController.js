@@ -9,6 +9,7 @@ const capitulosService = require('../services/capitulosService');
 const eventService = require('../services/eventService');
 const { formatearRangoFechas } = require('../utils/fechas');
 const { PAISES_CAPITULOS } = require('../data/paisesCapitulos');
+const ContenidoTuristicoModel = require('../models/contenidoTuristicoModel');
 
 /**
  * Renderiza la página principal (Home)
@@ -115,11 +116,14 @@ async function renderizarFormularioEvento(evento, res) {
         });
     }
 
+    const serviciosPremium = await ContenidoTuristicoModel.getServiciosPremium({ eventoId: evento.id, soloActivos: true });
+
     res.render('registro-campeonato', {
         title: `Inscripción ${evento.nombre}`,
         event: evento,
         rangoFechas: formatearRangoFechas(evento.fecha, evento.fechaFin),
-        paisesCapitulos: PAISES_CAPITULOS
+        paisesCapitulos: PAISES_CAPITULOS,
+        serviciosPremium
     });
 }
 

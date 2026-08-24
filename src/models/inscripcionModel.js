@@ -791,6 +791,7 @@ class InscripcionModel {
                     id_inscripcion, nombre_completo, documento_numero, tipo_participante, capitulo,
                     capitulo_otro, fecha_registro, estado_validacion, adquiere_jersey,
                     talla_jersey, asiste_con_acompanante, nombre_acompanante,
+                    servicios_principal_json, total_servicios,
                     merchandising_json, total_merchandising, valor_base, valor_jersey,
                     comprobante_nombre_archivo, checkin_realizado, checkin_fecha
                 FROM InscripcionesCampeonato

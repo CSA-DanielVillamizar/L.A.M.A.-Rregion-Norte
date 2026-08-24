@@ -596,13 +596,18 @@
                     </div>
 
                     <div class="mb-4">
-                        <label class="block text-gray-300 mb-2">Capítulo organizador</label>
+                        <label class="block text-gray-300 mb-2">Organizador</label>
                         <select name="capitulo"
                             class="w-full px-4 py-2 bg-lamaBlack border border-lamaGold/30 rounded text-white focus:border-lamaNeon focus:outline-none">
                             <option value="">Sin asignar</option>
-                            <% capitulos.forEach(function(cap) { %>
-                                <option value="<%= cap.nombre %>"><%= cap.nombre %></option>
-                            <% }); %>
+                            <optgroup label="Comités Regionales">
+                                <option value="Comité Región Norte">Comité Región Norte</option>
+                            </optgroup>
+                            <optgroup label="Capítulos">
+                                <% capitulos.forEach(function(cap) { %>
+                                    <option value="<%= cap.nombre %>"><%= cap.nombre %></option>
+                                <% }); %>
+                            </optgroup>
                         </select>
                     </div>
 

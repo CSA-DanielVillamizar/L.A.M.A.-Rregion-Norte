@@ -114,12 +114,56 @@
                 <% }); %>
             </div>
         </div>
+
+        <!-- SERVICIOS PREMIUM (OPCIONALES) -->
+        <div class="mt-16">
+            <div class="flex items-center justify-between mb-4">
+                <div>
+                    <h2 class="text-2xl font-headings text-lamaGold">Servicios premium (opcionales)</h2>
+                    <p class="text-sm text-gray-400">Atracciones adicionales con costo que el miembro puede agregar al
+                        registrarse. No son obligatorias; si no cargas ninguna, esta sección no aparece en el
+                        formulario.</p>
+                </div>
+                <button id="btnNuevoServicioPremium"
+                    class="bg-lamaGold text-lamaBlack font-bold text-sm px-4 py-2 rounded hover:bg-lamaNeon transition-colors shrink-0">+
+                    Nuevo servicio</button>
+            </div>
+            <div id="formNuevoServicioPremium" class="hidden bg-lamaDark border border-lamaGold/40 rounded-lg p-5 mb-4"></div>
+            <div id="listaServiciosPremium" class="space-y-4">
+                <% serviciosPremium.forEach(function(servicio) { %>
+                    <div class="servicio-premium-item bg-lamaDark border border-gray-800 rounded-lg p-5" data-id="<%= servicio.id_servicio %>">
+                        <div class="flex items-start justify-between gap-4">
+                            <div>
+                                <p class="text-xs font-bold text-lamaGold uppercase">
+                                    $<%= Number(servicio.precio || 0).toLocaleString('es-CO') %>
+                                    <%= servicio.activo ? '' : ' · INACTIVO' %>
+                                </p>
+                                <h3 class="text-lg font-headings text-lamaBone">
+                                    <%= servicio.nombre %>
+                                </h3>
+                                <p class="text-sm text-gray-400">
+                                    <%= servicio.descripcion %>
+                                </p>
+                            </div>
+                            <div class="flex gap-2 shrink-0">
+                                <button class="btn-editar-servicio-premium text-lamaNeon text-sm font-bold hover:text-lamaGold"
+                                    data-id="<%= servicio.id_servicio %>">Editar</button>
+                                <button class="btn-eliminar-servicio-premium text-red-400 text-sm font-bold hover:text-red-300"
+                                    data-id="<%= servicio.id_servicio %>">Eliminar</button>
+                            </div>
+                        </div>
+                        <div class="form-editar-servicio-premium hidden mt-4"></div>
+                    </div>
+                <% }); %>
+            </div>
+        </div>
         <% } %>
     </section>
 
     <script>
         const HOTELES = <%- JSON.stringify(hoteles) %>;
         const DESTINOS = <%- JSON.stringify(destinos) %>;
+        const SERVICIOS_PREMIUM = <%- JSON.stringify(serviciosPremium) %>;
         const EVENTO_SELECCIONADO_ID = <%- JSON.stringify(eventoSeleccionado ? eventoSeleccionado.id : null) %>;
 
         const selectorEvento = document.getElementById('selectorEvento');
@@ -191,6 +235,24 @@
                 ${campoCheckbox('Activo (visible en el sitio)', 'activo', d.activo === undefined ? true : d.activo)}
                 <div class="flex gap-3 mt-3">
                     <button type="button" class="btn-guardar-destino bg-lamaGold text-lamaBlack font-bold text-sm px-4 py-2 rounded hover:bg-lamaNeon">Guardar</button>
+                    <button type="button" class="btn-cancelar text-gray-400 text-sm hover:text-lamaBone">Cancelar</button>
+                </div>
+            `;
+        }
+
+        function formularioServicioPremium(servicio) {
+            const s = servicio || {};
+            return `
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-4">
+                    ${campoTexto('Nombre *', 'nombre', s.nombre)}
+                    ${campoTexto('Precio (COP)', 'precio', s.precio, 'number')}
+                    ${campoTexto('Icono (Material Symbols, opcional)', 'icono', s.icono)}
+                    ${campoTexto('Orden', 'orden', s.orden, 'number')}
+                </div>
+                ${campoTextarea('Descripción', 'descripcion', s.descripcion)}
+                ${campoCheckbox('Activo (visible en el formulario de inscripción)', 'activo', s.activo === undefined ? true : s.activo)}
+                <div class="flex gap-3 mt-3">
+                    <button type="button" class="btn-guardar-servicio-premium bg-lamaGold text-lamaBlack font-bold text-sm px-4 py-2 rounded hover:bg-lamaNeon">Guardar</button>
                     <button type="button" class="btn-cancelar text-gray-400 text-sm hover:text-lamaBone">Cancelar</button>
                 </div>
             `;
@@ -361,6 +423,70 @@
                     window.location.reload();
                 } else {
                     alert(resultado.message || 'Error al eliminar el destino');
+                }
+            });
+        });
+
+        // ---- Servicios premium ----
+        document.getElementById('btnNuevoServicioPremium').addEventListener('click', () => {
+            const contenedor = document.getElementById('formNuevoServicioPremium');
+            contenedor.innerHTML = formularioServicioPremium({});
+            contenedor.classList.remove('hidden');
+            contenedor.querySelector('.btn-cancelar').addEventListener('click', () => contenedor.classList.add('hidden'));
+            contenedor.querySelector('.btn-guardar-servicio-premium').addEventListener('click', async () => {
+                const data = leerFormulario(contenedor);
+                data.evento_id = EVENTO_SELECCIONADO_ID;
+                const respuesta = await fetch('/admin/api/servicios-premium', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                const resultado = await respuesta.json();
+                if (resultado.success) {
+                    window.location.reload();
+                } else {
+                    alert(resultado.message || 'Error al crear el servicio premium');
+                }
+            });
+        });
+
+        document.querySelectorAll('.btn-editar-servicio-premium').forEach((btn) => {
+            btn.addEventListener('click', () => {
+                const id = btn.dataset.id;
+                const servicio = SERVICIOS_PREMIUM.find((s) => String(s.id_servicio) === id);
+                const item = document.querySelector(`.servicio-premium-item[data-id="${id}"]`);
+                const contenedor = item.querySelector('.form-editar-servicio-premium');
+                contenedor.innerHTML = formularioServicioPremium(servicio);
+                contenedor.classList.remove('hidden');
+                contenedor.querySelector('.btn-cancelar').addEventListener('click', () => contenedor.classList.add('hidden'));
+                contenedor.querySelector('.btn-guardar-servicio-premium').addEventListener('click', async () => {
+                    const data = leerFormulario(contenedor);
+                    data.evento_id = servicio.evento_id;
+                    const respuesta = await fetch(`/admin/api/servicios-premium/${id}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(data)
+                    });
+                    const resultado = await respuesta.json();
+                    if (resultado.success) {
+                        window.location.reload();
+                    } else {
+                        alert(resultado.message || 'Error al actualizar el servicio premium');
+                    }
+                });
+            });
+        });
+
+        document.querySelectorAll('.btn-eliminar-servicio-premium').forEach((btn) => {
+            btn.addEventListener('click', async () => {
+                if (!confirm('¿Eliminar este servicio premium? Esta acción no se puede deshacer.')) return;
+                const id = btn.dataset.id;
+                const respuesta = await fetch(`/admin/api/servicios-premium/${id}`, { method: 'DELETE' });
+                const resultado = await respuesta.json();
+                if (resultado.success) {
+                    window.location.reload();
+                } else {
+                    alert(resultado.message || 'Error al eliminar el servicio premium');
                 }
             });
         });

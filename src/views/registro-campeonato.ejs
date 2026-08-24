@@ -1280,6 +1280,40 @@
                             </div>
                         </div>
 
+                        <% if (serviciosPremium && serviciosPremium.length > 0) { %>
+                        <!-- SERVICIOS PREMIUM (OPCIONALES) -->
+                        <div class="form-section">
+                            <h2 class="form-section-title font-headings">SERVICIOS PREMIUM (OPCIONALES)</h2>
+                            <p class="text-lamaBone mb-4 text-sm">Atracciones adicionales del evento. No son
+                                obligatorias; se suman al total a transferir si las seleccionas.</p>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <% serviciosPremium.forEach(function(servicio) { %>
+                                <div class="premium-card bg-lamaDark/40 backdrop-blur-md border-2 border-lamaGold/50 rounded-lg p-4 cursor-pointer hover:border-lamaNeon hover:shadow-lg hover:shadow-lamaNeon/20 transition-all"
+                                    data-item="servicio-<%= servicio.id_servicio %>" data-nombre="<%= servicio.nombre %>" data-price="<%= Number(servicio.precio || 0) %>">
+                                    <h4 class="text-sm font-headings text-lamaGold mb-2 flex items-center gap-2">
+                                        <span class="icon-symbol text-lamaNeon" aria-hidden="true"><%= servicio.icono || 'stars' %></span>
+                                        <%= servicio.nombre %>
+                                    </h4>
+                                    <% if (servicio.descripcion) { %>
+                                    <p class="text-xs text-lamaBone mb-2 leading-relaxed"><%= servicio.descripcion %></p>
+                                    <% } %>
+                                    <div class="text-lg font-bold text-lamaNeon">$<%= Number(servicio.precio || 0).toLocaleString('es-CO') %></div>
+                                    <div class="premium-cantidad hidden flex items-center gap-3 mt-2" onclick="event.stopPropagation()">
+                                        <button type="button" class="premium-cantidad-menos bg-lamaBlack border border-lamaGold/50 text-lamaBone w-7 h-7 rounded font-bold">-</button>
+                                        <span class="premium-cantidad-valor text-lamaBone font-bold">1</span>
+                                        <button type="button" class="premium-cantidad-mas bg-lamaBlack border border-lamaGold/50 text-lamaBone w-7 h-7 rounded font-bold">+</button>
+                                    </div>
+                                </div>
+                                <% }); %>
+                            </div>
+
+                            <!-- Campos hidden para servicios premium -->
+                            <input type="hidden" id="servicios-premium-seleccionado" name="servicios_principal" value="[]">
+                            <input type="hidden" id="total_servicios_premium" name="total_servicios" value="0">
+                        </div>
+                        <% } %>
+
                         <!-- BOUTIQUE OFICIAL / MERCHANDISING -->
                         <div class="form-section">
                             <h2 class="form-section-title font-headings">BOUTIQUE OFICIAL REGIÓN NORTE</h2>
@@ -1383,6 +1417,10 @@
                             <div class="flex justify-between" id="resJerseyRow">
                                 <span id="resJerseyLabel">Camiseta</span>
                                 <span id="resJersey">$0</span>
+                            </div>
+                            <div class="flex justify-between items-start gap-3" id="resServiciosPremiumRow" style="display: none;">
+                                <span id="resServiciosPremiumLabel" class="flex-1">Servicios premium</span>
+                                <span id="resServiciosPremium" class="whitespace-nowrap">$0</span>
                             </div>
                             <div class="flex justify-between items-start gap-3" id="resMerchandisingRow" style="display: none;">
                                 <span id="resMerchandisingLabel" class="flex-1">Boutique</span>
@@ -1570,6 +1608,10 @@
                                 <div class="service-item" id="modal-jersey-item" style="display: none;">
                                     <span class="service-name" id="modal-jersey-label">Camiseta Oficial Región Norte</span>
                                     <span class="service-price" id="modal-jersey-total">$0</span>
+                                </div>
+                                <div class="service-item" id="modal-servicios-premium-item" style="display: none;">
+                                    <span class="service-name" id="modal-servicios-premium-label">Servicios Premium</span>
+                                    <span class="service-price" id="modal-servicios-premium-total">$0</span>
                                 </div>
                                 <div class="service-item" id="modal-merchandising-item" style="display: none;">
                                     <span class="service-name" id="modal-merchandising-label">Boutique</span>
@@ -1788,6 +1830,9 @@
         const resAcompanantesLabel = document.getElementById('resAcompanantesLabel');
         const resJersey = document.getElementById('resJersey');
         const resJerseyLabel = document.getElementById('resJerseyLabel');
+        const resServiciosPremium = document.getElementById('resServiciosPremium');
+        const resServiciosPremiumLabel = document.getElementById('resServiciosPremiumLabel');
+        const resServiciosPremiumRow = document.getElementById('resServiciosPremiumRow');
         const resMerchandising = document.getElementById('resMerchandising');
         const resMerchandisingLabel = document.getElementById('resMerchandisingLabel');
         const resMerchandisingRow = document.getElementById('resMerchandisingRow');
@@ -1952,6 +1997,100 @@
          * Maneja su propio estado (Map item -> cantidad/talla) independiente del
          * resto del formulario.
          */
+        const ServiciosPremiumManager = {
+            seleccion: new Map(), // item -> { nombre, precio_unitario, cantidad }
+
+            init() {
+                document.querySelectorAll('.premium-card').forEach((card) => {
+                    card.addEventListener('click', (event) => this.onCardClick(card, event));
+
+                    const menos = card.querySelector('.premium-cantidad-menos');
+                    const mas = card.querySelector('.premium-cantidad-mas');
+                    if (menos) menos.addEventListener('click', (event) => { event.stopPropagation(); this.cambiarCantidad(card, -1); });
+                    if (mas) mas.addEventListener('click', (event) => { event.stopPropagation(); this.cambiarCantidad(card, 1); });
+                });
+            },
+
+            onCardClick(card) {
+                const item = card.dataset.item;
+
+                if (this.seleccion.has(item)) {
+                    this.seleccion.delete(item);
+                    card.classList.remove('active');
+                    card.style.borderColor = '';
+                    card.style.backgroundColor = '';
+                    card.style.boxShadow = '';
+                } else {
+                    this.seleccion.set(item, {
+                        nombre: card.dataset.nombre,
+                        precio_unitario: parseInt(card.dataset.price, 10),
+                        cantidad: 1
+                    });
+                    card.classList.add('active');
+                    card.style.borderColor = '#00f5d4';
+                    card.style.backgroundColor = 'rgba(0, 245, 212, 0.1)';
+                    card.style.boxShadow = '0 0 20px rgba(0, 245, 212, 0.3)';
+                }
+
+                const cantidadBox = card.querySelector('.premium-cantidad');
+                if (cantidadBox) cantidadBox.classList.toggle('hidden', !this.seleccion.has(item));
+
+                this.actualizarFormulario();
+            },
+
+            cambiarCantidad(card, delta) {
+                const item = card.dataset.item;
+                const actual = this.seleccion.get(item);
+                if (!actual) return;
+
+                actual.cantidad = Math.min(10, Math.max(1, actual.cantidad + delta));
+                const valorSpan = card.querySelector('.premium-cantidad-valor');
+                if (valorSpan) valorSpan.textContent = String(actual.cantidad);
+
+                this.actualizarFormulario();
+            },
+
+            obtenerItems() {
+                return Array.from(this.seleccion.entries()).map(([item, datos]) => ({
+                    item,
+                    nombre: datos.nombre,
+                    cantidad: datos.cantidad,
+                    precio: datos.precio_unitario,
+                    precio_total: datos.precio_unitario * datos.cantidad
+                }));
+            },
+
+            formatearResumen() {
+                return this.obtenerItems()
+                    .map((i) => `${i.nombre} x${i.cantidad}`)
+                    .join(', ');
+            },
+
+            calcularTotal() {
+                return this.obtenerItems().reduce((sum, i) => sum + i.precio_total, 0);
+            },
+
+            actualizarFormulario() {
+                const inputServicios = document.getElementById('servicios-premium-seleccionado');
+                const inputTotalServicios = document.getElementById('total_servicios_premium');
+                const items = this.obtenerItems();
+                const total = this.calcularTotal();
+
+                if (inputServicios) inputServicios.value = JSON.stringify(items);
+                if (inputTotalServicios) inputTotalServicios.value = String(total);
+
+                if (typeof updateResumenPago === 'function') {
+                    updateResumenPago();
+                }
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            if (document.querySelector('.premium-card')) {
+                ServiciosPremiumManager.init();
+            }
+        });
+
         const MerchandisingManager = {
             seleccion: new Map(), // item -> { nombre, precio_unitario, cantidad, talla }
 
@@ -2162,10 +2301,11 @@
 
             const merchandisingItems = MerchandisingManager.obtenerItems();
             const totalMerchandising = MerchandisingManager.calcularTotal();
+            const totalServiciosPremium = ServiciosPremiumManager.calcularTotal();
 
             const totalInscripcion = BASE_PRICE * (1 + acompanantesCount);
             const totalJerseys = jerseysCount * JERSEY_PRICE;
-            const total = totalInscripcion + totalJerseys + totalMerchandising;
+            const total = totalInscripcion + totalJerseys + totalMerchandising + totalServiciosPremium;
 
             resInscripcion.textContent = `$${BASE_PRICE.toLocaleString('es-CO')}`;
             if (acompanantesCount > 0) {
@@ -2183,6 +2323,15 @@
             } else {
                 resJerseyLabel.textContent = 'Camiseta';
                 resJersey.textContent = '$0';
+            }
+
+            if (totalServiciosPremium > 0) {
+                resServiciosPremiumRow.style.display = 'flex';
+                resServiciosPremiumLabel.textContent = `Servicios premium: ${ServiciosPremiumManager.formatearResumen()}`;
+                resServiciosPremium.textContent = `$${totalServiciosPremium.toLocaleString('es-CO')}`;
+            } else {
+                resServiciosPremiumRow.style.display = 'none';
+                resServiciosPremium.textContent = '$0';
             }
 
             if (totalMerchandising > 0) {
@@ -2266,7 +2415,7 @@
          * @param {Array} merchandising Items de boutique seleccionados.
          * @returns {string} Mensaje formateado.
          */
-        function construirMensajeWhatsApp(data, numeroInscripcion, total, merchandising = []) {
+        function construirMensajeWhatsApp(data, numeroInscripcion, total, merchandising = [], serviciosPremium = []) {
             let mensaje = '';
             mensaje += `${EVENT_NAME.toUpperCase()}\n`;
             mensaje += 'L.A.M.A. - COLOMBIA\n\n';
@@ -2328,6 +2477,16 @@
             if (jerseysCount > 0) {
                 mensaje += `Camiseta Oficial Región Norte (${jerseysCount} x $65.000)\n`;
                 mensaje += `$${jerseyTotal.toLocaleString('es-CO')}\n`;
+            }
+
+            // Servicios premium desglosados
+            if (serviciosPremium && serviciosPremium.length > 0) {
+                const descripcionServicios = serviciosPremium
+                    .map((item) => `${item.cantidad} ${item.nombre}`)
+                    .join(', ');
+                mensaje += `Servicios Premium (${descripcionServicios})\n`;
+                const totalServicios = serviciosPremium.reduce((sum, item) => sum + item.precio_total, 0);
+                mensaje += `$${totalServicios.toLocaleString('es-CO')}\n`;
             }
 
             // Boutique / Merchandising desglosado
@@ -2434,6 +2593,8 @@
 
             const merchandisingItems = MerchandisingManager.obtenerItems();
             const totalMerchandising = MerchandisingManager.calcularTotal();
+            const serviciosPremiumItems = ServiciosPremiumManager.obtenerItems();
+            const totalServiciosPremium = ServiciosPremiumManager.calcularTotal();
 
             // El comprobante es opcional al momento de pre-inscribirse: muchos socios
             // pagan despues (algunos hasta el dia del evento). Si no lo adjuntan ahora,
@@ -2465,6 +2626,8 @@
                 formData.append('acompanantes', JSON.stringify(data.acompanantes));
                 formData.append('merchandising', JSON.stringify(merchandisingItems));
                 formData.append('total_merchandising', String(totalMerchandising));
+                formData.append('servicios_principal', JSON.stringify(serviciosPremiumItems));
+                formData.append('total_servicios', String(totalServiciosPremium));
                 if (comprobanteFile) {
                     formData.append('comprobante', comprobanteFile);
                 }
@@ -2491,7 +2654,7 @@
                 }
 
                 const numeroInscripcion = Math.floor(100000 + Math.random() * 900000);
-                const mensaje = construirMensajeWhatsApp(data, numeroInscripcion, totalGeneralPagar, merchandisingItems);
+                const mensaje = construirMensajeWhatsApp(data, numeroInscripcion, totalGeneralPagar, merchandisingItems, serviciosPremiumItems);
                 llenarPDF();
                 successModal.classList.add('active');
 
@@ -2520,7 +2683,8 @@
 
             const merchandisingItems = MerchandisingManager.obtenerItems();
             const totalMerchandising = MerchandisingManager.calcularTotal();
-            const totalCompleto = totalInscripcion + totalJerseys + totalMerchandising;
+            const totalServiciosPremium = ServiciosPremiumManager.calcularTotal();
+            const totalCompleto = totalInscripcion + totalJerseys + totalMerchandising + totalServiciosPremium;
 
             // Acompañantes en el modal
             if (acompanantesCount > 0) {
@@ -2538,6 +2702,18 @@
                 document.getElementById('modal-jersey-total').textContent = `$${totalJerseys.toLocaleString('es-CO')}`;
             } else {
                 document.getElementById('modal-jersey-item').style.display = 'none';
+            }
+
+            // Servicios premium en el modal
+            const modalServiciosPremiumItem = document.getElementById('modal-servicios-premium-item');
+            if (modalServiciosPremiumItem) {
+                if (totalServiciosPremium > 0) {
+                    modalServiciosPremiumItem.style.display = 'flex';
+                    document.getElementById('modal-servicios-premium-label').textContent = `Servicios Premium: ${ServiciosPremiumManager.formatearResumen()}`;
+                    document.getElementById('modal-servicios-premium-total').textContent = `$${totalServiciosPremium.toLocaleString('es-CO')}`;
+                } else {
+                    modalServiciosPremiumItem.style.display = 'none';
+                }
             }
 
             // Boutique/Merchandising en el modal

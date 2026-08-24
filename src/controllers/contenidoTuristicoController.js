@@ -15,15 +15,17 @@ exports.mostrarPanel = async (req, res) => {
         const eventoSeleccionado = eventos.find((e) => e.id === eventoIdSolicitado) || eventos[0] || null;
         const eventoId = eventoSeleccionado ? eventoSeleccionado.id : null;
 
-        const [hoteles, destinos] = await Promise.all([
+        const [hoteles, destinos, serviciosPremium] = await Promise.all([
             eventoId ? ContenidoTuristicoModel.getHoteles({ eventoId }) : [],
-            eventoId ? ContenidoTuristicoModel.getDestinos({ eventoId }) : []
+            eventoId ? ContenidoTuristicoModel.getDestinos({ eventoId }) : [],
+            eventoId ? ContenidoTuristicoModel.getServiciosPremium({ eventoId }) : []
         ]);
 
         res.render('admin/contenido-turistico', {
             title: 'Alojamiento y Turismo - Panel de Administración',
             hoteles,
             destinos,
+            serviciosPremium,
             eventos,
             eventoSeleccionado
         });
@@ -136,5 +138,56 @@ exports.deleteDestino = async (req, res) => {
     } catch (error) {
         logger.error('Error en ContenidoTuristicoController.deleteDestino', { error });
         res.status(500).json({ success: false, message: 'Error al eliminar el destino turístico' });
+    }
+};
+
+// ---- Servicios premium (opcionales, por evento) ----
+
+exports.getAllServiciosPremium = async (req, res) => {
+    try {
+        const servicios = await ContenidoTuristicoModel.getServiciosPremium({ eventoId: req.query.evento_id || null });
+        res.json({ success: true, data: servicios });
+    } catch (error) {
+        logger.error('Error en ContenidoTuristicoController.getAllServiciosPremium', { error });
+        res.status(500).json({ success: false, message: 'Error al obtener servicios premium' });
+    }
+};
+
+exports.createServicioPremium = async (req, res) => {
+    try {
+        if (!req.body.nombre) {
+            return res.status(400).json({ success: false, message: 'El nombre del servicio es obligatorio' });
+        }
+        const id = await ContenidoTuristicoModel.crearServicioPremium(req.body);
+        res.status(201).json({ success: true, id_servicio: id });
+    } catch (error) {
+        logger.error('Error en ContenidoTuristicoController.createServicioPremium', { error });
+        res.status(500).json({ success: false, message: 'Error al crear el servicio premium' });
+    }
+};
+
+exports.updateServicioPremium = async (req, res) => {
+    try {
+        const id = parseInt(req.params.id, 10);
+        const existente = await ContenidoTuristicoModel.getServicioPremiumById(id);
+        if (!existente) {
+            return res.status(404).json({ success: false, message: 'Servicio premium no encontrado' });
+        }
+        await ContenidoTuristicoModel.actualizarServicioPremium(id, req.body);
+        res.json({ success: true });
+    } catch (error) {
+        logger.error('Error en ContenidoTuristicoController.updateServicioPremium', { error });
+        res.status(500).json({ success: false, message: 'Error al actualizar el servicio premium' });
+    }
+};
+
+exports.deleteServicioPremium = async (req, res) => {
+    try {
+        const id = parseInt(req.params.id, 10);
+        await ContenidoTuristicoModel.eliminarServicioPremium(id);
+        res.json({ success: true });
+    } catch (error) {
+        logger.error('Error en ContenidoTuristicoController.deleteServicioPremium', { error });
+        res.status(500).json({ success: false, message: 'Error al eliminar el servicio premium' });
     }
 };
