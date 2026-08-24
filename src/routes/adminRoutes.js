@@ -91,16 +91,6 @@ router.get('/pdf-formularios/:id/matricula', adminApiAuth, AdminController.desca
 router.get('/pdf-formularios/:id/licencia', adminApiAuth, AdminController.descargarLicenciaConduccion);
 
 /**
- * API DE GESTIÓN DE SERVICIOS PREMIUM
- * Requiere API Key en headers: x-api-key
- * Maneja servicios premium disponibles para los participantes
- */
-router.get('/api/servicios', adminApiAuth, AdminController.getAllServicios);
-router.post('/api/servicios', adminApiAuth, AdminController.createServicio);
-router.put('/api/servicios/:id', adminApiAuth, AdminController.updateServicio);
-router.delete('/api/servicios/:id', adminApiAuth, AdminController.deleteServicio);
-
-/**
  * API DE GESTIÓN DE ALOJAMIENTO Y TURISMO
  * Requiere API Key en headers: x-api-key
  */

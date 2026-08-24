@@ -272,57 +272,34 @@
                                         </div>
                                         <% } %>
 
-                                            <% /* Tarjetas de ruta especificas de Coveñas - San Antero, sin
-                                                  equivalente generico en el modelo de evento todavia (no hay
-                                                  un catalogo de "puntos de ruta/itinerario" por evento). */ %>
-                                            <% if (event.id==='vnorte-2026' ) { %>
+                                            <% if (event.puntosRuta && event.puntosRuta.length > 0) { %>
                                                 <div
                                                     class="bg-lamaDark rounded-lg p-4 md:p-8 border border-gray-800 shadow-xl mb-8">
-                                                    <h2 class="text-2xl font-headings text-lamaGold mb-2">RUTA COVENAS -
-                                                        SAN ANTERO</h2>
-                                                    <p class="text-lamaBone mb-6">Turismo de carretera con mar al
-                                                        costado, vias optimas para motos y estaciones gastronomicas en
-                                                        todo el Golfo de Morrosquillo.</p>
+                                                    <h2 class="text-2xl font-headings text-lamaGold mb-2">RUTA E
+                                                        ITINERARIO DESTACADO</h2>
+                                                    <p class="text-lamaBone mb-6">Puntos destacados del recorrido de
+                                                        este evento.</p>
 
                                                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-                                                        <article
-                                                            class="rounded-[12px] bg-lamaBlack border border-lamaGold/30 p-5">
-                                                            <h3
-                                                                class="text-lamaGold font-headings text-xl tracking-wide mb-2">
-                                                                Concentracion</h3>
-                                                            <p class="text-lamaBone text-sm">Punto base en Covenas con
-                                                                recepcion de capitulos, entrega de kits y briefing de
-                                                                seguridad vial.</p>
-                                                            <a href="/itinerario"
-                                                                class="inline-flex mt-3 px-3 py-1 border border-lamaNeon text-lamaNeon rounded hover:bg-lamaNeon hover:text-lamaBlack transition-colors text-sm font-bold">Ver
-                                                                mapa</a>
-                                                        </article>
-                                                        <article
-                                                            class="rounded-[12px] bg-lamaBlack border border-lamaGold/30 p-5">
-                                                            <h3
-                                                                class="text-lamaGold font-headings text-xl tracking-wide mb-2">
-                                                                Caravana Costera</h3>
-                                                            <p class="text-lamaBone text-sm">Trayecto Coveñas - San
-                                                                Antero con paradas tecnicas, fotografia oficial y
-                                                                control logistico por bloques.</p>
-                                                            <a href="/itinerario"
-                                                                class="inline-flex mt-3 px-3 py-1 border border-lamaNeon text-lamaNeon rounded hover:bg-lamaNeon hover:text-lamaBlack transition-colors text-sm font-bold">Ver
-                                                                ruta</a>
-                                                        </article>
-                                                        <article
-                                                            class="rounded-[12px] bg-lamaBlack border border-lamaGold/30 p-5">
-                                                            <h3
-                                                                class="text-lamaGold font-headings text-xl tracking-wide mb-2">
-                                                                Gastronomia Caribe</h3>
-                                                            <p class="text-lamaBone text-sm">Paradas en restaurantes
-                                                                locales de Coveñas y San Antero con cocina de mar y
-                                                                experiencia cultural regional.</p>
-                                                            <a href="/itinerario"
-                                                                class="inline-flex mt-3 px-3 py-1 border border-lamaNeon text-lamaNeon rounded hover:bg-lamaNeon hover:text-lamaBlack transition-colors text-sm font-bold">Ver
-                                                                puntos</a>
-                                                        </article>
+                                                        <% event.puntosRuta.forEach(function(punto) { %>
+                                                            <article
+                                                                class="rounded-[12px] bg-lamaBlack border border-lamaGold/30 p-5">
+                                                                <h3
+                                                                    class="text-lamaGold font-headings text-xl tracking-wide mb-2">
+                                                                    <%= punto.titulo %>
+                                                                </h3>
+                                                                <p class="text-lamaBone text-sm">
+                                                                    <%= punto.descripcion %>
+                                                                </p>
+                                                                <% if (punto.enlace) { %>
+                                                                    <a href="<%= punto.enlace %>"
+                                                                        class="inline-flex mt-3 px-3 py-1 border border-lamaNeon text-lamaNeon rounded hover:bg-lamaNeon hover:text-lamaBlack transition-colors text-sm font-bold"><%= punto.enlaceTexto || 'Ver más' %></a>
+                                                                    <% } %>
+                                                            </article>
+                                                            <% }); %>
                                                     </div>
                                                 </div>
+                                                <% } %>
 
                                                 <div
                                                     class="bg-lamaDark rounded-lg p-4 md:p-8 border border-gray-800 shadow-xl mb-8">
@@ -340,7 +317,6 @@
                                                         </li>
                                                     </ul>
                                                 </div>
-                                                <% } %>
 
                                                     <% if (event.costos_adicionales && event.costos_adicionales.length > 0) { %>
                                                         <div

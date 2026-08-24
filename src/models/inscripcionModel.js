@@ -566,49 +566,6 @@ class InscripcionModel {
         };
     }
 
-    static obtenerClaveServicio(servicio) {
-        const valorBase = String(servicio?.servicio || servicio?.slug || servicio?.nombre || '').trim().toLowerCase();
-
-        if (valorBase.includes('jet_ski') || valorBase.includes('jet ski')) return 'jet_ski';
-        if (valorBase.includes('lancha')) return 'lancha_lujo';
-        if (valorBase.includes('regata') || valorBase.includes('velero')) return 'regata_veleros';
-        if (valorBase.includes('mula') || valorBase.includes('golf')) return 'mula_golfcart';
-
-        return null;
-    }
-
-    static construirResumenServiciosPremium(inscripciones) {
-        const acumulado = {
-            jet_ski: { cantidad: 0, total: 0 },
-            lancha_lujo: { cantidad: 0, total: 0 },
-            regata_veleros: { cantidad: 0, total: 0 },
-            mula_golfcart: { cantidad: 0, total: 0 }
-        };
-
-        const acumularServicios = (jsonServicios) => {
-            if (!jsonServicios) return;
-            try {
-                const servicios = JSON.parse(jsonServicios);
-                if (!Array.isArray(servicios)) return;
-
-                for (const servicio of servicios) {
-                    const clave = this.obtenerClaveServicio(servicio);
-                    if (!clave || !acumulado[clave]) continue;
-                    acumulado[clave].cantidad += 1;
-                    acumulado[clave].total += Number(servicio?.precio || 0);
-                }
-            } catch (error) {
-            }
-        };
-
-        for (const inscripcion of inscripciones) {
-            acumularServicios(inscripcion.servicios_principal_json);
-            acumularServicios(inscripcion.servicios_acompanantes_json);
-        }
-
-        return acumulado;
-    }
-
     /**
      * Construye el conteo de unidades de boutique/merchandising a preparar
      * (kit de bienvenida): útil para el empaque físico previo al evento.
@@ -921,7 +878,6 @@ class InscripcionModel {
                 pagos_confirmados: pagosConfirmados,
                 pagos_pendientes: pagosPendientes,
                 pagos_rechazados: pagosRechazados,
-                servicios_premium: this.construirResumenServiciosPremium(inscripciones),
                 merchandising: this.construirResumenMerchandising(inscripciones)
             };
         } catch (error) {

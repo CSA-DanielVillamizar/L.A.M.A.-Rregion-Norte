@@ -173,10 +173,6 @@
                     class="px-6 py-3 font-bold text-gray-400 hover:text-lamaNeon border-b-4 border-transparent">
                     TICKER
                 </button>
-                <button onclick="cambiarTab('servicios')" id="tabServicios"
-                    class="px-6 py-3 font-bold text-gray-400 hover:text-lamaNeon border-b-4 border-transparent">
-                    SERVICIOS PREMIUM
-                </button>
                 <button onclick="cambiarTab('formulariosPdf')" id="tabFormulariosPdf"
                     class="px-6 py-3 font-bold text-gray-400 hover:text-lamaNeon border-b-4 border-transparent">
                     FORMULARIOS PDF
@@ -501,38 +497,6 @@
             </div>
         </div>
         <!-- FIN Sección Ticker -->
-
-        <!-- Sección: Servicios Premium -->
-        <div id="seccionServicios" style="display:none;">
-            <div class="bg-lamaDark border border-lamaGold/20 rounded-lg p-6 mb-6">
-                <div class="flex justify-between items-center mb-4">
-                    <h2 class="text-2xl font-bold text-lamaNeon">Gestión de Servicios Premium</h2>
-                    <button onclick="mostrarModalCrearServicio()"
-                        class="bg-lamaNeon hover:bg-lamaNeon/80 text-lamaBlack px-6 py-2 rounded-lg font-bold transition-colors">
-                        + CREAR SERVICIO
-                    </button>
-                </div>
-
-                <div class="overflow-x-auto">
-                    <table class="min-w-full">
-                        <thead>
-                            <tr class="border-b border-lamaGold/20">
-                                <th class="text-left py-3 px-4 text-sm text-gray-400">ID</th>
-                                <th class="text-left py-3 px-4 text-sm text-gray-400">Nombre</th>
-                                <th class="text-left py-3 px-4 text-sm text-gray-400">Descripción</th>
-                                <th class="text-left py-3 px-4 text-sm text-gray-400">Precio</th>
-                                <th class="text-left py-3 px-4 text-sm text-gray-400">Estado</th>
-                                <th class="text-left py-3 px-4 text-sm text-gray-400">Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tablaServicios">
-                            <!-- Servicios se cargan dinámicamente -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-        <!-- FIN Sección Servicios Premium -->
 
         <!-- Sección: Formularios PDF -->
         <div id="seccionFormulariosPdf" style="display:none;">
@@ -874,7 +838,6 @@
                 document.getElementById('seccionCapitulos').style.display = 'none';
                 document.getElementById('seccionEventos').style.display = 'none';
                 document.getElementById('seccionTicker').style.display = 'none';
-                document.getElementById('seccionServicios').style.display = 'none';
                 document.getElementById('seccionFormulariosPdf').style.display = 'none';
 
                 // Resetear estilos de los tabs
@@ -882,7 +845,6 @@
                 document.getElementById('tabCapitulos').className = 'px-6 py-3 font-bold text-gray-400 hover:text-lamaNeon border-b-4 border-transparent';
                 document.getElementById('tabEventos').className = 'px-6 py-3 font-bold text-gray-400 hover:text-lamaNeon border-b-4 border-transparent';
                 document.getElementById('tabTicker').className = 'px-6 py-3 font-bold text-gray-400 hover:text-lamaNeon border-b-4 border-transparent';
-                document.getElementById('tabServicios').className = 'px-6 py-3 font-bold text-gray-400 hover:text-lamaNeon border-b-4 border-transparent';
                 document.getElementById('tabFormulariosPdf').className = 'px-6 py-3 font-bold text-gray-400 hover:text-lamaNeon border-b-4 border-transparent';
 
                 // Mostrar sección seleccionada
@@ -901,10 +863,6 @@
                     document.getElementById('seccionTicker').style.display = 'block';
                     document.getElementById('tabTicker').className = 'px-6 py-3 font-bold text-lamaNeon border-b-4 border-lamaNeon';
                     cargarTicker();
-                } else if (tab === 'servicios') {
-                    document.getElementById('seccionServicios').style.display = 'block';
-                    document.getElementById('tabServicios').className = 'px-6 py-3 font-bold text-lamaNeon border-b-4 border-lamaNeon';
-                    cargarServicios();
                 } else if (tab === 'formulariosPdf') {
                     document.getElementById('seccionFormulariosPdf').style.display = 'block';
                     document.getElementById('tabFormulariosPdf').className = 'px-6 py-3 font-bold text-lamaNeon border-b-4 border-lamaNeon';
@@ -1556,167 +1514,6 @@
                 }
             }
 
-            // ===== FUNCIONES PARA SERVICIOS PREMIUM =====
-
-            async function cargarServicios() {
-                try {
-                    const response = await fetch('/admin/api/servicios', {
-                        headers: {
-                        }
-                    });
-                    const data = await response.json();
-                    mostrarServicios(data.data || []);
-                } catch (error) {
-                    console.error('Error al cargar servicios:', error);
-                    alert('Error al cargar servicios premium');
-                }
-            }
-
-            function mostrarServicios(servicios) {
-                const tbody = document.getElementById('tablaServicios');
-                tbody.innerHTML = servicios.map(srv => `
-                <tr class="border-t border-gray-700 hover:bg-lamaBlack transition">
-                    <td class="px-4 py-3">${srv.id || 'N/A'}</td>
-                    <td class="px-4 py-3 font-bold text-lamaNeon">${srv.nombre}</td>
-                    <td class="px-4 py-3">${srv.descripcion || 'Sin descripción'}</td>
-                    <td class="px-4 py-3 text-lamaGold font-bold">$${(srv.precio || 0).toLocaleString('es-CO')}</td>
-                    <td class="px-4 py-3">
-                        <span class="px-3 py-1 rounded-full text-sm font-bold ${srv.disponible === 1 || srv.disponible === true ? 'bg-green-600 text-white' : 'bg-red-600 text-white'
-                    }">
-                            ${srv.disponible === 1 || srv.disponible === true ? 'DISPONIBLE' : 'NO DISPONIBLE'}
-                        </span>
-                    </td>
-                    <td class="px-4 py-3 flex gap-2">
-                        <button onclick="editarServicio(${srv.id})" class="bg-lamaNeon hover:bg-lamaNeon/80 text-lamaBlack px-4 py-2 rounded text-sm font-bold transition">
-                            Editar
-                        </button>
-                        <button onclick="eliminarServicio(${srv.id})" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded text-sm font-bold transition">
-                            Eliminar
-                        </button>
-                    </td>
-                </tr>
-            `).join('');
-            }
-
-            function mostrarModalCrearServicio() {
-                document.getElementById('modalServicio').style.display = 'flex';
-                document.getElementById('formServicio').reset();
-                document.getElementById('tituloModalServicio').textContent = 'CREAR NUEVO SERVICIO';
-            }
-
-            function cerrarModalServicio() {
-                document.getElementById('modalServicio').style.display = 'none';
-                const form = document.getElementById('formServicio');
-                form.reset();
-                delete form.dataset.editingId;
-                document.getElementById('tituloModalServicio').textContent = 'CREAR NUEVO SERVICIO';
-            }
-
-            async function guardarServicio(event) {
-                event.preventDefault();
-                const formData = new FormData(event.target);
-                const editingId = event.target.dataset.editingId;
-
-                const nuevoServicio = {
-                    nombre: formData.get('nombre'),
-                    descripcion: formData.get('descripcion'),
-                    precio: parseInt(formData.get('precio')),
-                    disponible: parseInt(formData.get('disponible')),
-                    categoria: formData.get('categoria'),
-                    limite_reservas: formData.get('limite_reservas') ? parseInt(formData.get('limite_reservas')) : null
-                };
-
-                try {
-                    const url = editingId ? `/admin/api/servicios/${editingId}` : '/admin/api/servicios';
-                    const method = editingId ? 'PUT' : 'POST';
-
-                    const response = await fetch(url, {
-                        method: method,
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify(nuevoServicio)
-                    });
-                    const result = await response.json();
-
-                    if (result.success) {
-                        alert(editingId ? 'Servicio actualizado exitosamente' : 'Servicio creado exitosamente');
-                        cerrarModalServicio();
-                        cargarServicios();
-                        delete event.target.dataset.editingId;
-                    } else {
-                        alert('Error: ' + result.message);
-                    }
-                } catch (error) {
-                    console.error('Error al guardar servicio:', error);
-                    alert('Error al guardar el servicio');
-                }
-            }
-
-            async function editarServicio(id) {
-                try {
-                    const response = await fetch('/admin/api/servicios', {
-                        headers: {
-                        }
-                    });
-                    const data = await response.json();
-                    const srv = (data.data || []).find(s => s.id === id);
-
-                    if (!srv) {
-                        alert('Servicio no encontrado');
-                        return;
-                    }
-
-                    // Llenar el modal con los datos del servicio
-                    document.getElementById('tituloModalServicio').textContent = 'EDITAR SERVICIO';
-                    document.getElementById('formServicio').reset();
-
-                    // Cargar los datos en el formulario
-                    document.querySelector('#formServicio input[name="nombre"]').value = srv.nombre;
-                    document.querySelector('#formServicio textarea[name="descripcion"]').value = srv.descripcion;
-                    document.querySelector('#formServicio input[name="precio"]').value = srv.precio;
-                    document.querySelector('#formServicio select[name="disponible"]').value = srv.disponible;
-                    document.querySelector('#formServicio select[name="categoria"]').value = srv.categoria;
-                    if (srv.limite_reservas) {
-                        document.querySelector('#formServicio input[name="limite_reservas"]').value = srv.limite_reservas;
-                    }
-
-                    // Guardar el ID para usar en el submit
-                    document.getElementById('formServicio').dataset.editingId = id;
-
-                    // Mostrar modal
-                    document.getElementById('modalServicio').style.display = 'flex';
-                } catch (error) {
-                    console.error('Error al editar servicio:', error);
-                    alert('Error al editar el servicio');
-                }
-            }
-
-            async function eliminarServicio(id) {
-                if (!confirm('¿Estás seguro de que deseas eliminar este servicio?')) {
-                    return;
-                }
-
-                try {
-                    const response = await fetch(`/admin/api/servicios/${id}`, {
-                        method: 'DELETE',
-                        headers: {
-                        }
-                    });
-
-                    const result = await response.json();
-                    if (result.success) {
-                        alert('Servicio eliminado exitosamente');
-                        cargarServicios();
-                    } else {
-                        alert('Error: ' + result.message);
-                    }
-                } catch (error) {
-                    console.error('Error al eliminar servicio:', error);
-                    alert('Error al eliminar el servicio');
-                }
-            }
-
             async function cargarFormulariosPdf() {
                 const tbody = document.getElementById('tablaFormulariosPdf');
                 if (!tbody) return;
@@ -1833,108 +1630,6 @@
 
     </main>
 
-    <!-- Sección: Gestión de Eventos -->
-    <div id="seccionEventos" style="display: none;">
-        <div class="bg-lamaDark p-4 rounded-lg border border-lamaNeon mb-6 flex justify-between items-center">
-            <h2 class="text-2xl font-headings text-lamaGold">GESTIÓN DE EVENTOS</h2>
-            <button onclick="mostrarModalCrearEvento()"
-                class="px-6 py-3 bg-lamaNeon text-lamaBlack rounded hover:bg-lamaGold transition font-bold">
-                + CREAR NUEVO EVENTO
-            </button>
-        </div>
-
-        <div class="bg-lamaDark rounded-lg border-2 border-lamaGold overflow-hidden">
-            <table class="w-full">
-                <thead class="bg-lamaBlack">
-                    <tr>
-                        <th class="px-4 py-3 text-left text-lamaNeon">ID</th>
-                        <th class="px-4 py-3 text-left text-lamaNeon">Nombre</th>
-                        <th class="px-4 py-3 text-left text-lamaNeon">Ubicación</th>
-                        <th class="px-4 py-3 text-left text-lamaNeon">Fecha</th>
-                        <th class="px-4 py-3 text-left text-lamaNeon">Precio</th>
-                        <th class="px-4 py-3 text-left text-lamaNeon">Capacidad</th>
-                        <th class="px-4 py-3 text-left text-lamaNeon">Estado</th>
-                        <th class="px-4 py-3 text-left text-lamaNeon">Acciones</th>
-                    </tr>
-                </thead>
-                <tbody id="tablaEventos" class="text-lamaBone">
-                    <!-- Se llena dinámicamente -->
-                </tbody>
-            </table>
-        </div>
-    </div>
-
-    <!-- Modal Crear/Editar Evento -->
-    <div id="modalEvento" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center"
-        style="display: none; z-index: 1000;">
-        <div class="bg-lamaDark rounded-lg border-2 border-lamaGold p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-            <h2 class="text-3xl font-headings text-lamaGold mb-6">CREAR NUEVO EVENTO</h2>
-
-            <form id="formEvento" onsubmit="guardarEvento(event)" class="space-y-4">
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-lamaNeon mb-2">Nombre del Evento</label>
-                        <input type="text" name="nombre" required
-                            class="w-full px-4 py-2 bg-lamaBlack border border-lamaGold rounded text-lamaBone">
-                    </div>
-                    <div>
-                        <label class="block text-lamaNeon mb-2">Ubicación</label>
-                        <input type="text" name="ubicacion" required
-                            class="w-full px-4 py-2 bg-lamaBlack border border-lamaGold rounded text-lamaBone">
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-lamaNeon mb-2">Fecha Inicio</label>
-                        <input type="date" name="fecha" required
-                            class="w-full px-4 py-2 bg-lamaBlack border border-lamaGold rounded text-lamaBone">
-                    </div>
-                    <div>
-                        <label class="block text-lamaNeon mb-2">Fecha Fin</label>
-                        <input type="date" name="fechaFin" required
-                            class="w-full px-4 py-2 bg-lamaBlack border border-lamaGold rounded text-lamaBone">
-                    </div>
-                </div>
-
-                <div>
-                    <label class="block text-lamaNeon mb-2">Descripción</label>
-                    <textarea name="descripcion" rows="3" required
-                        class="w-full px-4 py-2 bg-lamaBlack border border-lamaGold rounded text-lamaBone"></textarea>
-                </div>
-
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-lamaNeon mb-2">Precio (COP)</label>
-                        <input type="number" name="precio" required
-                            class="w-full px-4 py-2 bg-lamaBlack border border-lamaGold rounded text-lamaBone">
-                    </div>
-                    <div>
-                        <label class="block text-lamaNeon mb-2">Capacidad</label>
-                        <input type="number" name="capacidad" required
-                            class="w-full px-4 py-2 bg-lamaBlack border border-lamaGold rounded text-lamaBone">
-                    </div>
-                </div>
-
-                <div class="flex items-center">
-                    <input type="checkbox" name="destacado" id="destacado" class="mr-2">
-                    <label for="destacado" class="text-lamaNeon">Marcar como destacado</label>
-                </div>
-
-                <div class="flex gap-4 mt-6">
-                    <button type="submit"
-                        class="flex-1 px-6 py-3 bg-lamaNeon text-lamaBlack rounded hover:bg-lamaGold transition font-bold">
-                        GUARDAR EVENTO
-                    </button>
-                    <button type="button" onclick="cerrarModalEvento()"
-                        class="flex-1 px-6 py-3 bg-gray-600 text-white rounded hover:bg-gray-700 transition font-bold">
-                        CANCELAR
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-
     <!-- Modal Crear/Editar Anuncio del Ticker -->
     <div id="modalTicker" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center"
         style="display: none; z-index: 1000;">
@@ -1997,78 +1692,6 @@
                         GUARDAR ANUNCIO
                     </button>
                     <button type="button" onclick="cerrarModalTicker()"
-                        class="flex-1 px-6 py-3 bg-gray-600 text-white rounded hover:bg-gray-700 transition font-bold">
-                        CANCELAR
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- Modal Crear/Editar Servicio Premium -->
-    <div id="modalServicio" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center"
-        style="display: none; z-index: 1000;">
-        <div class="bg-lamaDark rounded-lg border-2 border-lamaGold p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-            <h2 class="text-3xl font-headings text-lamaGold mb-6" id="tituloModalServicio">CREAR NUEVO SERVICIO</h2>
-
-            <form id="formServicio" onsubmit="guardarServicio(event)" class="space-y-4">
-                <div>
-                    <label class="block text-lamaNeon mb-2">Nombre del Servicio</label>
-                    <input type="text" name="nombre" required
-                        class="w-full px-4 py-2 bg-lamaBlack border border-lamaGold rounded text-lamaBone"
-                        placeholder="ej: Jet Ski">
-                </div>
-
-                <div>
-                    <label class="block text-lamaNeon mb-2">Descripción</label>
-                    <textarea name="descripcion" rows="3" required
-                        class="w-full px-4 py-2 bg-lamaBlack border border-lamaGold rounded text-lamaBone"
-                        placeholder="Descripción detallada del servicio"></textarea>
-                </div>
-
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-lamaNeon mb-2">Precio (COP)</label>
-                        <input type="number" name="precio" required
-                            class="w-full px-4 py-2 bg-lamaBlack border border-lamaGold rounded text-lamaBone"
-                            placeholder="150000">
-                    </div>
-
-                    <div>
-                        <label class="block text-lamaNeon mb-2">Disponibilidad</label>
-                        <select name="disponible" required
-                            class="w-full px-4 py-2 bg-lamaBlack border border-lamaGold rounded text-lamaBone">
-                            <option value="1">Disponible</option>
-                            <option value="0">No Disponible</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div>
-                    <label class="block text-lamaNeon mb-2">Categoría</label>
-                    <select name="categoria" required
-                        class="w-full px-4 py-2 bg-lamaBlack border border-lamaGold rounded text-lamaBone">
-                        <option value="transporte">Transporte</option>
-                        <option value="hospedaje">Hospedaje</option>
-                        <option value="alimentacion">Alimentación</option>
-                        <option value="actividades">Actividades</option>
-                        <option value="otros">Otros</option>
-                    </select>
-                </div>
-
-                <div>
-                    <label class="block text-lamaNeon mb-2">Límite de Reservas</label>
-                    <input type="number" name="limite_reservas"
-                        class="w-full px-4 py-2 bg-lamaBlack border border-lamaGold rounded text-lamaBone"
-                        placeholder="Dejar vacío para ilimitado">
-                </div>
-
-                <div class="flex gap-4 mt-6">
-                    <button type="submit"
-                        class="flex-1 px-6 py-3 bg-lamaNeon text-lamaBlack rounded hover:bg-lamaGold transition font-bold">
-                        GUARDAR SERVICIO
-                    </button>
-                    <button type="button" onclick="cerrarModalServicio()"
                         class="flex-1 px-6 py-3 bg-gray-600 text-white rounded hover:bg-gray-700 transition font-bold">
                         CANCELAR
                     </button>

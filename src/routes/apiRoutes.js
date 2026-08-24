@@ -306,33 +306,6 @@ const AdminController = require('../controllers/adminController');
 router.get('/ticker', AdminController.getTickerPublic);
 
 // ============================================
-// ENDPOINTS DE SERVICIOS PREMIUM
-// ============================================
-
-/**
- * GET /api/servicios
- * Obtiene todos los servicios premium disponibles
- * Público - No requiere autenticación
- *
- * Response:
- * {
- *   "success": true,
- *   "data": [
- *     {
- *       "id": 1,
- *       "nombre": "Jet Ski",
- *       "descripcion": "Experiencia emocionante en jet ski",
- *       "precio": 150000,
- *       "disponible": 1,
- *       "categoria": "actividades"
- *     },
- *     ...
- *   ]
- * }
- */
-router.get('/servicios', AdminController.getServiciosPublic);
-
-// ============================================
 // MANEJO DE RUTAS NO ENCONTRADAS (404)
 // ============================================
 router.use((req, res) => {

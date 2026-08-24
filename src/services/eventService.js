@@ -63,6 +63,11 @@ const eventsDB = [
             ]
         },
         costos_adicionales: [],
+        puntosRuta: [
+            { titulo: 'Concentración', descripcion: 'Punto base en Coveñas con recepción de capítulos, entrega de kits y briefing de seguridad vial.', enlace: '/itinerario', enlaceTexto: 'Ver mapa' },
+            { titulo: 'Caravana Costera', descripcion: 'Trayecto Coveñas - San Antero con paradas técnicas, fotografía oficial y control logístico por bloques.', enlace: '/itinerario', enlaceTexto: 'Ver ruta' },
+            { titulo: 'Gastronomía Caribe', descripcion: 'Paradas en restaurantes locales de Coveñas y San Antero con cocina de mar y experiencia cultural regional.', enlace: '/itinerario', enlaceTexto: 'Ver puntos' }
+        ],
         contactos: [
             { tipo: 'WhatsApp Oficial Región Norte', valor: '+57 310 632 81 71' },
             { tipo: 'WhatsApp Alterno', valor: '+57 317 7524965' },
@@ -438,6 +443,7 @@ const mapearFilaEvento = (fila) => ({
     costos_adicionales: parsearJSONSeguro(fila.costosJson, []),
     contactos: parsearJSONSeguro(fila.contactosJson, []),
     recomendaciones: parsearJSONSeguro(fila.recomendacionesJson, []),
+    puntosRuta: parsearJSONSeguro(fila.puntosRutaJson, []),
     hospedajeOficial: parsearJSONSeguro(fila.hospedajeJson, null),
     disponibilidad: fila.capacidad - fila.registrados,
     porcentajeOcupacion: fila.capacidad > 0 ? Math.round((fila.registrados / fila.capacidad) * 100) : 0,
@@ -457,6 +463,7 @@ const mapearEventoMemoria = (evento) => ({
     costos_adicionales: Array.isArray(evento.costos_adicionales) ? evento.costos_adicionales : [],
     contactos: Array.isArray(evento.contactos) ? evento.contactos : [],
     recomendaciones: Array.isArray(evento.recomendaciones) ? evento.recomendaciones : [],
+    puntosRuta: Array.isArray(evento.puntosRuta) ? evento.puntosRuta : [],
     hospedajeOficial: evento.hospedajeOficial || null,
     disponibilidad: evento.capacidad - evento.registrados,
     porcentajeOcupacion: evento.capacidad > 0 ? Math.round((evento.registrados / evento.capacidad) * 100) : 0,
@@ -534,6 +541,7 @@ const asegurarTablaEventos = async () => {
                 request.input('costos_json', sql.NVarChar(sql.MAX), JSON.stringify(evento.costos_adicionales || []));
                 request.input('contactos_json', sql.NVarChar(sql.MAX), JSON.stringify(evento.contactos || []));
                 request.input('recomendaciones_json', sql.NVarChar(sql.MAX), JSON.stringify(evento.recomendaciones || []));
+                request.input('puntos_ruta_json', sql.NVarChar(sql.MAX), JSON.stringify(evento.puntosRuta || []));
                 request.input('hospedaje_json', sql.NVarChar(sql.MAX), evento.hospedajeOficial ? JSON.stringify(evento.hospedajeOficial) : null);
 
                 await request.query(`
@@ -541,13 +549,13 @@ const asegurarTablaEventos = async () => {
                     id_evento, nombre, fecha_inicio, fecha_fin, ubicacion, hotel, descripcion,
                     capacidad, registrados, precio, moneda, imagen, destacado, orden_visual,
                     agenda_json, paquete_json, costos_json, contactos_json, recomendaciones_json,
-                    hospedaje_json, activo
+                    puntos_ruta_json, hospedaje_json, activo
                 )
                 VALUES (
                     @id_evento, @nombre, @fecha_inicio, @fecha_fin, @ubicacion, @hotel, @descripcion,
                     @capacidad, @registrados, @precio, @moneda, @imagen, @destacado, @orden_visual,
                     @agenda_json, @paquete_json, @costos_json, @contactos_json, @recomendaciones_json,
-                    @hospedaje_json, 1
+                    @puntos_ruta_json, @hospedaje_json, 1
                 )
             `);
             }
@@ -583,6 +591,7 @@ const sincronizarContenidoEventosSeed = async (pool) => {
         request.input('costos_json', sql.NVarChar(sql.MAX), JSON.stringify(evento.costos_adicionales || []));
         request.input('contactos_json', sql.NVarChar(sql.MAX), JSON.stringify(evento.contactos || []));
         request.input('recomendaciones_json', sql.NVarChar(sql.MAX), JSON.stringify(evento.recomendaciones || []));
+        request.input('puntos_ruta_json', sql.NVarChar(sql.MAX), JSON.stringify(evento.puntosRuta || []));
         request.input('hospedaje_json', sql.NVarChar(sql.MAX), evento.hospedajeOficial ? JSON.stringify(evento.hospedajeOficial) : null);
 
         await request.query(`
@@ -596,6 +605,7 @@ const sincronizarContenidoEventosSeed = async (pool) => {
                 costos_json = @costos_json,
                 contactos_json = @contactos_json,
                 recomendaciones_json = @recomendaciones_json,
+                puntos_ruta_json = @puntos_ruta_json,
                 hospedaje_json = @hospedaje_json,
                 fecha_actualizacion = GETDATE()
             WHERE id_evento = @id_evento AND activo = 1
@@ -648,6 +658,7 @@ exports.getAllEvents = async () => {
             costos_json AS costosJson,
             contactos_json AS contactosJson,
             recomendaciones_json AS recomendacionesJson,
+            puntos_ruta_json AS puntosRutaJson,
             hospedaje_json AS hospedajeJson
         FROM EventosLama
         WHERE activo = 1
@@ -703,6 +714,7 @@ exports.getEventById = async (eventId) => {
             costos_json AS costosJson,
             contactos_json AS contactosJson,
             recomendaciones_json AS recomendacionesJson,
+            puntos_ruta_json AS puntosRutaJson,
             hospedaje_json AS hospedajeJson
         FROM EventosLama
         WHERE activo = 1 AND id_evento = @id_evento
@@ -827,6 +839,7 @@ exports.createEvent = async (data) => {
     request.input('costos_json', sql.NVarChar(sql.MAX), JSON.stringify(data.costos_adicionales || []));
     request.input('contactos_json', sql.NVarChar(sql.MAX), JSON.stringify(data.contactos || []));
     request.input('recomendaciones_json', sql.NVarChar(sql.MAX), JSON.stringify(data.recomendaciones || []));
+    request.input('puntos_ruta_json', sql.NVarChar(sql.MAX), JSON.stringify(data.puntosRuta || []));
     request.input('hospedaje_json', sql.NVarChar(sql.MAX), data.hospedajeOficial ? JSON.stringify(data.hospedajeOficial) : null);
 
     const result = await request.query(`
@@ -834,7 +847,7 @@ exports.createEvent = async (data) => {
             id_evento, nombre, capitulo, fecha_inicio, fecha_fin, ubicacion, hotel, descripcion,
             capacidad, registrados, precio, moneda, imagen, destacado, latitud, longitud, pais, orden_visual,
             agenda_json, paquete_json, costos_json, contactos_json, recomendaciones_json,
-            hospedaje_json, activo
+            puntos_ruta_json, hospedaje_json, activo
         )
         OUTPUT
             INSERTED.id_evento AS id,
@@ -860,13 +873,14 @@ exports.createEvent = async (data) => {
             INSERTED.costos_json AS costosJson,
             INSERTED.contactos_json AS contactosJson,
             INSERTED.recomendaciones_json AS recomendacionesJson,
+            INSERTED.puntos_ruta_json AS puntosRutaJson,
             INSERTED.hospedaje_json AS hospedajeJson
         VALUES (
             @id_evento, @nombre, @capitulo, @fecha_inicio, @fecha_fin, @ubicacion, @hotel, @descripcion,
             @capacidad, @registrados, @precio, @moneda, @imagen, @destacado, @latitud, @longitud, @pais,
             ISNULL((SELECT MAX(orden_visual) + 1 FROM EventosLama WHERE activo = 1), 1),
             @agenda_json, @paquete_json, @costos_json, @contactos_json, @recomendaciones_json,
-            @hospedaje_json, 1
+            @puntos_ruta_json, @hospedaje_json, 1
         )
     `);
 
@@ -911,6 +925,7 @@ exports.updateEvent = async (eventId, data) => {
     request.input('costos_json', sql.NVarChar(sql.MAX), JSON.stringify(data.costos_adicionales || actual.costos_adicionales || []));
     request.input('contactos_json', sql.NVarChar(sql.MAX), JSON.stringify(data.contactos || actual.contactos || []));
     request.input('recomendaciones_json', sql.NVarChar(sql.MAX), JSON.stringify(data.recomendaciones || actual.recomendaciones || []));
+    request.input('puntos_ruta_json', sql.NVarChar(sql.MAX), JSON.stringify(data.puntosRuta || actual.puntosRuta || []));
     request.input('hospedaje_json', sql.NVarChar(sql.MAX), data.hospedajeOficial ? JSON.stringify(data.hospedajeOficial) : (actual.hospedajeOficial ? JSON.stringify(actual.hospedajeOficial) : null));
 
     const result = await request.query(`
@@ -937,6 +952,7 @@ exports.updateEvent = async (eventId, data) => {
             costos_json = @costos_json,
             contactos_json = @contactos_json,
             recomendaciones_json = @recomendaciones_json,
+            puntos_ruta_json = @puntos_ruta_json,
             hospedaje_json = @hospedaje_json,
             fecha_actualizacion = GETDATE()
         OUTPUT
@@ -963,6 +979,7 @@ exports.updateEvent = async (eventId, data) => {
             INSERTED.costos_json AS costosJson,
             INSERTED.contactos_json AS contactosJson,
             INSERTED.recomendaciones_json AS recomendacionesJson,
+            INSERTED.puntos_ruta_json AS puntosRutaJson,
             INSERTED.hospedaje_json AS hospedajeJson
         WHERE id_evento = @id_evento AND activo = 1
     `);

@@ -83,15 +83,6 @@ describe('InscripcionModel — normalización y cálculos (funciones puras, sin 
         });
     });
 
-    describe('obtenerClaveServicio', () => {
-        test('reconoce variantes de nombre de servicio premium', () => {
-            expect(InscripcionModel.obtenerClaveServicio({ servicio: 'jet ski' })).toBe('jet_ski');
-            expect(InscripcionModel.obtenerClaveServicio({ nombre: 'Lancha de lujo' })).toBe('lancha_lujo');
-            expect(InscripcionModel.obtenerClaveServicio({ slug: 'regata_veleros' })).toBe('regata_veleros');
-            expect(InscripcionModel.obtenerClaveServicio({ nombre: 'algo desconocido' })).toBeNull();
-        });
-    });
-
     describe('construirResumenMerchandising', () => {
         test('agrupa por item + talla y suma cantidades/totales', () => {
             const inscripciones = [
