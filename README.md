@@ -8,7 +8,7 @@
 
 ## 1. ¿Qué es esto?
 
-Este proyecto **no es la landing page de un solo evento** — es un **CMS de gestión de eventos** construido para L.A.M.A. (Ladies of Amvets Motorcycle Association) Región Norte, pensado para que **cualquier capítulo de la región** pueda crear, publicar y administrar sus propios eventos de mototurismo sin tocar código:
+Este proyecto **no es la landing page de un solo evento** — es un **CMS de gestión de eventos** construido para L.A.M.A. (Latin American Motorcycle Association) Región Norte, pensado para que **cualquier capítulo de la región** pueda crear, publicar y administrar sus propios eventos de mototurismo sin tocar código:
 
 - Crear un evento nuevo (fechas, capítulo/comité organizador, país, ubicación, hoteles, destinos turísticos, puntos de ruta, agenda).
 - Abrir inscripciones con formulario dinámico por evento, categorías oficiales L.A.M.A., merchandising y **servicios premium opcionales** configurables por evento.
