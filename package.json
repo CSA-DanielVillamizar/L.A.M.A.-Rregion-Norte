@@ -27,7 +27,7 @@
         "lama",
         "hardcore-tropical"
     ],
-    "author": "L.A.M.A. Team",
+    "author": "Daniel Villamizar",
     "license": "MIT",
     "dependencies": {
         "axios": "^1.6.5",
