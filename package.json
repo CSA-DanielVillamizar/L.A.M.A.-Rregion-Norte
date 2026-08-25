@@ -1,7 +1,7 @@
 {
     "name": "lama-hardcore-tropical-webapp",
-    "version": "1.0.0",
-    "description": "Web App Full Stack con estilo Hardcore Tropical para L.A.M.A. Región Norte",
+    "version": "2.0.0",
+    "description": "CMS de gestion de eventos multi-capitulo para L.A.M.A. Region Norte, con estilo visual Hardcore Tropical",
     "main": "server.js",
     "scripts": {
         "start": "node server.js",
